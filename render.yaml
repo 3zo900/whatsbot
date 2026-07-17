@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: whatsbot-bot
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node server.js
+    envVars:
+      - key: PORT
+        value: 10000
+      - key: SUPPORT_NUMBER
+        value: 966510015157
+      - key: VERIFY_TOKEN
+        value: whatsbot_verify_123
