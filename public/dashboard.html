@@ -1,148 +1,26 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>WhatsBot.sa - لوحة تحكم</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>لوحة التحكم - WhatsBot</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800;900&display=swap" rel="stylesheet">
-<style>body{font-family:'Tajawal',sans-serif}</style>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@700;900&display=swap" rel="stylesheet">
+<style>body{font-family:Tajawal}</style>
 </head>
-<body class="bg-[#f7f7fb] text-zinc-900">
-<div class="flex min-h-screen">
-<!-- SIDEBAR -->
-<aside class="w-[280px] bg-white border-l border-zinc-200 p-6 hidden md:flex flex-col">
-<div class="flex items-center gap-3 mb-10">
-<div class="w-10 h-10 bg-[#22c55e] rounded-2xl flex items-center justify-center text-white font-black text-xl">W</div>
-<div><div class="font-black">WhatsBot<span class="font-light">.sa</span></div><div class="text-[10px] text-zinc-400 tracking-widest">WHITE-LABEL</div></div>
-</div>
-<nav class="space-y-1 text-sm">
-<a class="flex items-center gap-3 bg-zinc-900 text-white px-4 py-3 rounded-xl font-bold"><span>📊</span> لوحة التحكم</a>
-<a href="#chats" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-zinc-50"><span>💬</span> المحادثات <span class="mr-auto bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full">4</span></a>
-<a href="#employees" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-zinc-50"><span>👨‍💼</span> الموظفون</a>
-<a href="#pricing" class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-zinc-50"><span>💰</span> الباقات والدفع</a>
-<a class="flex items-center gap-3 px-4 py-3 rounded-xl hover:bg-zinc-50"><span>⚙️</span> الإعدادات</a>
+<body class="bg-[#faf8ff] min-h-screen">
+<nav class="bg-white border-b px-6 py-4 flex justify-between items-center">
+<div class="flex items-center gap-2"><div class="w-8 h-8 bg-[#22c55e] rounded-lg flex items-center justify-center text-white font-black text-xs">WB</div><span class="font-black">WhatsBot</span></div>
+<div class="flex items-center gap-3"><span id="userEmail" class="text-xs text-zinc-500"></span><a href="index.html" class="text-xs bg-zinc-100 px-3 py-1.5 rounded-full">خروج</a></div>
 </nav>
-<div class="mt-auto bg-[#f6fef7] border border-green-100 rounded-2xl p-4">
-<div class="text-xs font-bold mb-1">رذاذ بوت يعمل ✅</div>
-<div class="text-[11px] text-zinc-500">مربوط بـ OpenAI • المنفذ 10000</div>
-<div class="text-[10px] font-mono mt-2">SA95 8000 0498...</div>
-</div>
-</aside>
-
-<!-- MAIN -->
-<main class="flex-1 p-4 md:p-8">
-<!-- HEADER -->
-<div class="flex justify-between items-center mb-8">
-<div>
-<h1 class="text-3xl font-black">لوحة تحكم <span class="text-[#22c55e]">الموظف البشري</span></h1>
-<p class="text-sm text-zinc-500 mt-1">تشوف كل العملاء اللي طلبوا موظف بشري لحظياً مع اسمهم ورقمهم وآخر رسالة</p>
-</div>
-<div class="flex gap-2">
-<div class="bg-white border px-4 py-2 rounded-full text-xs font-bold">14 تحويل اليوم</div>
-<div class="bg-[#22c55e] text-white px-4 py-2 rounded-full text-xs font-bold">3.2 د متوسط انتظار</div>
+<div class="max-w-6xl mx-auto p-6">
+<h1 class="text-2xl font-black mb-2">لوحة التحكم</h1>
+<p class="text-sm text-zinc-500 mb-8">سيتم تفعيل حسابك بعد مراجعة الإيصال من قبل الإدارة</p>
+<div class="grid md:grid-cols-3 gap-4">
+<div class="bg-white border rounded-2xl p-6"><div class="text-xs text-zinc-400">حالة الحساب</div><div class="font-black mt-2 text-amber-600">قيد المراجعة ⏳</div><div class="text-[11px] text-zinc-500 mt-2">سيتم مراجعة الايصال من قبل الإدارة وتفعيل حسابكم وربطه خلال دقائق</div></div>
+<div class="bg-white border rounded-2xl p-6"><div class="text-xs text-zinc-400">الباقة</div><div class="font-black mt-2">احترافي - 199 ر.س</div><div class="text-[11px] text-zinc-500 mt-2">5000 محادثة / شهر</div></div>
+<div class="bg-zinc-900 text-white rounded-2xl p-6"><div class="text-xs text-white/50">واتساب الدعم</div><div class="font-black mt-2">966510015157</div><a href="https://wa.me/966510015157" class="mt-3 inline-block bg-white text-zinc-900 text-xs px-4 py-2 rounded-full font-bold">تواصل واتساب</a></div>
 </div>
 </div>
-
-<!-- STATS -->
-<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-<div class="bg-white rounded-2xl border p-5"><div class="text-[11px] text-zinc-400 tracking-widest">عملاء في انتظار موظف</div><div class="text-3xl font-black mt-2">4</div><div class="text-xs text-red-500 mt-1">منهم 2 VIP</div></div>
-<div class="bg-white rounded-2xl border p-5"><div class="text-[11px] text-zinc-400 tracking-widest">تم الحل اليوم</div><div class="text-3xl font-black mt-2">14</div><div class="text-xs text-green-600 mt-1">↑ 14% عن الأمس</div></div>
-<div class="bg-white rounded-2xl border p-5"><div class="text-[11px] text-zinc-400 tracking-widest">موظفين متصلين</div><div class="text-3xl font-black mt-2">2 / 5</div><div class="text-xs text-zinc-500 mt-1">أحمد، سارة</div></div>
-<div class="bg-zinc-900 text-white rounded-2xl p-5"><div class="text-[11px] text-white/50 tracking-widest">متوسط الاستجابة</div><div class="text-3xl font-black mt-2">42 ث</div><div class="text-xs text-white/50 mt-1">الهدف &lt; 60 ث</div></div>
-</div>
-
-<!-- CHATS LIST -->
-<div class="grid md:grid-cols-[380px_1fr] gap-6">
-<div class="bg-white rounded-[1.5rem] border overflow-hidden">
-<div class="p-4 border-b flex gap-2">
-<button class="bg-zinc-900 text-white px-4 py-2 rounded-full text-xs font-bold">الكل</button>
-<button class="bg-zinc-100 px-4 py-2 rounded-full text-xs">في الانتظار</button>
-<button class="bg-zinc-100 px-4 py-2 rounded-full text-xs">تم الحل</button>
-</div>
-<div class="divide-y max-h-[600px] overflow-auto">
-<div class="p-4 hover:bg-zinc-50 cursor-pointer bg-[#f6fef7]">
-<div class="flex justify-between"><div class="font-bold text-sm">عبدالله الشمري ⏰</div><div class="text-[10px] bg-red-500 text-white px-2 rounded-full">VIP</div></div>
-<div class="text-xs text-zinc-500 mt-1">أهل عبدالله كيف أقدر أساعدك اليوم؟</div>
-<div class="flex gap-2 mt-3">
-<span class="bg-[#22c55e] text-white text-[10px] px-3 py-1 rounded-full">رد الآن</span>
-<span class="bg-zinc-100 text-[10px] px-3 py-1 rounded-full">إرجاع للبوت</span>
-</div>
-</div>
-<div class="p-4 hover:bg-zinc-50 cursor-pointer">
-<div class="flex justify-between"><div class="font-bold text-sm">سارة القحطاني</div><div class="text-[10px] text-zinc-400">قبل دقيقتين</div></div>
-<div class="text-xs text-zinc-500 mt-1">هل الدفع عند الاستلام متاح؟</div>
-<div class="flex gap-2 mt-3">
-<span class="bg-[#22c55e] text-white text-[10px] px-3 py-1 rounded-full">رد الآن</span>
-<span class="bg-zinc-100 text-[10px] px-3 py-1 rounded-full">تم الحل</span>
-</div>
-</div>
-<div class="p-4 hover:bg-zinc-50 cursor-pointer">
-<div class="font-bold text-sm">محمد العتيبي</div>
-<div class="text-xs text-zinc-500 mt-1">إرسال الفواتير ممثلي التاجر؟</div>
-<div class="flex gap-2 mt-3">
-<span class="bg-zinc-900 text-white text-[10px] px-3 py-1 rounded-full">تم الحل</span>
-</div>
-</div>
-</div>
-</div>
-
-<!-- CHAT VIEW -->
-<div class="bg-white rounded-[1.5rem] border p-6 flex flex-col">
-<div class="flex justify-between items-center border-b pb-4 mb-4">
-<div class="flex items-center gap-3">
-<div class="w-10 h-10 bg-zinc-900 text-white rounded-full flex items-center justify-center font-bold">ع</div>
-<div><div class="font-bold text-sm">عبدالله الشمري • 966512345678</div><div class="text-xs text-green-600">● متصل الآن • ينتظر موظف</div></div>
-</div>
-<div class="flex gap-2">
-<button class="bg-zinc-900 text-white px-4 py-2 rounded-full text-xs">إعدادات رسائل التحويل</button>
-</div>
-</div>
-<div class="flex-1 space-y-3 text-sm max-h-[400px] overflow-auto">
-<div class="bg-zinc-100 rounded-2xl rounded-br-sm p-3 ml-10">أهل عبدالله كيف أقدر أساعدك اليوم؟</div>
-<div class="bg-[#22c55e] text-white rounded-2xl rounded-bl-sm p-3 mr-10 ml-auto max-w-[70%]">أبي أكلم موظف بشري ضروري</div>
-<div class="bg-zinc-900 text-white rounded-2xl rounded-br-sm p-3 ml-10 text-xs">تم تحويلك للموظف: سارة (الأقل ضغطاً) ✅<br>إحصائيات حية: كم واحد، كم واحد تحول اليوم، متوسط وقت الانتظار</div>
-</div>
-<div class="mt-4 flex gap-2">
-<input placeholder="اكتب ردك هنا..." class="flex-1 border rounded-full px-4 py-3 text-sm">
-<button class="bg-[#22c55e] text-white w-12 h-12 rounded-full">↗</button>
-</div>
-<div class="flex gap-2 mt-3 text-[11px]">
-<button class="bg-zinc-100 px-3 py-1 rounded-full">تحويل ذكي تلقائي</button>
-<button class="bg-zinc-100 px-3 py-1 rounded-full">إرجاع للبوت بضغطة واحدة</button>
-<button class="bg-zinc-100 px-3 py-1 rounded-full">أرشفة المحادثة</button>
-</div>
-</div>
-</div>
-
-<!-- BANK SECTION -->
-<div id="pricing" class="mt-10 grid md:grid-cols-3 gap-4">
-<div class="bg-white border rounded-[1.5rem] p-6 text-center"><div class="text-xs tracking-widest text-zinc-400">مجاني</div><div class="text-3xl font-black my-2">0 <span class="text-sm font-normal">ر.س/للأبد</span></div><ul class="text-xs text-zinc-600 space-y-2 mt-4 text-right"><li>✓ 100 محادثة / شهر</li><li>✓ موظف واحد</li><li>✓ شعار رذاذ بوت</li></ul><button class="mt-6 w-full border rounded-full py-3 text-sm font-bold">ابدأ مجاناً</button></div>
-<div class="bg-white border-2 border-[#22c55e] rounded-[1.5rem] p-6 text-center relative shadow-lg"><div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#22c55e] text-white text-[10px] px-3 py-1 rounded-full">الأكثر طلباً</div><div class="text-xs tracking-widest text-zinc-400">احترافي</div><div class="text-3xl font-black my-2">149 <span class="text-sm font-normal">ر.س/شهر</span></div><ul class="text-xs text-zinc-600 space-y-2 mt-4 text-right"><li>✓ 5000 محادثة / شهر</li><li>✓ 3 موظفين واتسابهم</li><li>✓ وايت ليبل كامل</li><li>✓ مراقبة آمنة لمحادثة</li></ul><button class="mt-6 w-full bg-[#22c55e] text-white rounded-full py-3 text-sm font-bold">اختر الباقة</button></div>
-<div class="bg-zinc-900 text-white rounded-[1.5rem] p-6 text-center"><div class="text-xs tracking-widest text-white/50">شركات</div><div class="text-3xl font-black my-2">399 <span class="text-sm font-normal text-white/50">ر.س/شهر</span></div><ul class="text-xs text-white/70 space-y-2 mt-4 text-right"><li>✓ محادثات غير محدودة</li><li>✓ 5 موظفين واتسابهم</li><li>✓ دومين خاص</li><li>✓ API مفتوح</li></ul><button class="mt-6 w-full bg-white text-zinc-900 rounded-full py-3 text-sm font-bold">اختر الباقة</button></div>
-</div>
-
-<div class="mt-6 bg-[#0a3d1c] text-white rounded-[1.5rem] p-6 grid md:grid-cols-2 gap-6">
-<div>
-<h3 class="font-black mb-4">طرق الاشتراك والدفع - تحويل بنكي مباشر على حسابك في الراجحي</h3>
-<div class="bg-white/10 rounded-xl p-4 space-y-2 text-sm font-mono">
-<div>الآيبان: SA95 8000 0498 6080 1001 6706 [نسخ]</div>
-<div>رقم الحساب: 498608010016706 [نسخ]</div>
-<div>كود سويفت: RJHISARI [نسخ]</div>
-<div>المستفيد: ردّاد بوت</div>
-</div>
-</div>
-<div class="bg-white text-zinc-900 rounded-2xl p-5">
-<h4 class="font-bold text-sm mb-3">رفع إيصال الحوالة - منطقة سحب وإفلات لرفع الصورة</h4>
-<input class="w-full border rounded-xl px-4 py-2 text-sm mb-2" placeholder="اسم شركتك">
-<input class="w-full border rounded-xl px-4 py-2 text-sm mb-2" placeholder="واتسابك">
-<input type="file" class="w-full text-xs mb-3">
-<button class="w-full bg-[#22c55e] text-white rounded-full py-3 text-sm font-bold">إرسال الإيصال وتفعيل فوري</button>
-</div>
-</div>
-
-</main>
-</div>
+<script>document.getElementById('userEmail').innerText=localStorage.getItem('wb_user')||'مستخدم';</script>
 </body>
 </html>
-
