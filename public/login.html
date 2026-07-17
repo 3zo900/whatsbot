@@ -4,38 +4,36 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>تسجيل الدخول - WhatsBot.sa</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800;900&display=swap" rel="stylesheet">
-<style>body{font-family:'Tajawal',sans-serif}</style>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@700;900&display=swap" rel="stylesheet">
+<style>body{font-family:Tajawal}</style>
 </head>
 <body class="bg-[#faf8ff] min-h-screen flex items-center justify-center p-6">
 <div class="w-full max-w-[420px]">
 <div class="text-center mb-8">
 <div class="w-16 h-16 bg-[#22c55e] rounded-2xl mx-auto flex items-center justify-center text-white font-black text-xl">WB</div>
 <h1 class="font-black text-2xl mt-4">مرحباً بعودتك</h1>
-<p class="text-[13px] text-zinc-500 mt-1">سجل دخولك للوحة تحكم WhatsBot</p>
 </div>
-<div class="bg-white border border-zinc-200 rounded-[2rem] p-8 shadow-sm">
-<div class="space-y-4">
-<input id="email" type="email" placeholder="البريد الإلكتروني" class="w-full border border-zinc-200 rounded-xl px-4 py-3.5 text-sm">
-<input id="pass" type="password" placeholder="كلمة المرور" class="w-full border border-zinc-200 rounded-xl px-4 py-3.5 text-sm">
-<button onclick="login()" class="w-full bg-zinc-900 text-white rounded-full py-3.5 font-black text-sm mt-2">تسجيل الدخول</button>
-<div class="relative my-4"><div class="border-t"></div><span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-3 text-[11px] text-zinc-400">أو</span></div>
-<button onclick="location.href='pay.html?plan=pro'" class="w-full bg-white border border-zinc-200 rounded-full py-3.5 font-bold text-sm">ليس لديك حساب؟ اشترك الآن</button>
-<div id="msg" class="text-[12px] text-center mt-3"></div>
-<div class="text-center mt-6 text-[11px] text-zinc-400"><p>للتجربة: admin@whatsbot.sa / 123456</p></div>
+<div class="bg-white border rounded-[2rem] p-8 shadow-sm">
+<input id="email" type="email" placeholder="البريد" class="w-full border rounded-xl px-4 py-3.5 text-sm mb-3">
+<input id="pass" type="password" placeholder="كلمة المرور" class="w-full border rounded-xl px-4 py-3.5 text-sm">
+<button onclick="login()" class="w-full bg-zinc-900 text-white rounded-full py-3.5 font-black text-sm mt-4">دخول</button>
+<div id="msg" class="text-xs text-center mt-3"></div>
+<div class="text-[10px] text-center text-zinc-400 mt-4">الأدمن: az.behlal@gmail.com / 0510015157qQ@</div>
 </div>
-</div>
-<div class="text-center mt-6"><a href="index.html" class="text-[12px] text-zinc-500">← العودة للرئيسية</a></div>
-<div class="text-center mt-4 text-[10px] text-zinc-400">© 2026 WhatsBot.sa</div>
 </div>
 <script>
 function login(){
- const e=document.getElementById('email').value;
- const p=document.getElementById('pass').value;
- const msg=document.getElementById('msg');
- if(!e||!p){msg.innerText='❌ ادخل البريد وكلمة المرور';return;}
- msg.innerText='⏳ جاري تسجيل الدخول...';
- setTimeout(()=>{localStorage.setItem('wb_user',e);location.href='dashboard.html';},800);
+ const ADMIN_EMAIL='az.behlal@gmail.com'; const ADMIN_PASS='0510015157qQ@';
+ const e=document.getElementById('email').value.trim(); const p=document.getElementById('pass').value;
+ if(!e||!p){document.getElementById('msg').innerText='❌ ادخل البيانات'; return;}
+ document.getElementById('msg').innerText='⏳...';
+ setTimeout(()=>{
+  if(e.toLowerCase()===ADMIN_EMAIL.toLowerCase() && p===ADMIN_PASS){
+   localStorage.setItem('wb_admin','1'); localStorage.setItem('wb_user',e); location.href='admin.html';
+  }else{
+   localStorage.setItem('wb_user',e); location.href='dashboard.html';
+  }
+ },600);
 }
 </script>
 </body>
