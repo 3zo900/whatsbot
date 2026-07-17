@@ -10,7 +10,12 @@
 <body class="bg-[#faf8ff] min-h-screen flex items-center justify-center p-6">
 <div class="w-full max-w-[520px]">
 <div class="bg-white border rounded-[2rem] p-8 shadow-sm">
-<div class="flex items-center gap-3 mb-6"><div class="w-10 h-10 bg-[#22c55e] rounded-xl flex items-center justify-center text-white font-black">WB</div><div><div class="font-black">رفع إيصال الحوالة</div><div id="planInfo" class="text-xs text-zinc-500"></div></div></div>
+<div class="flex items-center gap-3 mb-6">
+<div class="w-10 h-10 bg-white border border-zinc-100 rounded-xl flex items-center justify-center overflow-hidden shadow-sm">
+<svg viewBox="0 0 100 100" width="28" height="28"><g fill="none" stroke="#22c55e" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18 L24 48 L38 18 L50 48 L64 18"/><path d="M14 60 C14 48 28 40 54 44 C72 47 80 56 78 66 C77 72 70 76 58 74 L34 82 L40 74 C26 74 14 70 14 60 Z"/></g></svg>
+</div>
+<div><div class="font-black text-[14px]">رفع إيصال الحوالة</div><div id="planInfo" class="text-[11px] text-zinc-500"></div></div>
+</div>
 <div class="space-y-3">
 <input id="fullName" placeholder="الاسم الكامل *" class="w-full border rounded-xl px-4 py-3.5 text-sm">
 <input id="phone" placeholder="رقم الجوال *" class="w-full border rounded-xl px-4 py-3.5 text-sm">
@@ -30,7 +35,7 @@
 <script>
 const params = new URLSearchParams(location.search);
 const plan = params.get('plan')||'pro';
-const map = {individual:'أفراد - 99 ر.س', pro:'احترافي - 199 ر.س', enterprise:'شركات - 399 ر.س'};
+const map = {individual:'أفراد / متاجر - 99 ر.س', pro:'احترافي - 199 ر.س', enterprise:'شركات - 399 ر.س'};
 document.getElementById('planInfo').innerText = map[plan]||map.pro;
 function showFile(input){ if(input.files[0]) document.getElementById('fileName').innerText = '✅ ' + input.files[0].name; }
 async function submit(){
@@ -41,11 +46,6 @@ async function submit(){
  const fileInput = document.getElementById('file');
  const msg = document.getElementById('msg');
  if(!fn||!ph||!em||!fileInput.files[0]){ msg.innerText='❌ عبي الحقول وارفق الإيصال'; return; }
- try{
-  let reqs = JSON.parse(localStorage.getItem('wb_requests')||'[]');
-  reqs.push({id:Date.now().toString(), name:fn, companyName:fn, phone:ph, customerPhone:ph, email:em, customerEmail:em, company:comp, plan:plan, status:'pending', date:Date.now(), fileName:fileInput.files[0].name});
-  localStorage.setItem('wb_requests', JSON.stringify(reqs));
- }catch(e){}
  msg.innerText='⏳ جاري الإرسال...';
  const waMsg = `🔔 طلب اشتراك جديد - WhatsBot.sa\n\n👤 الاسم: ${fn}\n📱 الجوال: ${ph}\n📧 الإيميل: ${em}\n🏢 الشركة: ${comp||'لا يوجد'}\n📦 الباقة: ${map[plan]}\n📅 التاريخ: ${new Date().toLocaleString('ar-SA')}\n\n📎 الإيصال: ${fileInput.files[0].name}`;
  const waUrl = `https://wa.me/966510015157?text=${encodeURIComponent(waMsg)}`;
@@ -56,10 +56,7 @@ async function submit(){
   await fetch('/api/payment-proof', {method:'POST', body:fd});
  }catch(e){}
  msg.innerHTML='✅ تم! جاري فتح واتساب لإرسال التفاصيل للإدارة...';
- setTimeout(()=>{
-  window.open(waUrl, '_blank');
-  msg.innerHTML='✅ تم! سيتم مراجعة الايصال من قبل الإدارة وتفعيل حسابكم وربطه خلال دقائق<br><br><a href="login.html" class="font-bold text-green-600">الانتقال لتسجيل الدخول →</a>';
- }, 1000);
+ setTimeout(()=>{ window.open(waUrl, '_blank'); msg.innerHTML='✅ تم! سيتم مراجعة الايصال من قبل الإدارة وتفعيل حسابكم وربطه خلال دقائق<br><br><a href="login.html" class="font-bold text-green-600">الانتقال لتسجيل الدخول →</a>'; }, 1000);
 }
 </script>
 </body>
