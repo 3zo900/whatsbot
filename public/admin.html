@@ -4,85 +4,240 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>لوحة الأدمن - WhatsBot.sa</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@700;900&display=swap" rel="stylesheet">
-<style>body{font-family:Tajawal}</style>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800;900&display=swap" rel="stylesheet">
+<style>body{font-family:'Tajawal',sans-serif}</style>
 </head>
 <body class="bg-[#0a0a0f] text-white min-h-screen">
+
+<!-- LOGIN SCREEN -->
 <div id="loginScreen" class="min-h-screen flex items-center justify-center p-6">
 <div class="w-full max-w-[400px]">
-<div class="text-center mb-8"><div class="w-20 h-20 bg-[#22c55e] rounded-[1.5rem] mx-auto flex items-center justify-center text-black font-black text-2xl">WB</div><h1 class="font-black text-2xl mt-5">لوحة الأدمن</h1><p class="text-xs text-white/50 mt-1">عبدالعزيز البهلال فقط 🔒</p></div>
-<div class="bg-white/[0.06] border border-white/10 rounded-[2rem] p-8">
-<input id="adminEmail" value="az.behlal@gmail.com" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 text-sm mb-3 text-white">
-<input id="adminPass" value="0510015157qQ@" type="password" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3.5 text-sm mb-3 text-white">
-<button onclick="adminLogin()" class="w-full bg-[#22c55e] text-black rounded-full py-3.5 font-black text-sm">دخول</button>
-<div id="loginMsg" class="text-xs text-center mt-2"></div>
+<div class="text-center mb-8">
+<div class="w-20 h-20 bg-white border border-zinc-100 rounded-[1.5rem] mx-auto flex items-center justify-center shadow-sm"><svg viewBox="0 0 100 100" width="44" height="44"><g fill="none" stroke="#22c55e" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18 L24 48 L38 18 L50 48 L64 18"/><path d="M14 60 C14 48 28 40 54 44 C72 47 80 56 78 66 C77 72 70 76 58 74 L34 82 L40 74 C26 74 14 70 14 60 Z"/></g></svg></div>
+<h1 class="font-black text-2xl mt-5">لوحة تحكم الأدمن</h1>
+<p class="text-[12px] text-white/50 mt-1">خاصة بالإدارة فقط 🔒</p>
+</div>
+<div class="bg-white/[0.06] backdrop-blur border border-white/10 rounded-[2rem] p-8">
+<div class="space-y-4">
+<input id="adminEmail" type="email" value="az.behlal@gmail.com" class="w-full bg-white/[0.06] border border-white/10 rounded-xl px-4 py-3.5 text-sm text-white placeholder:text-white/30 focus:border-[#22c55e] outline-none" placeholder="البريد">
+<input id="adminPass" type="password" value="0510015157qQ@" class="w-full bg-white/[0.06] border border-white/10 rounded-xl px-4 py-3.5 text-sm text-white placeholder:text-white/30 focus:border-[#22c55e] outline-none" placeholder="كلمة المرور">
+<button onclick="adminLogin()" class="w-full bg-[#22c55e] text-black rounded-full py-3.5 font-black text-sm">دخول لوحة الأدمن →</button>
+<div id="loginMsg" class="text-xs text-center"></div>
 </div>
 </div>
 </div>
+</div>
+
+<!-- MAIN DASHBOARD -->
 <div id="dashScreen" class="hidden">
-<div class="p-6 max-w-6xl mx-auto">
-<div class="flex justify-between items-center mb-6"><h1 class="text-xl font-black">طلبات الاشتراك - WhatsBot</h1><div class="flex gap-2"><span class="text-xs bg-[#22c55e] text-black px-3 py-1 rounded-full font-bold">Admin</span><button onclick="logout()" class="text-xs text-white/40">خروج</button></div></div>
-<div class="grid grid-cols-3 gap-3 mb-6">
-<div class="bg-white/5 border border-white/10 rounded-2xl p-4"><div class="text-[11px] text-white/40">طلبات معلقة</div><div id="statPending" class="text-xl font-black">0</div></div>
-<div class="bg-white/5 border border-white/10 rounded-2xl p-4"><div class="text-[11px] text-white/40">مفعلين</div><div id="statApproved" class="text-xl font-black">0</div></div>
-<div class="bg-white/5 border border-white/10 rounded-2xl p-4"><div class="text-[11px] text-white/40">الإيرادات</div><div id="statRevenue" class="text-xl font-black">0 ر.س</div></div>
+<!-- Sidebar -->
+<div class="flex min-h-screen">
+<div class="w-[260px] bg-white/[0.03] border-l border-white/10 p-6 hidden md:block">
+<div class="flex items-center gap-3 mb-10"><div class="w-10 h-10 bg-white border border-zinc-100 rounded-xl flex items-center justify-center"><svg viewBox="0 0 100 100" width="24" height="24"><g fill="none" stroke="#22c55e" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18 L24 48 L38 18 L50 48 L64 18"/><path d="M14 60 C14 48 28 40 54 44 C72 47 80 56 78 66 C77 72 70 76 58 74 L34 82 L40 74 C26 74 14 70 14 60 Z"/></g></svg></div><div><div class="font-black text-sm">WhatsBot Admin</div><div class="text-[10px] text-white/40">الإدارة</div></div></div>
+<div class="space-y-2">
+<button onclick="showTab('requests')" class="tabBtn active w-full text-right bg-white text-black rounded-xl px-4 py-3 text-sm font-bold">📥 طلبات الاشتراك</button>
+<button onclick="showTab('users')" class="tabBtn w-full text-right text-white/60 hover:bg-white/5 rounded-xl px-4 py-3 text-sm">👥 العملاء</button>
+<button onclick="showTab('payments')" class="tabBtn w-full text-right text-white/60 hover:bg-white/5 rounded-xl px-4 py-3 text-sm">💰 المدفوعات</button>
+<button onclick="showTab('settings')" class="tabBtn w-full text-right text-white/60 hover:bg-white/5 rounded-xl px-4 py-3 text-sm">⚙️ الإعدادات</button>
 </div>
-<div class="flex gap-2 mb-4">
-<button onclick="loadData()" class="bg-white text-black px-4 py-2 rounded-full text-xs font-bold">🔄 تحديث</button>
+<div class="mt-auto pt-10"><button onclick="logout()" class="text-[12px] text-white/40">تسجيل خروج</button></div>
 </div>
+
+<!-- Content -->
+<div class="flex-1 p-6 md:p-8">
+<div class="flex justify-between items-center mb-8">
+<h1 id="tabTitle" class="text-2xl font-black">طلبات الاشتراك الجديدة</h1>
+<div class="flex items-center gap-3"><span class="text-xs bg-[#22c55e] text-black px-3 py-1 rounded-full font-bold">Admin</span><span class="text-xs text-white/50">az.behlal@gmail.com</span></div>
+</div>
+
+<!-- STATS -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+<div class="bg-white/[0.05] border border-white/10 rounded-2xl p-5"><div class="text-[11px] text-white/40">طلبات معلقة</div><div id="statPending" class="text-2xl font-black mt-1">0</div></div>
+<div class="bg-white/[0.05] border border-white/10 rounded-2xl p-5"><div class="text-[11px] text-white/40">عملاء مفعلين</div><div id="statApproved" class="text-2xl font-black mt-1">0</div></div>
+<div class="bg-white/[0.05] border border-white/10 rounded-2xl p-5"><div class="text-[11px] text-white/40">إجمالي الإيرادات</div><div id="statRevenue" class="text-2xl font-black mt-1">0 ر.س</div></div>
+<div class="bg-[#22c55e]/10 border border-[#22c55e]/20 rounded-2xl p-5"><div class="text-[11px] text-[#22c55e]">الوضع</div><div class="text-sm font-black mt-1 text-[#22c55e]">نشط ✅</div></div>
+</div>
+
+<!-- TAB: REQUESTS -->
+<div id="tab-requests" class="tabContent">
 <div class="bg-white/[0.04] border border-white/10 rounded-[1.5rem] overflow-hidden">
-<div class="p-4 border-b border-white/10 font-bold text-sm">الطلبات (من السيرفر)</div>
+<div class="p-5 border-b border-white/10 flex justify-between items-center"><span class="font-bold text-sm">الطلبات بانتظار المراجعة</span><button onclick="clearAll()" class="text-[11px] text-white/30">مسح الكل</button></div>
 <div id="requestsList" class="divide-y divide-white/5"></div>
-<div id="emptyRequests" class="p-10 text-center text-white/30 text-sm">لا يوجد طلبات حالياً</div>
-</div>
-<div class="mt-6 bg-white/[0.04] border border-white/10 rounded-[1.5rem] p-4">
-<div class="font-bold text-sm mb-3">العملاء المفعلين</div>
-<div id="usersList"></div>
+<div id="emptyRequests" class="p-12 text-center text-white/30 text-sm hidden">لا يوجد طلبات حالياً - عندما يرفع عميل إيصال سيظهر هنا مباشرة</div>
 </div>
 </div>
+
+<!-- TAB: USERS -->
+<div id="tab-users" class="tabContent hidden">
+<div class="bg-white/[0.04] border border-white/10 rounded-[1.5rem] p-5">
+<div class="flex justify-between items-center mb-4"><span class="font-bold text-sm">العملاء المفعلين</span><button onclick="addUser()" class="bg-white text-black text-xs px-3 py-1.5 rounded-full font-bold">+ إضافة عميل</button></div>
+<div id="usersList" class="space-y-2"></div>
 </div>
+</div>
+
+<!-- TAB: PAYMENTS -->
+<div id="tab-payments" class="tabContent hidden">
+<div class="bg-white/[0.04] border border-white/10 rounded-[1.5rem] p-6">
+<h3 class="font-bold mb-4">سجل المدفوعات</h3>
+<div id="paymentsList" class="space-y-2 text-sm"></div>
+</div>
+</div>
+
+<!-- TAB: SETTINGS -->
+<div id="tab-settings" class="tabContent hidden">
+<div class="bg-white/[0.04] border border-white/10 rounded-[1.5rem] p-6 max-w-[500px]">
+<h3 class="font-bold mb-6">إعدادات الحساب البنكي</h3>
+<div class="space-y-3 text-sm">
+<label class="text-xs text-white/50">الآيبان</label><input id="setIban" value="SA95 8000 0498 6080 1001 6706" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm">
+<label class="text-xs text-white/50">رقم الحساب</label><input id="setAcc" value="498608010016706" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm">
+<label class="text-xs text-white/50">اسم المستفيد</label><input id="setName" value="الإدارة" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm">
+<label class="text-xs text-white/50">واتساب التأكيد</label><input id="setWa" value="966510015157" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm">
+<button onclick="saveSettings()" class="mt-4 bg-[#22c55e] text-black rounded-full px-6 py-2.5 font-bold text-sm">حفظ الإعدادات</button>
+<div id="setMsg" class="text-xs text-[#22c55e] mt-2"></div>
+</div>
+<div class="mt-10 border-t border-white/10 pt-6">
+<h4 class="font-bold text-sm mb-3">معلومات الأدمن</h4>
+<div class="text-xs text-white/50 space-y-1"><div>الإيميل: az.behlal@gmail.com</div><div>كلمة المرور: 0510015157qQ@</div></div>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+
 <script>
-const ADMIN_EMAIL='az.behlal@gmail.com'; const ADMIN_PASS='0510015157qQ@';
-function adminLogin(){const e=document.getElementById('adminEmail').value.trim(); const p=document.getElementById('adminPass').value; if(e.toLowerCase()===ADMIN_EMAIL && p===ADMIN_PASS){localStorage.setItem('wb_admin','1'); showDashboard();} else {document.getElementById('loginMsg').innerText='❌ خطأ';}}
-function showDashboard(){document.getElementById('loginScreen').classList.add('hidden'); document.getElementById('dashScreen').classList.remove('hidden'); loadData();}
-function logout(){localStorage.removeItem('wb_admin'); location.reload();}
-if(localStorage.getItem('wb_admin')==='1') showDashboard();
+const ADMIN_EMAIL = 'az.behlal@gmail.com';
+const ADMIN_PASS = '0510015157qQ@';
+
+function adminLogin(){
+ const e = document.getElementById('adminEmail').value.trim();
+ const p = document.getElementById('adminPass').value;
+ const msg = document.getElementById('loginMsg');
+ if(e===ADMIN_EMAIL && p===ADMIN_PASS){
+   localStorage.setItem('wb_admin','1');
+   showDashboard();
+ }else{
+   msg.innerText='❌ البريد أو كلمة المرور خطأ';
+   msg.className='text-xs text-center text-red-400 mt-2';
+ }
+}
+function showDashboard(){
+ document.getElementById('loginScreen').classList.add('hidden');
+ document.getElementById('dashScreen').classList.remove('hidden');
+ loadData();
+}
+function logout(){ localStorage.removeItem('wb_admin'); location.reload(); }
+if(localStorage.getItem('wb_admin')==='1'){ showDashboard(); }
+
+function showTab(t){
+ document.querySelectorAll('.tabContent').forEach(el=>el.classList.add('hidden'));
+ document.getElementById('tab-'+t).classList.remove('hidden');
+ document.querySelectorAll('.tabBtn').forEach(b=>{b.classList.remove('active','bg-white','text-black'); b.classList.add('text-white/60');});
+ event.target.classList.add('active','bg-white','text-black'); event.target.classList.remove('text-white/60');
+ const titles = {requests:'طلبات الاشتراك الجديدة', users:'إدارة العملاء', payments:'سجل المدفوعات', settings:'الإعدادات'};
+ document.getElementById('tabTitle').innerText = titles[t];
+}
+
+let requests = JSON.parse(localStorage.getItem('wb_requests')||'[]');
+let serverProofs=[];
+let users = JSON.parse(localStorage.getItem('wb_users')||'[]');
+
 async function loadData(){
- let serverRequests=[];
+ // load from server first
  try{
-  const r = await fetch('/api/payment-proofs');
-  const j = await r.json();
-  if(j.success){ serverRequests = j.proofs || j.users || []; }
- }catch(e){}
- const pending = serverRequests.filter(r=>!r.status || r.status==='pending');
- const approved = serverRequests.filter(r=>r.status==='approved');
+  const res = await fetch('/api/payment-proofs');
+  const serverData = await res.json();
+  if(Array.isArray(serverData) && serverData.length>0){
+   // normalize server data to admin format
+   const normalized = serverData.map(p=>({
+    id: p.id, name: p.customerName||p.companyName||p.name, companyName: p.companyName||p.customerName,
+    phone: p.customerPhone||p.phone, customerPhone: p.customerPhone||p.phone,
+    email: p.customerEmail||p.email, customerEmail: p.customerEmail||p.email,
+    company: p.company||'', plan: p.plan||'pro', status: p.status||'pending',
+    date: new Date(p.time||Date.now()).getTime(), fileName: p.fileName||'', filePath: p.filePath||''
+   }));
+   // merge with local
+   let local = JSON.parse(localStorage.getItem('wb_requests')||'[]');
+   let merged = [...normalized];
+   local.forEach(l=>{
+     if(!merged.find(m=> (m.phone===l.phone||m.phone===l.customerPhone) && m.date===l.date)){
+       merged.push(l);
+     }
+   });
+   requests = merged;
+  }
+ }catch(e){ console.log('fetch proofs failed',e); }
+
+ const pending = requests.filter(r=>r.status==='pending');
+ const approved = users.length + requests.filter(r=>r.status==='approved').length;
  document.getElementById('statPending').innerText = pending.length;
- document.getElementById('statApproved').innerText = approved.length;
- document.getElementById('statRevenue').innerText = approved.reduce((s,r)=>s+(r.amount||199),0)+' ر.س';
+ document.getElementById('statApproved').innerText = approved;
+ const rev = requests.filter(r=>r.status==='approved').reduce((s,r)=>s+(r.amount||0),0) + users.length*199;
+ document.getElementById('statRevenue').innerText = rev + ' ر.س';
+
  const list = document.getElementById('requestsList');
  const empty = document.getElementById('emptyRequests');
  if(pending.length===0){ list.innerHTML=''; empty.classList.remove('hidden'); }
  else{
   empty.classList.add('hidden');
-  list.innerHTML = pending.map(r=>`
-   <div class="p-4 flex flex-col md:flex-row justify-between gap-3">
-    <div>
-     <div class="font-bold text-sm">${r.companyName||r.fullName} <span class="text-[10px] bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded-full ml-2">${r.plan} - ${r.plan==='individual'?'99':r.plan==='enterprise'?'399':'199'} ر.س</span></div>
-     <div class="text-[11px] text-white/50 mt-1">${r.customerEmail||r.email} • ${r.customerPhone||r.phone}</div>
-     <div class="text-[10px] text-white/30 mt-1">${new Date(r.createdAt||Date.now()).toLocaleString('ar-SA')}</div>
+  list.innerHTML = pending.map((r,i)=>`
+   <div class="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+    <div class="flex-1">
+     <div class="flex items-center gap-2"><span class="font-bold text-sm">${r.name||r.companyName||'عميل'}</span><span class="text-[10px] bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded-full">${r.plan||'pro'} - ${r.plan==='individual'?'99':r.plan==='enterprise'?'399':'199'} ر.س</span></div>
+     <div class="text-[11px] text-white/50 mt-1">${r.email||r.customerEmail||''} • ${r.phone||r.customerPhone||''} • ${new Date(r.date||Date.now()).toLocaleString('ar-SA')}</div>
+     ${r.company?'<div class="text-[11px] text-white/30">الشركة: '+r.company+'</div>':''}
     </div>
     <div class="flex gap-2">
-     <button onclick="approve('${r.id}')" class="bg-[#22c55e] text-black px-4 py-2 rounded-full text-xs font-black">✅ قبول</button>
-     <button onclick="reject('${r.id}')" class="bg-white/10 px-3 py-2 rounded-full text-xs">❌ رفض</button>
-     <a href="https://wa.me/${(r.customerPhone||r.phone||'').replace(/[^0-9]/g,'')}" target="_blank" class="bg-white/10 px-3 py-2 rounded-full text-xs">واتساب</a>
+     <button onclick="approve(${i},'${r.id||''}')" class="bg-[#22c55e] text-black px-4 py-2 rounded-full text-xs font-black">✅ قبول وتفعيل</button>
+     <button onclick="reject(${i})" class="bg-white/10 text-white px-4 py-2 rounded-full text-xs">❌ رفض</button>
+     <a href="https://wa.me/${(r.phone||'').replace(/[^0-9]/g,'')}" target="_blank" class="bg-white/10 px-3 py-2 rounded-full text-xs">واتساب</a>
     </div>
    </div>
   `).join('');
  }
- document.getElementById('usersList').innerHTML = approved.map(u=>`<div class="flex justify-between bg-white/5 p-3 rounded-xl mb-2 text-sm"><span>${u.companyName||u.fullName} - ${u.customerEmail||u.email}</span><span class="text-[#22c55e] text-xs">مفعل ✅</span></div>`).join('') || 'لا يوجد';
+
+ // users
+ document.getElementById('usersList').innerHTML = (users.length?users:requests.filter(r=>r.status==='approved')).map(u=>`
+  <div class="bg-white/[0.03] border border-white/5 rounded-xl p-4 flex justify-between items-center">
+   <div><div class="font-bold text-sm">${u.name||u.companyName}</div><div class="text-[11px] text-white/40">${u.email||u.customerEmail}</div></div>
+   <div class="flex items-center gap-2"><span class="text-[10px] bg-[#22c55e]/20 text-[#22c55e] px-2 py-1 rounded-full">مفعل ✅</span><button onclick="deleteUser('${u.email||u.customerEmail}')" class="text-[11px] text-white/20">حذف</button></div>
+  </div>
+ `).join('') || '<div class="text-center text-white/30 text-sm py-8">لا يوجد عملاء مفعلين بعد</div>';
+
+ // payments
+ document.getElementById('paymentsList').innerHTML = requests.map(r=>`
+  <div class="flex justify-between bg-white/[0.02] p-3 rounded-xl"><span>${r.name||r.companyName} - ${r.plan}</span><span class="${r.status==='approved'?'text-[#22c55e]':r.status==='rejected'?'text-red-400':'text-amber-400'}">${r.status==='approved'?'مقبول':r.status==='rejected'?'مرفوض':'معلق'}</span></div>
+ `).join('') || 'لا يوجد مدفوعات';
 }
-async function approve(id){ await fetch('/api/admin/approve',{method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id})}); alert('✅ تم التفعيل'); loadData(); }
-async function reject(id){ if(!confirm('رفض؟')) return; await fetch('/api/admin/reject',{method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id})}); loadData(); }
+
+async function approve(idx){ try{ const r = requests.filter(x=>x.status==='pending')[idx]; if(r && r.id){ await fetch('/api/admin/approve',{method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id:r.id})}); } }catch(e){} 
+
+ let r = requests.filter(x=>x.status==='pending')[idx];
+ if(!r) return;
+ r.status='approved';
+ r.amount = r.plan==='individual'?99:r.plan==='enterprise'?399:199;
+ users.push(r);
+ localStorage.setItem('wb_requests', JSON.stringify(requests));
+ localStorage.setItem('wb_users', JSON.stringify(users));
+ alert('✅ تم تفعيل '+ (r.name||r.companyName) + ' بنجاح!\nسيتمكن من الدخول الآن');
+ loadData();
+ // send WhatsApp activation message
+ const wa = `https://wa.me/${(r.phone||'').replace(/[^0-9]/g,'')}?text=${encodeURIComponent('مرحبا '+(r.name||'')+' تم تفعيل حسابك في WhatsBot.sa بنجاح ✅\nيمكنك الدخول الآن: https://whatsbot-4vkk.onrender.com/login.html')}`;
+ window.open(wa,'_blank');
+}
+function reject(idx){
+ if(!confirm('متأكد تبي ترفض هذا الطلب؟')) return;
+ let pending = requests.filter(x=>x.status==='pending');
+ let r = pending[idx];
+ r.status='rejected';
+ localStorage.setItem('wb_requests', JSON.stringify(requests));
+ loadData();
+}
+function clearAll(){ if(confirm('مسح كل الطلبات؟')){ localStorage.removeItem('wb_requests'); requests=[]; loadData(); } }
+function deleteUser(email){ if(!confirm('حذف العميل؟')) return; users = users.filter(u=>(u.email||u.customerEmail)!==email); requests = requests.filter(r=>(r.email||r.customerEmail)!==email); localStorage.setItem('wb_users', JSON.stringify(users)); localStorage.setItem('wb_requests', JSON.stringify(requests)); loadData(); }
+function addUser(){ const name=prompt('اسم العميل:'); if(!name) return; const email=prompt('ايميل العميل:'); if(!email) return; users.push({name,email,status:'approved',plan:'pro',date:Date.now()}); localStorage.setItem('wb_users', JSON.stringify(users)); loadData(); }
+function saveSettings(){ localStorage.setItem('wb_bank', JSON.stringify({iban:document.getElementById('setIban').value, acc:document.getElementById('setAcc').value, name:document.getElementById('setName').value, wa:document.getElementById('setWa').value})); document.getElementById('setMsg').innerText='✅ تم الحفظ'; }
 </script>
 </body>
 </html>
