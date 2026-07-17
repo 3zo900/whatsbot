@@ -1,1 +1,75 @@
-
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>لوحة الأدمن - WhatsBot.sa</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@700;900&display=swap" rel="stylesheet">
+<style>body{font-family:Tajawal}</style>
+</head>
+<body class="bg-[#0a0a0f] text-white min-h-screen">
+<div id="loginScreen" class="min-h-screen flex items-center justify-center p-6">
+<div class="w-full max-w-[400px]">
+<div class="text-center mb-8">
+<div class="w-20 h-20 bg-[#22c55e] rounded-[1.5rem] mx-auto flex items-center justify-center text-white font-black text-2xl">WB</div>
+<h1 class="font-black text-2xl mt-5">لوحة تحكم الأدمن</h1>
+<p class="text-[12px] text-white/50 mt-1">خاصة بعبدالعزيز البهلال فقط 🔒</p>
+</div>
+<div class="bg-white/[0.06] border border-white/10 rounded-[2rem] p-8">
+<div class="space-y-4">
+<input id="adminEmail" type="email" value="az.behlal@gmail.com" class="w-full bg-white/[0.06] border border-white/10 rounded-xl px-4 py-3.5 text-sm text-white" placeholder="البريد">
+<input id="adminPass" type="password" value="0510015157qQ@" class="w-full bg-white/[0.06] border border-white/10 rounded-xl px-4 py-3.5 text-sm text-white" placeholder="كلمة المرور">
+<button onclick="adminLogin()" class="w-full bg-[#22c55e] text-black rounded-full py-3.5 font-black text-sm">دخول لوحة الأدمن →</button>
+<div id="loginMsg" class="text-xs text-center"></div>
+</div>
+</div>
+</div>
+</div>
+<div id="dashScreen" class="hidden">
+<div class="flex min-h-screen">
+<div class="w-[260px] bg-white/[0.03] border-l border-white/10 p-6 hidden md:block">
+<div class="flex items-center gap-3 mb-10"><div class="w-10 h-10 bg-[#22c55e] rounded-xl flex items-center justify-center font-black text-black">WB</div><div><div class="font-black text-sm">WhatsBot Admin</div><div class="text-[10px] text-white/40">عبدالعزيز البهلال</div></div></div>
+<div class="space-y-2">
+<button onclick="showTab('requests')" class="w-full text-right bg-white text-black rounded-xl px-4 py-3 text-sm font-bold">📥 طلبات الاشتراك</button>
+<button onclick="showTab('users')" class="w-full text-right text-white/60 rounded-xl px-4 py-3 text-sm">👥 العملاء</button>
+<button onclick="showTab('settings')" class="w-full text-right text-white/60 rounded-xl px-4 py-3 text-sm">⚙️ الإعدادات</button>
+</div>
+<div class="mt-10"><button onclick="logout()" class="text-[12px] text-white/40">خروج</button></div>
+</div>
+<div class="flex-1 p-6">
+<h1 id="tabTitle" class="text-2xl font-black mb-8">طلبات الاشتراك الجديدة</h1>
+<div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-8">
+<div class="bg-white/[0.05] border border-white/10 rounded-2xl p-5"><div class="text-[11px] text-white/40">طلبات معلقة</div><div id="statPending" class="text-2xl font-black mt-1">0</div></div>
+<div class="bg-white/[0.05] border border-white/10 rounded-2xl p-5"><div class="text-[11px] text-white/40">عملاء مفعلين</div><div id="statApproved" class="text-2xl font-black mt-1">0</div></div>
+<div class="bg-white/[0.05] border border-white/10 rounded-2xl p-5"><div class="text-[11px] text-white/40">إجمالي الإيرادات</div><div id="statRevenue" class="text-2xl font-black mt-1">0 ر.س</div></div>
+</div>
+<div id="tab-requests"><div class="bg-white/[0.04] border border-white/10 rounded-[1.5rem] overflow-hidden"><div class="p-5 border-b border-white/10 flex justify-between"><span class="font-bold text-sm">الطلبات بانتظار المراجعة</span><button onclick="clearAll()" class="text-[11px] text-white/30">مسح الكل</button></div><div id="requestsList" class="divide-y divide-white/5"></div><div id="emptyRequests" class="p-12 text-center text-white/30 text-sm">لا يوجد طلبات حالياً</div></div></div>
+<div id="tab-users" class="hidden"><div class="bg-white/[0.04] border border-white/10 rounded-[1.5rem] p-5"><div class="flex justify-between mb-4"><span class="font-bold text-sm">العملاء</span><button onclick="addUser()" class="bg-white text-black text-xs px-3 py-1.5 rounded-full font-bold">+ إضافة</button></div><div id="usersList"></div></div></div>
+<div id="tab-settings" class="hidden"><div class="bg-white/[0.04] border border-white/10 rounded-[1.5rem] p-6 max-w-[500px]"><h3 class="font-bold mb-6">إعدادات البنك</h3><input id="setIban" value="SA95 8000 0498 6080 1001 6706" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm mb-3"><input id="setName" value="عبدالعزيز البهلال" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm mb-3"><button onclick="saveSettings()" class="bg-[#22c55e] text-black rounded-full px-6 py-2.5 font-bold text-sm">حفظ</button><div id="setMsg" class="text-xs text-[#22c55e] mt-2"></div><div class="mt-8 text-xs text-white/50">الإيميل: az.behlal@gmail.com<br>الباسوورد: 0510015157qQ@</div></div></div>
+</div>
+</div>
+</div>
+<script>
+const ADMIN_EMAIL='az.behlal@gmail.com'; const ADMIN_PASS='0510015157qQ@';
+function adminLogin(){const e=document.getElementById('adminEmail').value.trim(); const p=document.getElementById('adminPass').value; const msg=document.getElementById('loginMsg'); if(e===ADMIN_EMAIL && p===ADMIN_PASS){localStorage.setItem('wb_admin','1'); showDashboard();} else {msg.innerText='❌ خطأ'; msg.className='text-xs text-center text-red-400';}}
+function showDashboard(){document.getElementById('loginScreen').classList.add('hidden'); document.getElementById('dashScreen').classList.remove('hidden'); loadData();}
+function logout(){localStorage.removeItem('wb_admin'); location.reload();}
+if(localStorage.getItem('wb_admin')==='1'){showDashboard();}
+function showTab(t){document.getElementById('tab-requests').classList.add('hidden'); document.getElementById('tab-users').classList.add('hidden'); document.getElementById('tab-settings').classList.add('hidden'); document.getElementById('tab-'+t).classList.remove('hidden');}
+let requests=JSON.parse(localStorage.getItem('wb_requests')||'[]'); let users=JSON.parse(localStorage.getItem('wb_users')||'[]');
+function loadData(){
+ const pending=requests.filter(r=>r.status==='pending'); const approved=users.length+requests.filter(r=>r.status==='approved').length;
+ document.getElementById('statPending').innerText=pending.length; document.getElementById('statApproved').innerText=approved;
+ document.getElementById('statRevenue').innerText=(requests.filter(r=>r.status==='approved').reduce((s,r)=>s+(r.amount||0),0)+users.length*199)+' ر.س';
+ const list=document.getElementById('requestsList'); const empty=document.getElementById('emptyRequests');
+ if(pending.length===0){list.innerHTML=''; empty.classList.remove('hidden');} else {empty.classList.add('hidden'); list.innerHTML=pending.map((r,i)=>`<div class="p-5 flex flex-col md:flex-row justify-between gap-4"><div><div class="font-bold text-sm">${r.name} <span class="text-[10px] bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded-full">${r.plan} - ${r.plan==='individual'?'99':r.plan==='enterprise'?'399':'199'} ر.س</span></div><div class="text-[11px] text-white/50 mt-1">${r.email} • ${r.phone}</div></div><div class="flex gap-2"><button onclick="approve(${i})" class="bg-[#22c55e] text-black px-4 py-2 rounded-full text-xs font-black">✅ قبول</button><button onclick="reject(${i})" class="bg-white/10 px-4 py-2 rounded-full text-xs">❌ رفض</button></div></div>`).join('');}
+ document.getElementById('usersList').innerHTML=users.map(u=>`<div class="bg-white/[0.03] border border-white/5 rounded-xl p-4 flex justify-between"><div><div class="font-bold text-sm">${u.name}</div><div class="text-[11px] text-white/40">${u.email}</div></div><span class="text-[10px] bg-[#22c55e]/20 text-[#22c55e] px-2 py-1 rounded-full">مفعل ✅</span></div>`).join('')||'لا يوجد عملاء';
+}
+function approve(idx){let r=requests.filter(x=>x.status==='pending')[idx]; if(!r) return; r.status='approved'; r.amount=r.plan==='individual'?99:r.plan==='enterprise'?399:199; users.push(r); localStorage.setItem('wb_requests',JSON.stringify(requests)); localStorage.setItem('wb_users',JSON.stringify(users)); alert('✅ تم تفعيل '+r.name); loadData(); window.open(`https://wa.me/${(r.phone||'').replace(/[^0-9]/g,'')}?text=${encodeURIComponent('مرحبا '+r.name+' تم تفعيل حسابك في WhatsBot.sa ✅')}`,'_blank');}
+function reject(idx){if(!confirm('رفض؟')) return; let p=requests.filter(x=>x.status==='pending'); p[idx].status='rejected'; localStorage.setItem('wb_requests',JSON.stringify(requests)); loadData();}
+function clearAll(){if(confirm('مسح الكل؟')){localStorage.removeItem('wb_requests'); requests=[]; loadData();}}
+function addUser(){const name=prompt('اسم العميل:'); if(!name) return; const email=prompt('ايميل:'); users.push({name,email,status:'approved',plan:'pro',date:Date.now()}); localStorage.setItem('wb_users',JSON.stringify(users)); loadData();}
+function saveSettings(){localStorage.setItem('wb_bank',JSON.stringify({iban:document.getElementById('setIban').value})); document.getElementById('setMsg').innerText='✅ تم الحفظ';}
+</script>
+</body>
+</html>
