@@ -26,7 +26,7 @@
 <label for="file" class="cursor-pointer"><div class="text-3xl mb-2">📤</div><div class="font-bold text-sm">اسحب وأفلت الإيصال هنا أو اضغط للاختيار</div><div class="text-[11px] text-zinc-400 mt-1">PNG, JPG, PDF حتى 10MB</div></label>
 <div id="fileName" class="text-xs text-green-600 font-bold mt-3"></div>
 </div>
-<button onclick="submit()" id="btn" class="w-full bg-zinc-900 text-white rounded-full py-4 font-black text-sm mt-2">إرسال الإيصال وتفعيل حسابي 🚀</button>
+<button onclick="submitProof()" id="btn" class="w-full bg-zinc-900 text-white rounded-full py-4 font-black text-sm mt-2">إرسال الإيصال وتفعيل حسابي 🚀</button>
 <div id="msg" class="text-xs text-center mt-3 leading-6"></div>
 <div class="text-center text-[11px] text-zinc-400 mt-4">سيتم مراجعة الايصال من قبل الإدارة وتفعيل حسابكم وربطه خلال دقائق</div>
 </div>
@@ -38,31 +38,34 @@ const plan = params.get('plan')||'pro';
 const map = {individual:'أفراد / متاجر - 99 ر.س', pro:'احترافي - 199 ر.س', enterprise:'شركات - 399 ر.س'};
 document.getElementById('planInfo').innerText = map[plan]||map.pro;
 function showFile(input){ if(input.files[0]) document.getElementById('fileName').innerText = '✅ ' + input.files[0].name; }
-async function submit(){
- const btn = document.getElementById('btn');
- const fn = document.getElementById('fullName').value.trim();
- const ph = document.getElementById('phone').value.trim();
- const em = document.getElementById('email').value.trim();
- const comp = document.getElementById('company').value.trim();
- const fileInput = document.getElementById('file');
- const msg = document.getElementById('msg');
+async function submitProof(){
+ const btn=document.getElementById('btn'), msg=document.getElementById('msg');
+ const fn=document.getElementById('fullName').value.trim();
+ const ph=document.getElementById('phone').value.trim();
+ const em=document.getElementById('email').value.trim();
+ const comp=document.getElementById('company').value.trim();
+ const fileInput=document.getElementById('file');
  if(!fn||!ph||!em||!fileInput.files[0]){ msg.innerHTML='❌ عبي كل الحقول وارفق الإيصال'; return; }
  btn.disabled=true; btn.innerText='⏳ جاري الإرسال...';
- msg.innerText='⏳ جاري رفع الإيصال...';
- const fd = new FormData();
+ msg.innerText='⏳ جاري حفظ طلبك...';
+ const fd=new FormData();
  fd.append('companyName', fn);
  fd.append('customerPhone', ph);
  fd.append('customerEmail', em);
  fd.append('company', comp);
  fd.append('plan', plan);
  fd.append('receipt', fileInput.files[0]);
- let serverOk=false;
  try{
-  const r = await fetch('/api/payment-proof', {method:'POST', body:fd});
-  const j = await r.json();
-  if(j.success){ serverOk=true; }
- }catch(e){}
- const waMsg = `🔔 طلب اشتراك جديد - WhatsBot.sa
+  const r=await fetch('/api/payment-proof',{method:'POST', body:fd});
+  const j=await r.json();
+  console.log(j);
+  if(!j.success) throw new Error('fail');
+ }catch(e){
+  console.error(e);
+  // even if API fails, continue to whatsapp as backup
+ }
+ // OPEN WHATSAPP AUTOMATICALLY - THIS IS THE FIX
+ const waMsg=`🔔 طلب اشتراك جديد - WhatsBot.sa
 
 👤 الاسم: ${fn}
 📱 الجوال: ${ph}
@@ -71,14 +74,12 @@ async function submit(){
 📦 الباقة: ${map[plan]}
 💰 المبلغ: ${plan==='individual'?'99':plan==='enterprise'?'399':'199'} ر.س
 📅 التاريخ: ${new Date().toLocaleString('ar-SA')}
+📎 الملف: ${fileInput.files[0].name}
 
-📎 الإيصال: ${fileInput.files[0].name}`;
- const waUrl = `https://wa.me/966510015157?text=${encodeURIComponent(waMsg)}`;
- msg.innerHTML='✅ تم حفظ طلبك! جاري فتح واتساب...<br>لو ما فتح اضغط <a href="'+waUrl+'" target="_blank" class="text-green-600 font-bold underline">هنا</a>';
- setTimeout(()=>{
-  window.open(waUrl, '_blank');
-  setTimeout(()=>{ location.href='login.html'; }, 1200);
- }, 800);
+تم رفع الإيصال في الموقع، الرجاء المراجعة في لوحة الأدمن.`;
+ const waUrl=`https://wa.me/966510015157?text=${encodeURIComponent(waMsg)}`;
+ msg.innerHTML='✅ تم حفظ طلبك! جاري فتح واتساب الإدارة...<br>لو ما فتح اضغط <a href="'+waUrl+'" target="_blank" style="color:#22c55e;font-weight:bold;text-decoration:underline">هنا لفتح واتساب</a>';
+ setTimeout(()=>{ window.open(waUrl,'_blank'); setTimeout(()=>{ location.href='login.html'; }, 1500); }, 800);
 }
 </script>
 </body>
