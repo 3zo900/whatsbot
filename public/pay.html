@@ -10,42 +10,39 @@
 <body class="bg-[#faf8ff] min-h-screen flex items-center justify-center p-6">
 <div class="w-full max-w-[560px]">
 <div class="text-center mb-6">
-<div class="w-14 h-14 bg-[#22c55e] rounded-2xl mx-auto flex items-center justify-center text-white font-black">WB</div>
-<h1 class="font-black text-2xl mt-3">إتمام الاشتراك</h1>
+<div class="w-14 h-14 bg-white border border-zinc-100 rounded-2xl flex items-center justify-center mx-auto shadow-sm">
+<svg viewBox="0 0 100 100" width="36" height="36"><g fill="none" stroke="#22c55e" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 18 L24 48 L38 18 L50 48 L64 18"/><path d="M14 60 C14 48 28 40 54 44 C72 47 80 56 78 66 C77 72 70 76 58 74 L34 82 L40 74 C26 74 14 70 14 60 Z"/></g></svg>
 </div>
-
+<h1 class="font-black text-2xl mt-3">إتمام الاشتراك</h1>
+<p class="text-[11px] text-zinc-400 mt-1">WhatsBot.sa • WB</p>
+</div>
 <div class="bg-white border rounded-[2rem] p-8 shadow-sm">
 <div class="flex justify-between items-center mb-6">
 <div><div id="planName" class="font-black text-lg"></div><div id="planPrice" class="text-sm text-zinc-500"></div></div>
 <div class="bg-[#f0fdf4] text-green-700 px-3 py-1 rounded-full text-[11px] font-bold">تحويل بنكي مباشر</div>
 </div>
-
 <div class="bg-[#0a1f13] rounded-[1.5rem] p-6 text-white">
 <h3 class="font-black mb-4">🏦 بيانات التحويل - مصرف الراجحي</h3>
 <div class="space-y-3 text-sm font-mono">
-<div class="bg-white/10 rounded-xl p-4 flex justify-between items-center"><span class="text-white/50 text-xs">الآيبان</span><div class="flex items-center gap-2"><span class="text-[12px]">SA95 8000 0498 6080 1001 6706</span></div></div>
+<div class="bg-white/10 rounded-xl p-4 flex justify-between items-center"><span class="text-white/50 text-xs">الآيبان</span><div class="flex items-center gap-2"><span class="text-[12px]">SA95 8000 0498 6080 1001 6706</span><button onclick="navigator.clipboard.writeText('SA95 8000 0498 6080 1001 6706')" class="bg-white/20 px-2 py-1 rounded text-[10px]">نسخ</button></div></div>
 <div class="bg-white/10 rounded-xl p-4 flex justify-between"><span class="text-white/50 text-xs">رقم الحساب</span><span>498608010016706</span></div>
-<div class="bg-white/10 rounded-xl p-4 flex justify-between"><span class="text-white/50 text-xs">المستفيد</span><span class="font-sans font-black">عبدالعزيز البهلال</span></div>
-<div class="bg-white/10 rounded-xl p-4 flex justify-between"><span class="text-white/50 text-xs">البنك</span><span>مصرف الراجحي</span></div>
+<div class="bg-white/10 rounded-xl p-4 flex justify-between"><span class="text-white/50 text-xs">المستفيد</span><span class="font-sans font-black">الإدارة</span></div>
+<div class="bg-white/10 rounded-xl p-4 flex justify-between"><span class="text-white/50 text-xs">البنك</span><span>مصرف الراجحي - RJHISARI</span></div>
+<div class="bg-white/10 rounded-xl p-4 flex justify-between"><span class="text-white/50 text-xs">واتساب التأكيد</span><span>966510015157</span></div>
 </div>
 <div class="mt-4 bg-[#22c55e] rounded-xl p-3 text-center text-xs font-bold">حول المبلغ ثم اضغط تم الدفع لرفع الإيصال</div>
 </div>
-
 <div class="mt-6 grid grid-cols-2 gap-3">
 <a href="index.html" class="bg-zinc-100 text-zinc-700 rounded-full py-3 text-center text-sm font-bold">رجوع</a>
 <button onclick="goReceipt()" class="bg-zinc-900 text-white rounded-full py-3 text-sm font-black">تم الدفع - رفع الإيصال →</button>
 </div>
+<div class="text-center text-[11px] text-zinc-400 mt-6">سيتم مراجعة الايصال من قبل الإدارة وتفعيل حسابكم وربطه خلال دقائق</div>
 </div>
 </div>
-
 <script>
 const params = new URLSearchParams(location.search);
 const plan = params.get('plan')||'pro';
-const plans = {
- individual: {name:'أفراد / متاجر', price:'99 ر.س / شهر'},
- pro: {name:'احترافي - الأكثر طلباً', price:'199 ر.س / شهر'},
- enterprise: {name:'شركات', price:'399 ر.س / شهر'}
-};
+const plans = { individual: {name:'أفراد / متاجر', price:'99 ر.س / شهر'}, pro: {name:'احترافي - الأكثر طلباً', price:'199 ر.س / شهر'}, enterprise: {name:'شركات', price:'399 ر.س / شهر'} };
 document.getElementById('planName').innerText = plans[plan]?.name || plans.pro.name;
 document.getElementById('planPrice').innerText = plans[plan]?.price || plans.pro.price;
 function goReceipt(){ location.href='receipt.html?plan='+plan; }
