@@ -1,159 +1,181 @@
-
 const express = require('express');
-const multer = require('multer');
 const cors = require('cors');
+const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+
 const app = express();
 const PORT = process.env.PORT || 10000;
 
+const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY || 'sk_test_51YourSecretKeyHere';
+let stripe = null;
+try{
+ if(STRIPE_SECRET_KEY && STRIPE_SECRET_KEY.startsWith('sk_')){
+  stripe = require('stripe')(STRIPE_SECRET_KEY);
+  console.log('✅ Stripe initialized');
+ }else{
+  console.log('⚠️ Stripe key not set - payment will be in demo mode');
+ }
+}catch(e){ console.log('Stripe init error', e.message); }
+
 app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({extended:true}));
+app.use(express.static(path.join(__dirname, 'public')));
+const upload = multer({dest:'uploads/'});
 
-// Serve static from both public and public_v2 and root
-const publicPaths = [path.join(__dirname, 'public'), path.join(__dirname, 'public_v2'), __dirname];
-publicPaths.forEach(p=>{
-  if(fs.existsSync(p)) app.use(express.static(p));
-});
+let proofs = [];
+let users = [];
 
-const DATA_DIR = path.join(__dirname, 'data');
-if(!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, {recursive:true});
-const USERS_FILE = path.join(DATA_DIR, 'users.json');
-const PROOFS_FILE = path.join(DATA_DIR, 'proofs.json');
-const UPLOAD_DIR = path.join(__dirname, 'uploads');
-if(!fs.existsSync(UPLOAD_DIR)) fs.mkdirSync(UPLOAD_DIR,{recursive:true});
-
-function loadJson(file, def=[]){
-  try{ if(!fs.existsSync(file)) return def; return JSON.parse(fs.readFileSync(file,'utf8')); }catch(e){ return def; }
+// توليد كلمة مرور 10 خانات حروف وأرقام انجليزية
+function generatePassword(length = 10){
+ const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+ let pass = '';
+ for(let i=0;i<length;i++) pass += chars.charAt(Math.floor(Math.random()*chars.length));
+ return pass;
 }
-function saveJson(file, data){ fs.writeFileSync(file, JSON.stringify(data,null,2)); }
 
-let companySettings = {
-  name: 'WhatsBot.sa',
-  owner: 'عبدالعزيز البهلال',
-  iban: 'SA95 8000 0498 6080 1001 6706',
-  account: '498608010016706',
-  swift: 'RJHISARI',
-  bank: 'مصرف الراجحي',
-  whatsapp: '966510015157'
+const PLANS = {
+ individual:{name:'أفراد', price:9900, priceSAR:99},
+ pro:{name:'احترافي', price:19900, priceSAR:199},
+ enterprise:{name:'شركات', price:39900, priceSAR:399}
 };
 
-const storage = multer.diskStorage({
-  destination: (req,file,cb)=>cb(null, UPLOAD_DIR),
-  filename: (req,file,cb)=>cb(null, Date.now()+'-'+file.originalname)
+app.post('/api/create-checkout-session', async (req,res)=>{
+ const {plan, customerName, customerEmail, customerPhone} = req.body;
+ const selected = PLANS[plan]||PLANS.pro;
+ if(!stripe){
+  return res.json({demo:true, message:'Stripe not configured'});
+ }
+ try{
+  const session = await stripe.checkout.sessions.create({
+   payment_method_types: ['card'],
+   line_items:[{
+    price_data:{
+     currency:'sar',
+     product_data:{name:`WhatsBot.sa - باقة ${selected.name}`, description:'اشتراك شهري - تفعيل فوري'},
+     unit_amount: selected.price,
+    },
+    quantity:1
+   }],
+   mode:'payment',
+   customer_email: customerEmail,
+   metadata:{plan, customerName, customerPhone},
+   success_url: `${req.headers.origin||'https://whatsbot-4vkk.onrender.com'}/success.html?session_id={CHECKOUT_SESSION_ID}`,
+   cancel_url: `${req.headers.origin||'https://whatsbot-4vkk.onrender.com'}/cancel.html`,
+  });
+  res.json({id: session.id, url: session.url});
+ }catch(e){
+  console.error('Stripe error', e.message);
+  res.status(500).json({error:e.message});
+ }
 });
-const upload = multer({storage});
 
-app.get('/api/config', (req,res)=>{
-  res.json({company: companySettings, plans:[
-    {id:'individual', name:'أفراد / متاجر', price:99},
-    {id:'pro', name:'احترافي', price:199},
-    {id:'enterprise', name:'شركات', price:399}
-  ]});
-});
-
-// REGISTER + PAYMENT PROOF COMBINED - SAVE TO USERS
-app.post('/api/payment-proof', upload.single('receipt'), (req,res)=>{
-  try{
-    const {companyName, customerPhone, customerEmail, company, plan} = req.body;
-    const users = loadJson(USERS_FILE, []);
-    const proofs = loadJson(PROOFS_FILE, []);
-    
-    const newEntry = {
-      id: Date.now().toString(),
-      fullName: companyName || 'عميل',
-      companyName: companyName || '',
-      phone: customerPhone || '',
-      customerPhone: customerPhone || '',
-      email: customerEmail || '',
-      customerEmail: customerEmail || '',
-      company: company || '',
-      plan: plan || 'pro',
-      status: 'pending',
-      file: req.file ? req.file.filename : null,
-      originalFile: req.file ? req.file.originalname : null,
-      createdAt: new Date().toISOString(),
-      amount: plan==='individual'?99:plan==='enterprise'?399:199
-    };
-    
-    // Check duplicate
-    if(users.find(u=> (u.email===newEntry.email || u.customerEmail===newEntry.email) && u.status!=='rejected')){
-      // still allow but mark
-    }
-    
-    users.push(newEntry);
-    proofs.push(newEntry);
-    saveJson(USERS_FILE, users);
-    saveJson(PROOFS_FILE, proofs);
-    
-    console.log('New payment proof:', newEntry.email, newEntry.plan);
-    res.json({success:true, proof:newEntry});
-  }catch(e){
-    console.error(e);
-    res.status(500).json({success:false, error:e.message});
+app.get('/api/verify-payment', async (req,res)=>{
+ const {session_id} = req.query;
+ if(!stripe ||!session_id) return res.json({success:false});
+ try{
+  const session = await stripe.checkout.sessions.retrieve(session_id);
+  if(session.payment_status==='paid'){
+   const {plan, customerName, customerPhone} = session.metadata;
+   const email = session.customer_email;
+   const password = generatePassword(10);
+   const user = {
+    id: session.id,
+    fullName: customerName,
+    email: email,
+    phone: customerPhone,
+    plan: plan,
+    amount: PLANS[plan]?.priceSAR,
+    status:'approved',
+    password: password,
+    paymentId: session.payment_intent,
+    createdAt: new Date().toISOString(),
+    paid: true
+   };
+   users.push(user);
+   proofs.push(user);
+   console.log('✅ Payment verified & user activated:', email);
+   return res.json({success:true, user});
   }
+  res.json({success:false, status: session.payment_status});
+ }catch(e){
+  res.status(500).json({error:e.message});
+ }
 });
 
-// GET ALL PAYMENT PROOFS / USERS FOR ADMIN
+app.post('/api/payment-proof', upload.single('receipt'), (req,res)=>{
+ const data = {
+  id: Date.now().toString(),
+  fullName: req.body.companyName,
+  companyName: req.body.companyName,
+  phone: req.body.customerPhone,
+  customerPhone: req.body.customerPhone,
+  email: req.body.customerEmail,
+  customerEmail: req.body.customerEmail,
+  company: req.body.company,
+  plan: req.body.plan||'pro',
+  file: req.file?.originalname||'',
+  status:'pending',
+  createdAt: new Date().toISOString()
+ };
+ proofs.push(data);
+ console.log('📥 New proof:', data.email);
+ res.json({success:true, id:data.id});
+});
+
 app.get('/api/payment-proofs', (req,res)=>{
-  const proofs = loadJson(PROOFS_FILE, []);
-  const users = loadJson(USERS_FILE, []);
-  // Merge, proofs is primary
-  res.json({success:true, proofs: proofs.reverse(), users: users.reverse()});
-});
-
-app.get('/api/admin/users', (req,res)=>{
-  const users = loadJson(USERS_FILE, []);
-  const proofs = loadJson(PROOFS_FILE, []);
-  const all = users.length ? users : proofs;
-  res.json({success:true, users: all.reverse(), proofs: proofs.reverse()});
+ res.json(proofs.reverse());
 });
 
 app.post('/api/admin/approve', (req,res)=>{
-  const {id} = req.body;
-  let users = loadJson(USERS_FILE, []);
-  let proofs = loadJson(PROOFS_FILE, []);
-  let idx = users.findIndex(u=>u.id===id);
-  if(idx===-1) idx = proofs.findIndex(p=>p.id===id);
-  if(idx===-1) return res.status(404).json({success:false, error:'not found'});
-  if(users[idx]){ users[idx].status='approved'; users[idx].approvedAt=new Date().toISOString(); saveJson(USERS_FILE, users); }
-  if(proofs[idx]){ proofs[idx].status='approved'; saveJson(PROOFS_FILE, proofs); }
-  // update both files
-  let pIdx = proofs.findIndex(p=>p.id===id);
-  if(pIdx!==-1){ proofs[pIdx].status='approved'; saveJson(PROOFS_FILE, proofs); }
-  res.json({success:true});
+ const {id}=req.body;
+ const p = proofs.find(x=>x.id===id);
+ if(p){
+  const password = generatePassword(10);
+  p.password = password;
+  p.status='approved';
+  p.approvedAt = new Date().toISOString();
+  const user = {
+   id: p.id,
+   fullName: p.fullName || p.companyName,
+   email: p.customerEmail || p.email,
+   phone: p.customerPhone || p.phone,
+   plan: p.plan,
+   password: password,
+   status:'approved',
+   createdAt: new Date().toISOString(),
+   paid: true
+  };
+  users.push(user);
+  const cleanPhone = (p.customerPhone||p.phone||'').replace(/[^0-9]/g,'');
+  const waMsg = `✅ تم تفعيل حسابك في WhatsBot.sa!
+
+🔐 بيانات الدخول:
+📧 الإيميل: ${user.email}
+🔑 الرقم السري: ${password}
+
+🌐 رابط الدخول:
+https://whatsbot.sa/client-dashboard.html
+
+لوحة العميل فيها: ربط واتساب + فريق العمل + تقييم العملاء ⭐`;
+  const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(waMsg)}`;
+  console.log('✅ Approved:', user.email, password);
+  return res.json({success:true, password, email: user.email, phone: user.phone, waUrl});
+ }
+ res.json({success:false});
 });
 
 app.post('/api/admin/reject', (req,res)=>{
-  const {id} = req.body;
-  let users = loadJson(USERS_FILE, []);
-  let proofs = loadJson(PROOFS_FILE, []);
-  let idx = users.findIndex(u=>u.id===id);
-  if(idx!==-1){ users[idx].status='rejected'; saveJson(USERS_FILE, users); }
-  let pIdx = proofs.findIndex(p=>p.id===id);
-  if(pIdx!==-1){ proofs[pIdx].status='rejected'; saveJson(PROOFS_FILE, proofs); }
-  res.json({success:true});
+ const {id}=req.body;
+ const p = proofs.find(x=>x.id===id);
+ if(p) p.status='rejected';
+ res.json({success:true});
 });
 
-app.post('/api/admin/delete', (req,res)=>{
-  const {id} = req.body;
-  let users = loadJson(USERS_FILE, []).filter(u=>u.id!==id);
-  let proofs = loadJson(PROOFS_FILE, []).filter(p=>p.id!==id);
-  saveJson(USERS_FILE, users);
-  saveJson(PROOFS_FILE, proofs);
-  res.json({success:true});
+app.get('/.well-known/apple-developer-merchantid-domain-association', (req,res)=>{
+ res.sendFile(path.join(__dirname, 'public', 'apple-developer-merchantid-domain-association'));
 });
 
-app.get('/health', (req,res)=> res.json({status:'ok', owner: companySettings.owner}));
+app.get('*', (req,res)=> res.sendFile(path.join(__dirname, 'public', 'index.html')));
 
-app.get('*', (req,res)=>{
-  // Try serve index.html
-  for(let base of [path.join(__dirname,'public'), path.join(__dirname,'public_v2')]){
-    const idx = path.join(base,'index.html');
-    if(fs.existsSync(idx)) return res.sendFile(idx);
-  }
-  res.send('WhatsBot running');
-});
-
-app.listen(PORT, ()=> console.log('WhatsBot running '+PORT));
+app.listen(PORT, ()=> console.log(`🚀 Server running on ${PORT}`));
