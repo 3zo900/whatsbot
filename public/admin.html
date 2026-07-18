@@ -5,42 +5,54 @@
 <title>لوحة الأدمن - WhatsBot AI</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800;900&display=swap" rel="stylesheet">
-<style>body{font-family:Tajawal;background:#f6f8f6}.card{transition:.2s}.card:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(0,0,0,.08)}</style>
+<style>body{font-family:Tajawal;background:#f5f7f5}.switch{width:42px;height:24px;background:#e5e7eb;border-radius:99px;position:relative;cursor:pointer;transition:.2s}.switch.on{background:#22c55e}.switch i{width:18px;height:18px;background:#fff;border-radius:50%;position:absolute;top:3px;right:3px;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}.switch.on i{transform:translateX(-18px)}</style>
 </head>
-<body class="p-3 md:p-6">
-<div class="max-w-[1350px] mx-auto">
+<body>
 
-<div class="flex flex-wrap justify-between items-center gap-3 mb-6">
-<h1 class="text-xl md:text-2xl font-black">لوحة تحكم الأدمن 🤖 - WhatsBot AI</h1>
-<div class="flex gap-2"><span class="bg-[#22c55e] text-black text-xs px-4 py-2 rounded-full font-black">متصل ✅</span><a href="index.html" class="bg-white border text-xs px-4 py-2 rounded-full font-bold">الموقع الرئيسي</a></div>
+<!-- LOGIN -->
+<div id="loginScreen" class="min-h-screen flex items-center justify-center p-6">
+<div class="bg-white border rounded-[1.8rem] p-8 w-full max-w-[380px] shadow-sm">
+<h1 class="text-xl font-black text-center">دخول الأدمن 🔐</h1>
+<p class="text-xs text-zinc-500 text-center mt-1">WhatsBot AI - لوحة التحكم الخاصة</p>
+<input id="l_user" placeholder="اسم المستخدم" class="w-full border rounded-xl px-4 py-3 mt-6 text-sm">
+<input id="l_pass" type="password" placeholder="كلمة المرور" class="w-full border rounded-xl px-4 py-3 mt-3 text-sm">
+<button onclick="doLogin()" class="w-full bg-zinc-900 text-white rounded-full py-3 mt-4 font-black text-sm">دخول</button>
+<div id="loginErr" class="text-xs text-red-600 mt-3 hidden text-center">بيانات الدخول خطأ</div>
+<div class="text-[11px] text-zinc-400 mt-4 text-center">اليوزر: admin - الباس: Letsbot@2026</div>
+</div>
 </div>
 
-<!-- احصائيات -->
-<div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
-<div class="bg-white border rounded-2xl p-4"><div class="text- text-zinc-500">إجمالي الطلبات</div><div id="s1" class="text-2xl font-black mt-1">0</div></div>
-<div class="bg-orange-50 border border-orange-200 rounded-2xl p-4"><div class="text- text-orange-600">طلبات جديدة</div><div id="s2" class="text-2xl font-black mt-1 text-orange-600">0</div></div>
-<div class="bg-green-50 border border-green-200 rounded-2xl p-4"><div class="text- text-green-700">عملاء مفعلين</div><div id="s3" class="text-2xl font-black mt-1 text-green-700">0</div></div>
-<div class="bg-purple-50 border border-purple-200 rounded-2xl p-4"><div class="text- text-purple-600">عملاء مهمين ⭐</div><div id="s5" class="text-2xl font-black mt-1 text-purple-700">0</div></div>
-<div class="bg-zinc-900 text-white rounded-2xl p-4 col-span-2 md:col-span-1"><div class="text- text-white/60">إجمالي الإيرادات</div><div id="s4" class="text-2xl font-black mt-1">0 ر.س</div></div>
+<!-- DASHBOARD -->
+<div id="dashScreen" class="hidden">
+<div class="max-w-[1400px] mx-auto p-3 md:p-6">
+
+<div class="flex flex-wrap justify-between items-center gap-3 mb-6">
+<h1 class="text-xl md:text-2xl font-black">لوحة الأدمن - WhatsBot AI 🤖</h1>
+<div class="flex gap-2"><a href="index.html" class="bg-white border text-xs px-4 py-2 rounded-full font-bold">الموقع</a><button onclick="logout()" class="bg-red-50 text-red-600 border border-red-200 text-xs px-4 py-2 rounded-full font-bold">خروج</button></div>
+</div>
+
+<div class="grid grid-cols-2 md:grid-cols-6 gap-3 mb-6">
+<div class="bg-white border rounded-2xl p-4"><div class="text-xs text-zinc-500">الطلبات</div><div id="st1" class="text-xl font-black">0</div></div>
+<div class="bg-orange-500 text-white rounded-2xl p-4"><div class="text-xs opacity-80">جديدة 🔥</div><div id="st2" class="text-xl font-black">0</div></div>
+<div class="bg-green-50 border border-green-200 rounded-2xl p-4"><div class="text-xs text-green-700">مفعلين</div><div id="st3" class="text-xl font-black text-green-700">0</div></div>
+<div class="bg-purple-600 text-white rounded-2xl p-4"><div class="text-xs opacity-80">مهمين ⭐</div><div id="st5" class="text-xl font-black">0</div></div>
+<div class="bg-zinc-900 text-white rounded-2xl p-4"><div class="text-xs opacity-60">الإيرادات</div><div id="st4" class="text-xl font-black">0 ر.س</div></div>
+<div class="bg-white border rounded-2xl p-4"><div class="text-xs text-zinc-500">استهلاك</div><div id="st6" class="text-xl font-black">0</div></div>
 </div>
 
 <div class="flex gap-2 mb-5">
-<button onclick="showTab('orders')" id="btn-orders" class="bg-zinc-900 text-white rounded-full px-6 py-2.5 text-sm font-bold">📥 الطلبات الجديدة</button>
-<button onclick="showTab('clients')" id="btn-clients" class="bg-white border rounded-full px-6 py-2.5 text-sm font-bold">👥 العملاء المفعلين</button>
+<button onclick="showTab('orders')" id="b-orders" class="bg-zinc-900 text-white rounded-full px-6 py-2.5 text-sm font-bold">📥 الطلبات</button>
+<button onclick="showTab('clients')" id="b-clients" class="bg-white border rounded-full px-6 py-2.5 text-sm font-bold">👥 العملاء</button>
 </div>
 
-<!-- تبويب الطلبات -->
-<div id="tab-orders">
-<div id="orders" class="grid md:grid-cols-2 gap-3">جاري التحميل...</div>
-</div>
+<div id="tab-orders"><div id="orders" class="grid md:grid-cols-2 gap-3">جاري التحميل...</div></div>
 
-<!-- تبويب العملاء -->
 <div id="tab-clients" class="hidden">
 <div class="bg-white border rounded-[1.5rem] overflow-hidden">
-<div class="p-4 border-b flex justify-between items-center"><h3 class="font-black">كل العملاء</h3><input id="search" oninput="filterClients()" placeholder="ابحث بالاسم أو الجوال..." class="border rounded-full px-4 py-2 text-sm w-[200px]"></div>
+<div class="p-4 border-b flex justify-between items-center gap-2"><h3 class="font-black">العملاء المفعلين</h3><input id="search" oninput="filterClients()" placeholder="بحث..." class="border rounded-full px-4 py-2 text-sm w-[180px]"></div>
 <div class="overflow-x-auto">
 <table class="w-full text-sm">
-<thead class="bg-zinc-50 text-xs text-zinc-500"><tr><th class="p-3 text-right">العميل</th><th class="p-3">الباقة</th><th class="p-3">المحادثات</th><th class="p-3">البوت AI</th><th class="p-3">مهم؟</th><th class="p-3">الحالة</th><th class="p-3">تحكم</th></tr></thead>
+<thead class="bg-zinc-50 text-[11px] text-zinc-500"><tr><th class="p-3 text-right">العميل</th><th class="p-3">الباقة</th><th class="p-3">المحادثات</th><th class="p-3">AI</th><th class="p-3">مهم</th><th class="p-3">نشط</th><th class="p-3">انتهاء</th><th class="p-3">تحكم</th></tr></thead>
 <tbody id="clientsTable"></tbody>
 </table>
 </div>
@@ -48,100 +60,78 @@
 </div>
 
 </div>
-
-<!-- مودال تعديل -->
-<div id="modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-<div class="bg-white rounded-[1.5rem] p-6 w-full max-w-[480px]">
-<h3 class="font-black text-lg mb-4">تعديل العميل</h3>
-<div id="modalBody"></div>
-<div class="flex gap-2 mt-6"><button onclick="closeModal()" class="flex-1 bg-zinc-100 rounded-full py-3 font-bold text-sm">إغلاق</button><button onclick="saveModal()" class="flex-1 bg-zinc-900 text-white rounded-full py-3 font-bold text-sm">حفظ</button></div>
-</div>
 </div>
 
 <script>
-let allClients=[], currentEditId=null, tempData={};
+const TOKEN_KEY='whatsbot_admin_token';
+if(localStorage.getItem(TOKEN_KEY)) { document.getElementById('loginScreen').classList.add('hidden'); document.getElementById('dashScreen').classList.remove('hidden'); init(); }
 
+async function doLogin(){
+ const u=document.getElementById('l_user').value, p=document.getElementById('l_pass').value;
+ const r=await fetch('/api/admin/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:u,password:p})});
+ const d=await r.json();
+ if(d.success){ localStorage.setItem(TOKEN_KEY,d.token); document.getElementById('loginScreen').classList.add('hidden'); document.getElementById('dashScreen').classList.remove('hidden'); init(); }
+ else document.getElementById('loginErr').classList.remove('hidden');
+}
+function logout(){ localStorage.removeItem(TOKEN_KEY); location.reload(); }
+
+let allClients=[];
 function showTab(t){
- document.getElementById('tab-orders').classList.toggle('hidden', t!=='orders');
- document.getElementById('tab-clients').classList.toggle('hidden', t!=='clients');
- document.getElementById('btn-orders').className = t==='orders'?'bg-zinc-900 text-white rounded-full px-6 py-2.5 text-sm font-bold':'bg-white border rounded-full px-6 py-2.5 text-sm font-bold';
- document.getElementById('btn-clients').className = t==='clients'?'bg-zinc-900 text-white rounded-full px-6 py-2.5 text-sm font-bold':'bg-white border rounded-full px-6 py-2.5 text-sm font-bold';
+ document.getElementById('tab-orders').classList.toggle('hidden',t!=='orders');
+ document.getElementById('tab-clients').classList.toggle('hidden',t!=='clients');
+ document.getElementById('b-orders').className=t==='orders'?'bg-zinc-900 text-white rounded-full px-6 py-2.5 text-sm font-bold':'bg-white border rounded-full px-6 py-2.5 text-sm font-bold';
+ document.getElementById('b-clients').className=t==='clients'?'bg-zinc-900 text-white rounded-full px-6 py-2.5 text-sm font-bold':'bg-white border rounded-full px-6 py-2.5 text-sm font-bold';
  if(t==='clients') loadClients();
 }
 
+async function init(){ loadStats(); loadOrders(); }
+
 async function loadStats(){
  const r=await fetch('/api/stats'); const s=await r.json();
- document.getElementById('s1').innerText=s.totalOrders;
- document.getElementById('s2').innerText=s.pendingOrders;
- document.getElementById('s3').innerText=s.activeClients;
- document.getElementById('s4').innerText=s.totalRevenue+' ر.س';
- document.getElementById('s5').innerText=s.importantClients;
+ document.getElementById('st1').innerText=s.totalOrders; document.getElementById('st2').innerText=s.pendingOrders; document.getElementById('st3').innerText=s.activeClients; document.getElementById('st4').innerText=s.totalRevenue+' ر.س'; document.getElementById('st5').innerText=s.importantClients; document.getElementById('st6').innerText=s.totalConversations;
 }
-
 async function loadOrders(){
  const r=await fetch('/api/orders'); const data=await r.json();
- if(!data.length){ document.getElementById('orders').innerHTML='<div class="col-span-2 text-center py-10 text-zinc-400 bg-white rounded-2xl border">ما فيه طلبات حالياً</div>'; return; }
+ if(!data.length){ document.getElementById('orders').innerHTML='<div class="col-span-2 text-center py-12 bg-white rounded-2xl border text-zinc-400">ما فيه طلبات</div>'; return; }
  document.getElementById('orders').innerHTML=data.map(o=>`
- <div class="card bg-white border rounded-2xl p-5 ${o.status==='new'?'border-orange-200 bg-orange-50/30':''}">
-  <div class="flex justify-between items-start">
-   <div><div class="font-black">${o.name} - ${o.phone}</div><div class="text-xs text-zinc-500 mt-1">${o.type} | باقة ${o.plan} | ${new Date(o.createdAt).toLocaleString('ar-SA')}</div></div>
-   <span class="text- px-3 py-1 rounded-full font-bold ${o.status==='new'?'bg-orange-500 text-white animate-pulse':'bg-green-100 text-green-700'}">${o.status==='new'?'جديد 🔥':'مفعل ✅'}</span>
-  </div>
-  ${o.challenge?`<div class="mt-3 bg-zinc-50 border rounded-xl p-3 text-xs">💬 ${o.challenge}</div>`:''}
-  ${o.status==='new'?`
-   <button onclick="activate('${o.id}')" class="w-full mt-4 bg-[#22c55e] hover:bg-[#16a34a] text-black rounded-full py-3 font-black text-sm">⚡ تفعيل وتوليد حساب</button>
-   <div id="gen-${o.id}" class="mt-3"></div>` : `
-   <div class="mt-3 bg-green-50 border border-green-200 rounded-xl p-3 text-xs">
-    <div>✅ تم التفعيل - اليوزر: <b>${o.generatedUser?.username}</b> - الباسوورد: <b class="bg-yellow-200 px-2 py-0.5 rounded">${o.generatedUser?.password}</b></div>
-    <div class="flex gap-2 mt-2"><button onclick="copyText('يوزر: ${o.generatedUser?.username}\\nباسوورد: ${o.generatedUser?.password}\\nدخول: whatsbot-4vkk.onrender.com/login.html')" class="bg-zinc-900 text-white rounded-full px-3 py-1.5 text-">📋 نسخ للواتساب</button></div>
-   </div>`}
+ <div class="bg-white border rounded-2xl p-5 ${o.status==='new'?'border-orange-300 bg-orange-50/40':''}">
+  <div class="flex justify-between"><div><div class="font-black">${o.name}</div><div class="text-xs text-zinc-500">${o.phone} | ${o.type} | ${o.plan} | ${new Date(o.createdAt).toLocaleString('ar-SA')}</div></div><span class="text-[11px] px-3 py-1 rounded-full font-black ${o.status==='new'?'bg-orange-500 text-white':'bg-green-100 text-green-700'}">${o.status==='new'?'جديد':'مفعل'}</span></div>
+  ${o.challenge?`<div class="mt-3 bg-zinc-50 border rounded-xl p-3 text-xs">${o.challenge}</div>`:''}
+  ${o.status==='new'?`<button onclick="activate('${o.id}')" class="w-full mt-4 bg-[#22c55e] hover:bg-[#16a34a] text-black rounded-full py-3 font-black text-sm">⚡ تفعيل وتوليد حساب</button><div id="gen-${o.id}" class="mt-3"></div>`:`<div class="mt-3 bg-green-50 border border-green-200 rounded-xl p-3 text-xs">✅ يوزر: <b>${o.generatedUser?.username}</b> | باس: <b class="bg-yellow-200 px-2 rounded">${o.generatedUser?.password}</b><br><button onclick="copyT('مبروك تفعيل حسابك 🤖\\nاليوزر: ${o.generatedUser?.username}\\nالباس: ${o.generatedUser?.password}\\nالدخول: whatsbot-4vkk.onrender.com/login.html')" class="bg-zinc-900 text-white rounded-full px-3 py-1.5 mt-2">📋 نسخ رسالة</button></div>`}
  </div>`).join('');
  loadStats();
 }
-
 async function activate(id){
- if(!confirm('تفعل هذا العميل وتولد له حساب؟')) return;
- document.getElementById('gen-'+id).innerHTML='جاري التفعيل...';
+ if(!confirm('تفعل العميل؟')) return;
+ const el=document.getElementById('gen-'+id); el.innerText='جاري...';
  const r=await fetch('/api/orders/activate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id})});
  const d=await r.json();
- if(d.success){
-  document.getElementById('gen-'+id).innerHTML=`<div class="bg-[#22c55e] text-black rounded-xl p-3 text-xs font-bold">تم! اليوزر: ${d.user.username} - الباسوورد: ${d.user.password}<br><button onclick="copyText('مبروك تم تفعيل حسابك 🤖\\nاليوزر: ${d.user.username}\\nالباسوورد: ${d.user.password}\\nرابط الدخول: whatsbot-4vkk.onrender.com/login.html')" class="bg-black text-white rounded-full px-3 py-1.5 mt-2 text-">نسخ رسالة التفعيل</button></div>`;
-  loadOrders();
- }else alert('خطأ');
+ if(d.success){ el.innerHTML=`<div class="bg-[#22c55e] text-black rounded-xl p-3 text-xs font-bold">تم! يوزر: ${d.user.username} - باس: ${d.user.password}<br><button onclick="copyT('اليوزر: ${d.user.username}\\nالباس: ${d.user.password}\\nwhatsbot-4vkk.onrender.com/login.html')" class="bg-black text-white rounded-full px-3 py-1 mt-2">نسخ</button></div>`; loadOrders(); }
 }
-
 async function loadClients(){
- const r=await fetch('/api/users'); const data=await r.json(); allClients=data;
- renderClients(data);
+ const r=await fetch('/api/users'); const data=await r.json(); allClients=data; renderClients(data);
 }
-
 function renderClients(data){
  document.getElementById('clientsTable').innerHTML=data.map(u=>{
-  const pct = Math.round((u.conversations_used / u.conversations_limit)*100);
-  return `<tr class="border-t hover:bg-zinc-50 ${u.is_important?'bg-purple-50/50':''}">
-   <td class="p-3"><div class="font-bold flex items-center gap-2">${u.is_important?'⭐':''}${u.name}<span class="text- text-zinc-400">${u.is_important?'(مهم)':''}</span></div><div class="text-xs text-zinc-500">${u.phone} | يوزر: ${u.username} | باس: ${u.password}</div></td>
-   <td class="p-3"><select onchange="updateUser('${u.id}','plan',this.value)" class="border rounded-full px-2 py-1 text-xs"><option value="individual" ${u.plan==='individual'?'selected':''}>أفراد 89</option><option value="pro" ${u.plan==='pro'?'selected':''}>احترافي 189</option><option value="enterprise" ${u.plan==='enterprise'?'selected':''}>شركات 399</option></select></td>
-   <td class="p-3"><div class="text-xs">${u.conversations_used}/${u.conversations_limit} <span class="text- ${pct>80?'text-red-600':'text-green-600'}">(${pct}%)</span></div><div class="w-20 h-1.5 bg-zinc-200 rounded-full mt-1"><div class="h-1.5 bg-[#22c55e] rounded-full" style="width:${Math.min(pct,100)}%"></div></div><button onclick="editLimit('${u.id}')" class="text- text-blue-600 mt-1">تعديل</button></td>
-   <td class="p-3"><button onclick="toggleAI('${u.id}')" class="px-3 py-1 rounded-full text-xs font-bold ${u.ai_enabled?'bg-green-100 text-green-700':'bg-red-100 text-red-700'}">${u.ai_enabled?'مفعل ✅':'موقف ⛔'}</button></td>
-   <td class="p-3"><button onclick="toggleImportant('${u.id}')" class="px-3 py-1 rounded-full text-xs font-bold ${u.is_important?'bg-purple-600 text-white':'bg-zinc-100'}">${u.is_important?'مهم ⭐':'عادي'}</button></td>
-   <td class="p-3"><button onclick="toggleActive('${u.id}')" class="px-3 py-1 rounded-full text-xs font-bold ${u.is_active?'bg-green-100 text-green-700':'bg-zinc-200'}">${u.is_active?'نشط':'موقف'}</button></td>
-   <td class="p-3 flex gap-1"><button onclick="resetPass('${u.id}')" class="bg-zinc-900 text-white rounded-full px-2 py-1 text-">باسوورد</button><button onclick="delUser('${u.id}')" class="bg-red-50 text-red-600 rounded-full px-2 py-1 text-">حذف</button></td>
+  const pct=Math.min(100,Math.round((u.conversations_used/u.conversations_limit)*100)||0);
+  return `<tr class="border-t ${u.is_important?'bg-purple-50/60':''}">
+   <td class="p-3"><div class="font-bold">${u.is_important?'⭐':''}${u.name}</div><div class="text-[11px] text-zinc-500">${u.phone} | ${u.username} | ${u.password}</div></td>
+   <td class="p-3"><select onchange="upd('${u.id}','plan',this.value)" class="border rounded-full px-2 py-1 text-xs"><option value="individual" ${u.plan==='individual'?'selected':''}>أفراد 89</option><option value="pro" ${u.plan==='pro'?'selected':''}>احترافي 189</option><option value="enterprise" ${u.plan==='enterprise'?'selected':''}>شركات 399</option></select></td>
+   <td class="p-3"><div class="text-[11px]">${u.conversations_used}/${u.conversations_limit} (${pct}%)</div><div class="w-20 h-1.5 bg-zinc-200 rounded-full mt-1"><div class="h-1.5 bg-[#22c55e] rounded-full" style="width:${pct}%"></div></div><div class="flex gap-1 mt-1"><button onclick="editNum('${u.id}','conversations_used')" class="text-[10px] text-blue-600">مستخدم</button><button onclick="editNum('${u.id}','conversations_limit')" class="text-[10px] text-blue-600">الحد</button></div></td>
+   <td class="p-3"><div class="switch ${u.ai_enabled?'on':''}" onclick="upd('${u.id}','ai_enabled',${!u.ai_enabled})"><i></i></div></td>
+   <td class="p-3"><div class="switch ${u.is_important?'on':''}" style="${u.is_important?'background:#9333ea':''}" onclick="upd('${u.id}','is_important',${!u.is_important})"><i></i></div></td>
+   <td class="p-3"><div class="switch ${u.is_active?'on':''}" onclick="upd('${u.id}','is_active',${!u.is_active})"><i></i></div></td>
+   <td class="p-3"><input type="date" value="${u.expiry_date||''}" onchange="upd('${u.id}','expiry_date',this.value)" class="border rounded-full px-2 py-1 text-[11px] w-[125px]"></td>
+   <td class="p-3 flex gap-1"><button onclick="resetP('${u.id}')" class="bg-zinc-900 text-white rounded-full px-2 py-1 text-[10px]">باس</button><button onclick="delU('${u.id}')" class="bg-red-50 text-red-600 rounded-full px-2 py-1 text-[10px]">حذف</button></td>
   </tr>`;
  }).join('');
 }
-
-async function updateUser(id, field, value){ await fetch('/api/users/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,field,value})}); loadClients(); loadStats(); }
-function toggleAI(id){ const u=allClients.find(x=>x.id===id); updateUser(id,'ai_enabled',!u.ai_enabled); }
-function toggleImportant(id){ const u=allClients.find(x=>x.id===id); updateUser(id,'is_important',!u.is_important); }
-function toggleActive(id){ const u=allClients.find(x=>x.id===id); updateUser(id,'is_active',!u.is_active); }
-async function resetPass(id){ const r=await fetch('/api/users/resetPass',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id})}); const d=await r.json(); alert('الباسوورد الجديد: '+d.password); loadClients(); }
-async function delUser(id){ if(!confirm('متأكد تحذف العميل؟')) return; await fetch('/api/users/delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id})}); loadClients(); loadStats(); }
-function editLimit(id){ const v=prompt('اكتب عدد المحادثات الجديد:'); if(v) updateUser(id,'conversations_limit',parseInt(v)); }
+async function upd(id,field,value){ await fetch('/api/users/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,field,value})}); loadClients(); loadStats(); }
+async function resetP(id){ const r=await fetch('/api/users/resetPass',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id})}); const d=await r.json(); alert('الباس الجديد: '+d.password); loadClients(); }
+async function delU(id){ if(!confirm('حذف؟')) return; await fetch('/api/users/delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id})}); loadClients(); loadStats(); }
+function editNum(id,field){ const v=prompt('القيمة الجديدة:'); if(v!==null) upd(id,field,parseInt(v)||v); }
 function filterClients(){ const q=document.getElementById('search').value.toLowerCase(); renderClients(allClients.filter(u=>u.name.toLowerCase().includes(q)||u.phone.includes(q))); }
-function copyText(t){ navigator.clipboard.writeText(t); alert('تم النسخ ✅'); }
-function closeModal(){ document.getElementById('modal').classList.add('hidden'); }
-
-loadOrders(); loadStats(); setInterval(loadOrders,10000);
+function copyT(t){ navigator.clipboard.writeText(t); alert('تم النسخ'); }
 </script>
 </body>
 </html>
