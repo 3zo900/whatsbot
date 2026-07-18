@@ -10,9 +10,7 @@
 <body class="bg-[#faf8ff] min-h-screen flex items-center justify-center p-6">
 <div class="w-full max-w-[420px]">
 <div class="text-center mb-8">
-<!-- الشعار الجديد -->
-<img src="logo.png" alt="WB" class="w-16 h-16 rounded-2xl mx-auto object-contain" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-<div class="w-16 h-16 bg-[#22c55e] rounded-2xl mx-auto hidden items-center justify-center text-white font-black text-xl">WB</div>
+<img src="logo.png" alt="WB" class="w-20 h-20 mx-auto object-contain">
 <h1 class="font-black text-2xl mt-4">مرحباً بعودتك</h1>
 <p class="text-[13px] text-zinc-500 mt-1">سجل دخولك للوحة تحكم WhatsBot</p>
 </div>
@@ -21,15 +19,10 @@
 <div class="space-y-4">
 <input id="email" type="email" placeholder="البريد الإلكتروني" class="w-full border border-zinc-200 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-zinc-900">
 <input id="pass" type="password" placeholder="كلمة المرور" class="w-full border border-zinc-200 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-zinc-900">
-
 <button onclick="login()" class="w-full bg-zinc-900 text-white rounded-full py-3.5 font-black text-sm mt-2">تسجيل الدخول</button>
-
 <div class="relative my-4"><div class="border-t"></div><span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-3 text-[11px] text-zinc-400">أو</span></div>
-
 <button onclick="location.href='pay.html?plan=pro'" class="w-full bg-white border border-zinc-200 rounded-full py-3.5 font-bold text-sm">ليس لديك حساب؟ اشترك الآن</button>
-
 <div id="msg" class="text-[12px] text-center mt-3"></div>
-<!-- تم إزالة بيانات الأدمن من هنا ✅ -->
 </div>
 </div>
 
@@ -37,8 +30,7 @@
 <a href="index.html" class="text-[12px] text-zinc-500 hover:text-zinc-900">← العودة للرئيسية</a>
 </div>
 
-<!-- التعديل الجديد -->
-<div class="text-center mt-6 text-[11px] text-zinc-500 font-bold tracking-wide">WhatsBot AI © 2026</div>
+<div class="text-center mt-6 text-[11px] text-zinc-500 font-bold">WhatsBot AI © 2026</div>
 </div>
 
 <script>
@@ -48,12 +40,7 @@ function login(){
  const msg = document.getElementById('msg');
  if(!e ||!p){ msg.innerText='❌ ادخل البريد وكلمة المرور'; msg.className='text-[12px] text-center mt-3 text-red-500'; return; }
  msg.innerText='⏳ جاري تسجيل الدخول...';
- msg.className='text-[12px] text-center mt-3 text-zinc-500';
- setTimeout(()=>{
-   localStorage.setItem('wb_current_email', e);
-   localStorage.setItem('wb_user', e);
-   location.href='dashboard.html';
- }, 800);
+ setTimeout(()=>{ localStorage.setItem('wb_current_email', e); location.href='dashboard.html'; }, 800);
 }
 </script>
 </body>
