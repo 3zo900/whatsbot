@@ -4,97 +4,144 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>لوحة الأدمن - WhatsBot AI</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@700;900&display=swap" rel="stylesheet">
-<style>body{font-family:Tajawal;background:#f8fdf9}</style>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@500;700;800;900&display=swap" rel="stylesheet">
+<style>body{font-family:Tajawal;background:#f6f8f6}.card{transition:.2s}.card:hover{transform:translateY(-2px);box-shadow:0 12px 30px rgba(0,0,0,.08)}</style>
 </head>
-<body class="p-4 md:p-8">
-<div class="max-w-[1100px] mx-auto">
+<body class="p-3 md:p-6">
+<div class="max-w-[1350px] mx-auto">
 
-<div class="flex justify-between items-center mb-8">
-<h1 class="text-2xl font-black">لوحة تحكم الأدمن - WhatsBot AI 🤖</h1>
-<span class="bg-[#22c55e] text-black text-xs px-4 py-1.5 rounded-full font-bold">متصل ✅</span>
+<div class="flex flex-wrap justify-between items-center gap-3 mb-6">
+<h1 class="text-xl md:text-2xl font-black">لوحة تحكم الأدمن 🤖 - WhatsBot AI</h1>
+<div class="flex gap-2"><span class="bg-[#22c55e] text-black text-xs px-4 py-2 rounded-full font-black">متصل ✅</span><a href="index.html" class="bg-white border text-xs px-4 py-2 rounded-full font-bold">الموقع الرئيسي</a></div>
 </div>
 
-<!-- الطلبات الجديدة -->
-<div class="bg-white border-2 border-[#22c55e] rounded-[1.5rem] p-6 mb-6">
-<h2 class="font-black text-lg mb-2">📥 طلبات الاشتراك الجديدة</h2>
-<p class="text-xs text-zinc-500 mb-4">العميل يعبي الفورم → يوصل هنا → تحط إيميله وتفعل له الحساب</p>
-<div id="orders" class="space-y-3">جاري التحميل...</div>
+<!-- احصائيات -->
+<div class="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6">
+<div class="bg-white border rounded-2xl p-4"><div class="text- text-zinc-500">إجمالي الطلبات</div><div id="s1" class="text-2xl font-black mt-1">0</div></div>
+<div class="bg-orange-50 border border-orange-200 rounded-2xl p-4"><div class="text- text-orange-600">طلبات جديدة</div><div id="s2" class="text-2xl font-black mt-1 text-orange-600">0</div></div>
+<div class="bg-green-50 border border-green-200 rounded-2xl p-4"><div class="text- text-green-700">عملاء مفعلين</div><div id="s3" class="text-2xl font-black mt-1 text-green-700">0</div></div>
+<div class="bg-purple-50 border border-purple-200 rounded-2xl p-4"><div class="text- text-purple-600">عملاء مهمين ⭐</div><div id="s5" class="text-2xl font-black mt-1 text-purple-700">0</div></div>
+<div class="bg-zinc-900 text-white rounded-2xl p-4 col-span-2 md:col-span-1"><div class="text- text-white/60">إجمالي الإيرادات</div><div id="s4" class="text-2xl font-black mt-1">0 ر.س</div></div>
 </div>
 
-<div class="grid md:grid-cols-2 gap-6">
-<div class="bg-white border rounded-[1.5rem] p-6">
-<h3 class="font-bold mb-4">👥 العملاء المفعلين</h3>
-<div id="users" class="space-y-2 text-sm">جاري التحميل...</div>
+<div class="flex gap-2 mb-5">
+<button onclick="showTab('orders')" id="btn-orders" class="bg-zinc-900 text-white rounded-full px-6 py-2.5 text-sm font-bold">📥 الطلبات الجديدة</button>
+<button onclick="showTab('clients')" id="btn-clients" class="bg-white border rounded-full px-6 py-2.5 text-sm font-bold">👥 العملاء المفعلين</button>
 </div>
 
-<div class="bg-white border rounded-[1.5rem] p-6">
-<h3 class="font-bold mb-4">💳 إيصالات الدفع</h3>
-<div id="proofs" class="space-y-2 text-sm">جاري التحميل...</div>
+<!-- تبويب الطلبات -->
+<div id="tab-orders">
+<div id="orders" class="grid md:grid-cols-2 gap-3">جاري التحميل...</div>
+</div>
+
+<!-- تبويب العملاء -->
+<div id="tab-clients" class="hidden">
+<div class="bg-white border rounded-[1.5rem] overflow-hidden">
+<div class="p-4 border-b flex justify-between items-center"><h3 class="font-black">كل العملاء</h3><input id="search" oninput="filterClients()" placeholder="ابحث بالاسم أو الجوال..." class="border rounded-full px-4 py-2 text-sm w-[200px]"></div>
+<div class="overflow-x-auto">
+<table class="w-full text-sm">
+<thead class="bg-zinc-50 text-xs text-zinc-500"><tr><th class="p-3 text-right">العميل</th><th class="p-3">الباقة</th><th class="p-3">المحادثات</th><th class="p-3">البوت AI</th><th class="p-3">مهم؟</th><th class="p-3">الحالة</th><th class="p-3">تحكم</th></tr></thead>
+<tbody id="clientsTable"></tbody>
+</table>
+</div>
 </div>
 </div>
 
-<div class="bg-white border rounded-[1.5rem] p-6 mt-6">
-<h3 class="font-bold">📊 ملاحظات</h3>
-<p class="text-sm text-zinc-500 mt-2">1- العميل يطلب من order.html<br>2- تجي هنا تحط إيميله وتضغط تفعيل<br>3- يولد لك يوزر وباسوورد انسخها وارسلها له واتساب<br>4- بعد ما يحول المبلغ تعطيه بيانات الدخول</p>
 </div>
 
+<!-- مودال تعديل -->
+<div id="modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+<div class="bg-white rounded-[1.5rem] p-6 w-full max-w-[480px]">
+<h3 class="font-black text-lg mb-4">تعديل العميل</h3>
+<div id="modalBody"></div>
+<div class="flex gap-2 mt-6"><button onclick="closeModal()" class="flex-1 bg-zinc-100 rounded-full py-3 font-bold text-sm">إغلاق</button><button onclick="saveModal()" class="flex-1 bg-zinc-900 text-white rounded-full py-3 font-bold text-sm">حفظ</button></div>
+</div>
 </div>
 
 <script>
+let allClients=[], currentEditId=null, tempData={};
+
+function showTab(t){
+ document.getElementById('tab-orders').classList.toggle('hidden', t!=='orders');
+ document.getElementById('tab-clients').classList.toggle('hidden', t!=='clients');
+ document.getElementById('btn-orders').className = t==='orders'?'bg-zinc-900 text-white rounded-full px-6 py-2.5 text-sm font-bold':'bg-white border rounded-full px-6 py-2.5 text-sm font-bold';
+ document.getElementById('btn-clients').className = t==='clients'?'bg-zinc-900 text-white rounded-full px-6 py-2.5 text-sm font-bold':'bg-white border rounded-full px-6 py-2.5 text-sm font-bold';
+ if(t==='clients') loadClients();
+}
+
+async function loadStats(){
+ const r=await fetch('/api/stats'); const s=await r.json();
+ document.getElementById('s1').innerText=s.totalOrders;
+ document.getElementById('s2').innerText=s.pendingOrders;
+ document.getElementById('s3').innerText=s.activeClients;
+ document.getElementById('s4').innerText=s.totalRevenue+' ر.س';
+ document.getElementById('s5').innerText=s.importantClients;
+}
+
 async function loadOrders(){
  const r=await fetch('/api/orders'); const data=await r.json();
- if(data.length===0){ document.getElementById('orders').innerHTML='<div class="text-center text-zinc-400 text-sm py-4">ما فيه طلبات حالياً</div>'; return; }
+ if(!data.length){ document.getElementById('orders').innerHTML='<div class="col-span-2 text-center py-10 text-zinc-400 bg-white rounded-2xl border">ما فيه طلبات حالياً</div>'; return; }
  document.getElementById('orders').innerHTML=data.map(o=>`
- <div class="border rounded-xl p-4 ${o.status==='activated'?'bg-[#f0fdf4] border-green-200':''}">
- <div class="flex justify-between items-start">
- <div><div class="font-black">${o.name} - ${o.phone}</div><div class="text-xs text-zinc-500 mt-1">الباقة: ${o.plan} | النشاط: ${o.type||'-'} | ${new Date(o.createdAt).toLocaleString('ar-SA')}</div><div class="text-xs mt-2 bg-zinc-50 p-2 rounded-lg">${o.challenge||'ما كتب تحدي'}</div></div>
- <span class="text-[10px] px-2 py-1 rounded-full font-bold ${o.status==='new'?'bg-orange-100 text-orange-700':'bg-green-100 text-green-700'}">${o.status==='new'?'جديد':'مفعل ✅'}</span>
- </div>
- ${o.status==='new'?`
- <div class="flex gap-2 mt-3">
- <input id="email-${o.id}" placeholder="ايميل العميل (مثال: client@gmail.com)" class="flex-1 border-2 border-zinc-200 rounded-xl px-3 py-2.5 text-sm">
- <button onclick="activate('${o.id}')" class="bg-[#22c55e] text-black rounded-full px-5 py-2.5 text-sm font-black">تفعيل + توليد حساب</button>
- </div>
- <div id="gen-${o.id}" class="mt-2"></div>` : `
- <div class="mt-3 bg-white border rounded-xl p-3 text-xs">
- <div>✅ مفعل - الايميل: <b>${o.activatedEmail}</b></div>
- <div class="mt-1">اليوزر: <b>${o.generatedUser?.email}</b> | الباسوورد: <b class="bg-yellow-100 px-2 py-1 rounded">${o.generatedUser?.password}</b></div>
- <button onclick="navigator.clipboard.writeText('اليوزر: ${o.generatedUser?.email} \\nالباسوورد: ${o.generatedUser?.password} \\nرابط الدخول: ${o.generatedUser?.loginUrl}')" class="mt-2 bg-zinc-900 text-white rounded-full px-3 py-1.5 text-[11px]">نسخ بيانات الدخول للواتساب</button>
- </div>`}
+ <div class="card bg-white border rounded-2xl p-5 ${o.status==='new'?'border-orange-200 bg-orange-50/30':''}">
+  <div class="flex justify-between items-start">
+   <div><div class="font-black">${o.name} - ${o.phone}</div><div class="text-xs text-zinc-500 mt-1">${o.type} | باقة ${o.plan} | ${new Date(o.createdAt).toLocaleString('ar-SA')}</div></div>
+   <span class="text- px-3 py-1 rounded-full font-bold ${o.status==='new'?'bg-orange-500 text-white animate-pulse':'bg-green-100 text-green-700'}">${o.status==='new'?'جديد 🔥':'مفعل ✅'}</span>
+  </div>
+  ${o.challenge?`<div class="mt-3 bg-zinc-50 border rounded-xl p-3 text-xs">💬 ${o.challenge}</div>`:''}
+  ${o.status==='new'?`
+   <button onclick="activate('${o.id}')" class="w-full mt-4 bg-[#22c55e] hover:bg-[#16a34a] text-black rounded-full py-3 font-black text-sm">⚡ تفعيل وتوليد حساب</button>
+   <div id="gen-${o.id}" class="mt-3"></div>` : `
+   <div class="mt-3 bg-green-50 border border-green-200 rounded-xl p-3 text-xs">
+    <div>✅ تم التفعيل - اليوزر: <b>${o.generatedUser?.username}</b> - الباسوورد: <b class="bg-yellow-200 px-2 py-0.5 rounded">${o.generatedUser?.password}</b></div>
+    <div class="flex gap-2 mt-2"><button onclick="copyText('يوزر: ${o.generatedUser?.username}\\nباسوورد: ${o.generatedUser?.password}\\nدخول: whatsbot-4vkk.onrender.com/login.html')" class="bg-zinc-900 text-white rounded-full px-3 py-1.5 text-">📋 نسخ للواتساب</button></div>
+   </div>`}
  </div>`).join('');
+ loadStats();
 }
 
 async function activate(id){
- const email=document.getElementById('email-'+id).value.trim();
- if(!email ||!email.includes('@')) return alert('حط ايميل صحيح');
+ if(!confirm('تفعل هذا العميل وتولد له حساب؟')) return;
  document.getElementById('gen-'+id).innerHTML='جاري التفعيل...';
- const r=await fetch('/api/orders/activate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,email})});
+ const r=await fetch('/api/orders/activate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id})});
  const d=await r.json();
  if(d.success){
-  document.getElementById('gen-'+id).innerHTML=`
-  <div class="bg-[#22c55e] text-black rounded-xl p-3 text-xs font-bold">
-  ✅ تم التفعيل!<br>
-  اليوزر: ${d.user.email}<br>
-  الباسوورد: ${d.user.password}<br><br>
-  <button onclick="navigator.clipboard.writeText('مبروك تم تفعيل حسابك في WhatsBot AI 🤖\\n\\nاليوزر: ${d.user.email}\\nالباسوورد: ${d.user.password}\\nرابط الدخول: ${d.user.loginUrl}\\n\\nحول المبلغ على الراجحي وادخل لوحتك')" class="bg-black text-white rounded-full px-4 py-2 text-xs mt-2">نسخ رسالة الواتساب للعميل</button>
-  </div>`;
-  loadOrders(); loadUsers();
- }else alert('خطأ: '+d.error);
+  document.getElementById('gen-'+id).innerHTML=`<div class="bg-[#22c55e] text-black rounded-xl p-3 text-xs font-bold">تم! اليوزر: ${d.user.username} - الباسوورد: ${d.user.password}<br><button onclick="copyText('مبروك تم تفعيل حسابك 🤖\\nاليوزر: ${d.user.username}\\nالباسوورد: ${d.user.password}\\nرابط الدخول: whatsbot-4vkk.onrender.com/login.html')" class="bg-black text-white rounded-full px-3 py-1.5 mt-2 text-">نسخ رسالة التفعيل</button></div>`;
+  loadOrders();
+ }else alert('خطأ');
 }
 
-async function loadUsers(){
- const r=await fetch('/api/users'); const data=await r.json();
- document.getElementById('users').innerHTML=data.length?data.map(u=>`<div class="border rounded-xl p-3 flex justify-between"><div><b>${u.email}</b><div class="text-[11px] text-zinc-500">${u.phone} - ${u.plan} - ${u.amount} ر.س</div></div><span class="text-[10px] bg-green-100 text-green-700 px-2 py-1 rounded-full h-fit">${u.status}</span></div>`).join(''):'<div class="text-zinc-400 text-xs">ما فيه عملاء مفعلين</div>';
+async function loadClients(){
+ const r=await fetch('/api/users'); const data=await r.json(); allClients=data;
+ renderClients(data);
 }
 
-async function loadProofs(){
- const r=await fetch('/api/payment-proofs'); const data=await r.json();
- document.getElementById('proofs').innerHTML=data.length?data.map(p=>`<div class="border rounded-xl p-3"><b>${p.email||p.fullName}</b><div class="text-[11px]">${p.plan} - ${p.status}</div></div>`).join(''):'<div class="text-zinc-400 text-xs">ما فيه إيصالات</div>';
+function renderClients(data){
+ document.getElementById('clientsTable').innerHTML=data.map(u=>{
+  const pct = Math.round((u.conversations_used / u.conversations_limit)*100);
+  return `<tr class="border-t hover:bg-zinc-50 ${u.is_important?'bg-purple-50/50':''}">
+   <td class="p-3"><div class="font-bold flex items-center gap-2">${u.is_important?'⭐':''}${u.name}<span class="text- text-zinc-400">${u.is_important?'(مهم)':''}</span></div><div class="text-xs text-zinc-500">${u.phone} | يوزر: ${u.username} | باس: ${u.password}</div></td>
+   <td class="p-3"><select onchange="updateUser('${u.id}','plan',this.value)" class="border rounded-full px-2 py-1 text-xs"><option value="individual" ${u.plan==='individual'?'selected':''}>أفراد 89</option><option value="pro" ${u.plan==='pro'?'selected':''}>احترافي 189</option><option value="enterprise" ${u.plan==='enterprise'?'selected':''}>شركات 399</option></select></td>
+   <td class="p-3"><div class="text-xs">${u.conversations_used}/${u.conversations_limit} <span class="text- ${pct>80?'text-red-600':'text-green-600'}">(${pct}%)</span></div><div class="w-20 h-1.5 bg-zinc-200 rounded-full mt-1"><div class="h-1.5 bg-[#22c55e] rounded-full" style="width:${Math.min(pct,100)}%"></div></div><button onclick="editLimit('${u.id}')" class="text- text-blue-600 mt-1">تعديل</button></td>
+   <td class="p-3"><button onclick="toggleAI('${u.id}')" class="px-3 py-1 rounded-full text-xs font-bold ${u.ai_enabled?'bg-green-100 text-green-700':'bg-red-100 text-red-700'}">${u.ai_enabled?'مفعل ✅':'موقف ⛔'}</button></td>
+   <td class="p-3"><button onclick="toggleImportant('${u.id}')" class="px-3 py-1 rounded-full text-xs font-bold ${u.is_important?'bg-purple-600 text-white':'bg-zinc-100'}">${u.is_important?'مهم ⭐':'عادي'}</button></td>
+   <td class="p-3"><button onclick="toggleActive('${u.id}')" class="px-3 py-1 rounded-full text-xs font-bold ${u.is_active?'bg-green-100 text-green-700':'bg-zinc-200'}">${u.is_active?'نشط':'موقف'}</button></td>
+   <td class="p-3 flex gap-1"><button onclick="resetPass('${u.id}')" class="bg-zinc-900 text-white rounded-full px-2 py-1 text-">باسوورد</button><button onclick="delUser('${u.id}')" class="bg-red-50 text-red-600 rounded-full px-2 py-1 text-">حذف</button></td>
+  </tr>`;
+ }).join('');
 }
 
-loadOrders(); loadUsers(); loadProofs();
-setInterval(()=>{loadOrders(); loadUsers();}, 10000);
+async function updateUser(id, field, value){ await fetch('/api/users/update',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,field,value})}); loadClients(); loadStats(); }
+function toggleAI(id){ const u=allClients.find(x=>x.id===id); updateUser(id,'ai_enabled',!u.ai_enabled); }
+function toggleImportant(id){ const u=allClients.find(x=>x.id===id); updateUser(id,'is_important',!u.is_important); }
+function toggleActive(id){ const u=allClients.find(x=>x.id===id); updateUser(id,'is_active',!u.is_active); }
+async function resetPass(id){ const r=await fetch('/api/users/resetPass',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id})}); const d=await r.json(); alert('الباسوورد الجديد: '+d.password); loadClients(); }
+async function delUser(id){ if(!confirm('متأكد تحذف العميل؟')) return; await fetch('/api/users/delete',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id})}); loadClients(); loadStats(); }
+function editLimit(id){ const v=prompt('اكتب عدد المحادثات الجديد:'); if(v) updateUser(id,'conversations_limit',parseInt(v)); }
+function filterClients(){ const q=document.getElementById('search').value.toLowerCase(); renderClients(allClients.filter(u=>u.name.toLowerCase().includes(q)||u.phone.includes(q))); }
+function copyText(t){ navigator.clipboard.writeText(t); alert('تم النسخ ✅'); }
+function closeModal(){ document.getElementById('modal').classList.add('hidden'); }
+
+loadOrders(); loadStats(); setInterval(loadOrders,10000);
 </script>
 </body>
 </html>
