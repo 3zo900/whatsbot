@@ -8,76 +8,87 @@
 <style>
 body{font-family:'Tajawal',sans-serif;background:#f6fef8}
 .wa-bg{background:#e5ddd5 url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png')}
-.msg{max-width:78%;padding:8px 12px;border-radius:12px;font-size:13px;line-height:1.6;animation:pop.4s ease forwards;opacity:0;transform:translateY(10px)}
-.msg.client{background:white;border-top-right-radius:0;align-self:flex-start;box-shadow:0 1px.5px rgba(0,0,0,.13)}
-.msg.bot{background:#dcf8c6;border-top-left-radius:0;align-self:flex-end}
+.msg{max-width:80%;padding:10px 14px;border-radius:14px;font-size:13.5px;line-height:1.7;opacity:0;transform:translateY(8px);animation:pop.35s ease forwards}
+.msg.client{background:#fff;border-top-right-radius:0;align-self:flex-start;box-shadow:0 1px 1px rgba(0,0,0,.12)}
+.msg.bot{background:#dcf8c6;border-top-left-radius:0;align-self:flex-end;box-shadow:0 1px 1px rgba(0,0,0,.12)}
 @keyframes pop{to{opacity:1;transform:translateY(0)}}
 </style>
 </head>
 <body>
 
-<nav class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center sticky top-0 bg-white/90 backdrop-blur border-b z-50">
+<nav class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center sticky top-0 bg-white/95 backdrop-blur border-b z-50">
 <div class="flex items-center gap-3">
-<img src="logo.png" class="w-10 h-10 rounded-xl object-contain bg-[#f0fdf4] border border-green-100">
+<img src="logo.png" class="w-10 h-10 rounded-xl object-contain bg-[#f0fdf4] border">
 <div class="font-black text-[20px]">WhatsBot AI</div>
 </div>
-<a href="login.html" class="bg-zinc-900 text-white rounded-full px-6 py-2.5 font-bold text-sm">لوحة التحكم</a>
+<a href="login.html" class="bg-zinc-900 text-white rounded-full px-7 py-2.5 font-bold text-sm">لوحة التحكم</a>
 </nav>
 
-<section class="max-w-7xl mx-auto px-6 pt-12 pb-10 grid lg:grid-cols-2 gap-10 items-center">
-<div class="order-1 text-right">
-<div class="inline-flex bg-[#dcfce7] text-[#16a34a] px-4 py-1.5 rounded-full text-[12px] font-bold mb-5">🤖 مساعد واتساب بالذكاء الاصطناعي</div>
-<h1 class="text-[42px] md:text-[54px] font-black leading-[0.95]">حول واتساب<br><span class="text-[#22c55e]">متجرك</span> لمساعد<br>ذكي يبيع عنك</h1>
-<p class="text-[15px] text-zinc-600 mt-5 leading-7 max-w-[520px]">بوت ذكي يرد على العملاء 24/7، يحول المحادثات الصعبة لموظفيك، ويقيّم رضا العميل تلقائياً.</p>
-<div class="flex gap-3 mt-7">
+<section class="max-w-7xl mx-auto px-6 pt-14 pb-12 grid lg:grid-cols-2 gap-12 items-center">
+<!-- يمين: النص -->
+<div class="text-right">
+<div class="inline-flex bg-[#dcfce7] text-[#15803d] px-4 py-1.5 rounded-full text-[12px] font-bold mb-5">🤖 مساعد واتساب بالذكاء الاصطناعي - لهجة سعودية</div>
+<h1 class="text-[44px] md:text-[56px] font-black leading-[0.92]">
+عميلك يكتب لك<br>الساعة 3 الفجر؟<br><span class="text-[#22c55e]">WhatsBot يرد عنه</span><br>وانت نايم 😴
+</h1>
+<p class="text-[15px] text-zinc-600 mt-5 leading-7 max-w-[520px]">
+نفس كلامك اللي كان - بوت ذكي يرد على عملاءك 24/7، يحول المحادثات الصعبة لموظفيك، ويقيّم رضا العميل تلقائياً. شلنا البنفسجي وخليناه أخضر كامل.
+</p>
+<div class="flex gap-3 mt-8">
 <a href="login.html?plan=pro" class="bg-[#22c55e] text-black rounded-full px-8 py-3.5 font-black text-sm">ابدأ الآن - 199 ر.س</a>
-<a href="#demo" class="bg-white border rounded-full px-8 py-3.5 font-bold text-sm">شاهد المحادثة الحية 👈</a>
+<a href="#demo" class="bg-white border-2 border-zinc-900 rounded-full px-8 py-3.5 font-bold text-sm">شاهد المحادثة الحية 👈</a>
 </div>
+<div class="mt-6 text-[12px] text-zinc-500">✓ بدون رسوم تركيب ✓ تفعيل فوري ✓ لهجة سعودية</div>
 </div>
 
-<div id="demo" class="order-2">
-<div class="bg-white rounded-[2.2rem] shadow-[0_20px_60px_rgba(0,0,0,.15)] border-[10px] border-zinc-900 overflow-hidden max-w-[380px] mx-auto">
+<!-- يسار: واتساب متحرك -->
+<div id="demo">
+<div class="bg-zinc-900 rounded-[2.5rem] p-[10px] shadow-2xl max-w-[380px] mx-auto lg:mr-0">
+<div class="bg-white rounded-[2rem] overflow-hidden">
 <div class="bg-[#075e54] text-white px-4 py-3 flex items-center gap-3">
-<img src="logo.png" class="w-8 h-8 rounded-full bg-white p-1"><div class="flex-1"><div class="font-bold text-[13px]">WhatsBot AI 🤖</div><div class="text-[11px] opacity-80">متصل الآن</div></div>
+<img src="logo.png" class="w-8 h-8 rounded-full bg-white p-1">
+<div class="flex-1"><div class="font-bold text-[13px]">WhatsBot AI 🤖</div><div class="text-[11px] opacity-80">متصل الآن • يرد تلقائياً</div></div>
 </div>
-<div class="wa-bg h-[520px] p-4 flex flex-col gap-3 overflow-y-auto" id="chatBox"></div>
-<div class="bg-[#f0f0f0] p-2 flex items-center gap-2"><div class="flex-1 bg-white rounded-full px-4 py-2 text-[12px] text-zinc-400">اكتب رسالة...</div><div class="w-9 h-9 bg-[#22c55e] rounded-full flex items-center justify-center">➤</div></div>
+<div class="wa-bg h-[500px] p-4 flex flex-col gap-3 overflow-hidden" id="chatBox"></div>
+<div class="bg-[#f0f0f0] p-2.5 flex items-center gap-2"><div class="flex-1 bg-white rounded-full px-4 py-2.5 text-[12px] text-zinc-400">اكتب رسالة...</div><div class="w-9 h-9 bg-[#22c55e] rounded-full flex items-center justify-center text-white">➤</div></div>
 </div>
 </div>
-</section>
-
-<section id="pricing" class="max-w-5xl mx-auto px-6 pb-16">
-<h2 class="text-3xl font-black text-center mb-8">باقات تناسب كل متجر</h2>
-<div class="grid md:grid-cols-3 gap-6">
-<div class="bg-white border-2 rounded-[2rem] p-7"><div class="text-xs text-zinc-400">أفراد</div><div class="text-4xl font-black mt-3">99<span class="text-sm font-normal"> ر.س</span></div><a href="login.html?plan=individual" class="mt-6 block text-center border-2 border-zinc-900 rounded-full py-3 font-black text-sm">اختر - 99 ر.س</a></div>
-<div class="bg-zinc-900 text-white rounded-[2rem] p-7 relative"><div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#22c55e] text-black text-[10px] px-3 py-1 rounded-full font-black">الأكثر طلباً</div><div class="text-4xl font-black mt-3">199<span class="text-sm"> ر.س</span></div><a href="login.html?plan=pro" class="mt-6 block text-center bg-white text-zinc-900 rounded-full py-3 font-black text-sm">اختر - 199 ر.س</a></div>
-<div class="bg-white border-2 rounded-[2rem] p-7"><div class="text-xs text-zinc-400">شركات</div><div class="text-4xl font-black mt-3">399<span class="text-sm font-normal"> ر.س</span></div><a href="login.html?plan=enterprise" class="mt-6 block text-center border-2 border-zinc-900 rounded-full py-3 font-black text-sm">اختر - 399 ر.س</a></div>
 </div>
 </section>
 
-<footer class="text-center py-10 text-[12px] text-zinc-400 border-t bg-white"><div class="font-bold text-zinc-600">WhatsBot AI © 2026</div></footer>
+<section class="max-w-5xl mx-auto px-6 pb-20">
+<h2 class="text-3xl font-black text-center">باقات تناسب كل متجر</h2>
+<div class="grid md:grid-cols-3 gap-6 mt-8">
+<div class="bg-white border-2 rounded-[2rem] p-7"><div class="text-xs text-zinc-400">أفراد / متاجر</div><div class="text-4xl font-black mt-3">99<span class="text-sm"> ر.س/شهر</span></div><ul class="text-xs mt-6 space-y-2"><li>✓ 1000 محادثة</li><li>✓ موظف واحد</li><li>✓ رد ذكي بالسعودي</li></ul><a href="login.html?plan=individual" class="mt-6 block text-center border-2 border-zinc-900 rounded-full py-3 font-black text-sm">اختر - 99 ر.س</a></div>
+<div class="bg-zinc-900 text-white rounded-[2rem] p-7 relative border-2 border-[#22c55e]"><div class="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#22c55e] text-black text-[11px] px-4 py-1 rounded-full font-black">الأكثر طلباً 🔥</div><div class="text-4xl font-black mt-3">199<span class="text-sm text-white/60"> ر.س/شهر</span></div><ul class="text-xs mt-6 space-y-2 text-white/80"><li>✓ 5000 محادثة</li><li>✓ 3 موظفين</li><li>✓ تقييم رضا العملاء ⭐</li></ul><a href="login.html?plan=pro" class="mt-6 block text-center bg-[#22c55e] text-black rounded-full py-3 font-black text-sm">اختر - 199 ر.س</a></div>
+<div class="bg-white border-2 rounded-[2rem] p-7"><div class="text-xs text-zinc-400">شركات</div><div class="text-4xl font-black mt-3">399<span class="text-sm"> ر.س/شهر</span></div><ul class="text-xs mt-6 space-y-2"><li>✓ غير محدود</li><li>✓ موظفين غير محدود</li><li>✓ API + دومين خاص</li></ul><a href="login.html?plan=enterprise" class="mt-6 block text-center border-2 border-zinc-900 rounded-full py-3 font-black text-sm">اختر - 399 ر.س</a></div>
+</div>
+</section>
+
+<footer class="text-center py-8 text-[11px] text-zinc-400 border-t bg-white"><span class="font-bold text-zinc-700">WhatsBot AI © 2026</span> • الدعم: 966511515727</footer>
 
 <script>
-const msgs=[
-{type:'client', text:'السلام عليكم'},
-{type:'bot', text:'وعليكم السلام حياك الله في WhatsBot 👋 أنا المساعد الذكي كيف تبي اخدمك؟'},
-{type:'client', text:'أبي استفسر عن اسعار الباقات وايش الباقات اللي عندكم'},
-{type:'bot', text:'أبشر ولا يهمك، باخذ منك التفاصيل علشان اساعدك في اختيار الباقة وش نوع متجرك، وكم عدد الموظفين عندك؟'},
-{type:'client', text:'متجري عباره عن قطع غيار سيارات وعدد الموظفين 3'},
-{type:'bot', text:'ممتاز، بكذا انت تحتاج الباقة الاحترافية بسعر 199 ريال في الشهر، حاب احولك على الموظف؟'}
+const chat=[
+{type:'client', t:'السلام عليكم'},
+{type:'bot', t:'وعليكم السلام حياك الله في WhatsBot 👋\nانا المساعد الذكي كيف تبي اخدمك'},
+{type:'client', t:'ابي استفسر عن اسعار الباقات وايش الباقات اللي عندكم'},
+{type:'bot', t:'ابشر ولا يهمك، باخذ منك التفاصيل علشان اساعدك في اختيار الباقة\nوش نوع متجرك، وكم عدد الموظفين عندك؟'},
+{type:'client', t:'متجري عباره عن قطع غيار سيارات وعدد الموظفين 3'},
+{type:'bot', t:'ممتاز، بكذا انت تحتاج الباقة الاحترافية بسعر 199 ريال في الشهر، حاب احولك على الموظف؟'}
 ];
-let i=0;
-function addMsg(){
- if(i>=msgs.length){ setTimeout(()=>{ document.getElementById('chatBox').innerHTML=''; i=0; addMsg(); }, 6000); return; }
- const m=msgs[i];
- const div=document.createElement('div');
- div.className='msg '+m.type;
- div.innerHTML=m.text+'<div class="text-[9px] opacity-50 mt-1">✓✓ '+new Date().toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'})+'</div>';
- document.getElementById('chatBox').appendChild(div);
+let idx=0;
+function push(){
+ if(idx>=chat.length){ setTimeout(()=>{ document.getElementById('chatBox').innerHTML=''; idx=0; push(); }, 5000); return; }
+ const m=chat[idx];
+ const d=document.createElement('div');
+ d.className='msg '+m.type;
+ d.innerHTML=m.t.replace(/\n/g,'<br>')+`<div class="text-[9px] opacity-50 mt-1 text-left">✓✓ ${new Date().toLocaleTimeString('ar-SA',{hour:'2-digit',minute:'2-digit'})}</div>`;
+ document.getElementById('chatBox').appendChild(d);
  document.getElementById('chatBox').scrollTop=9999;
- i++; setTimeout(addMsg, 1400);
+ idx++;
+ setTimeout(push, 1500);
 }
-addMsg();
+push();
 </script>
 </body>
 </html>
