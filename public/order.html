@@ -2,72 +2,91 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>WhatsBot.sa - اطلب الآن</title>
+<title>WhatsBot.sa - طلب اشتراك</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800;900&display=swap" rel="stylesheet">
-<style>body{font-family:Tajawal;background:#fff}.type-btn.active{background:#111827!important;color:#fff!important;border-color:#111827!important}</style>
+<style>
+body{font-family:Tajawal}
+.type-btn.active{background:#111827!important;color:#fff!important;border-color:#111827!important;transform:scale(1.02)}
+.success-modal{backdrop-filter:blur(10px)}
+</style>
 </head>
-<body class="bg-white min-h-screen">
+<body class="bg-white">
 
-<div class="bg-[#0f2e26] text-white text-center py-8 px-6">
+<!-- HEADER -->
+<div class="bg-[#0f2e26] text-white text-center py-7 px-6">
 <div class="inline-flex bg-white/10 text-xs px-3 py-1 rounded-full mb-3">189 ر.س / شهر - احترافي الأكثر طلباً</div>
-<h1 class="text-2xl font-black leading-tight">جاهز تخلي عملاءك يلاقوا رد فوري؟</h1>
-<p class="text-white/60 text-xs mt-2">عبّ بياناتك تحت وبنكلمك خلال ساعتين على الواتساب</p>
+<h1 class="text-[22px] font-black">جاهز تخلي عملاءك يلاقوا رد فوري؟</h1>
 </div>
 
-<div class="max-w-[600px] mx-auto p-6">
+<div class="max-w-[600px] mx-auto p-6 pb-20">
 
 <label class="font-bold text-sm">اسمك الكريم</label>
-<input id="c_name" value="منى محمد" placeholder="مثال: ناصر محمد" class="w-full bg-[#fdf6e9] border border-[#f0e6d3] rounded-2xl px-5 py-4 mt-2 text-sm focus:border-zinc-900 outline-none">
+<input id="c_name" placeholder="مثال: منى محمد" class="w-full bg-[#fdf6e9] border border-[#f0e6d3] rounded-2xl px-5 py-4 mt-2 text-sm focus:border-zinc-900 outline-none">
 
 <label class="font-bold text-sm mt-6 block">رقم الواتساب اللي بنتواصل معك عليه</label>
 <div class="flex gap-3 mt-2">
-<div class="bg-[#fdf6e9] border border-[#f0e6d3] rounded-2xl px-4 py-4 text-sm flex items-center gap-2 whitespace-nowrap">🇸🇦 السعودية +966</div>
-<input id="c_phone" value="510015157" placeholder="5XXXXXXXX" class="flex-1 bg-[#fdf6e9] border border-[#f0e6d3] rounded-2xl px-5 py-4 text-sm focus:border-zinc-900 outline-none">
+<div class="bg-[#fdf6e9] border border-[#f0e6d3] rounded-2xl px-4 py-4 text-sm flex items-center gap-1">🇸🇦 السعودية +966</div>
+<input id="c_phone" value="510015157" placeholder="5XXXXXXXX" class="flex-1 bg-[#fdf6e9] border border-[#f0e6d3] rounded-2xl px-5 py-4 text-sm outline-none">
 </div>
 
 <label class="font-bold text-sm mt-6 block">وش نوع نشاطك؟</label>
 <div class="grid grid-cols-2 gap-3 mt-3">
-<button data-type="متجر" class="type-btn bg-[#fdf6e9] border border-[#f0e6d3] rounded-2xl py-4 text-sm font-bold transition">محل / متجر</button>
-<button data-type="عيادة" class="type-btn bg-[#fdf6e9] border border-[#f0e6d3] rounded-2xl py-4 text-sm font-bold transition">عيادة / مركز طبي</button>
-<button data-type="مطعم" class="type-btn bg-[#fdf6e9] border border-[#f0e6d3] rounded-2xl py-4 text-sm font-bold transition">مطعم / كافيه</button>
-<button data-type="عقاري" class="type-btn bg-[#fdf6e9] border border-[#f0e6d3] rounded-2xl py-4 text-sm font-bold transition">مكتب عقاري</button>
+<button data-type="محل / متجر" class="type-btn bg-[#fdf6e9] border border-[#f0e6d3] rounded-2xl py-4 text-sm font-bold transition">محل / متجر</button>
+<button data-type="عيادة / مركز طبي" class="type-btn bg-[#fdf6e9] border border-[#f0e6d3] rounded-2xl py-4 text-sm font-bold transition">عيادة / مركز طبي</button>
+<button data-type="مكتب عقاري" class="type-btn bg-[#fdf6e9] border border-[#f0e6d3] rounded-2xl py-4 text-sm font-bold transition">مكتب عقاري</button>
+<button data-type="مطعم / كافيه" class="type-btn bg-[#fdf6e9] border border-[#f0e6d3] rounded-2xl py-4 text-sm font-bold transition">مطعم / كافيه</button>
 <button data-type="خدمات أخرى" class="type-btn col-span-2 bg-[#fdf6e9] border border-[#f0e6d3] rounded-2xl py-4 text-sm font-bold transition">خدمات أخرى</button>
 </div>
 
 <label class="font-bold text-sm mt-6 block">وش أكثر شي متعبك في الرد على العملاء؟ (اختياري)</label>
-<textarea id="c_challenge" placeholder="مثال: ما ألحق أرد على كل العملاء وتروح علي مبيعات كثيرة..." class="w-full bg-[#fdf6e9] border border-[#f0e6d3] rounded-2xl px-5 py-4 mt-2 text-sm h-24 resize-none focus:border-zinc-900 outline-none"></textarea>
+<textarea id="c_challenge" placeholder="مثال: ما ألحق أرد على كل العملاء وتروح علي مبيعات كثيرة..." class="w-full bg-[#fdf6e9] border border-[#f0e6d3] rounded-2xl px-5 py-4 mt-2 text-sm h-[90px] resize-none outline-none"></textarea>
 
-<button id="submitBtn" onclick="submitOrder()" class="w-full bg-zinc-900 hover:bg-black text-white rounded-full py-4 font-black text-sm mt-8 transition">✅ إرسال الطلب - بنكلمك واتساب</button>
-<div id="msg" class="text-center text-xs mt-3"></div>
+<button id="submitBtn" onclick="submitOrder()" class="w-full bg-zinc-900 hover:bg-black text-white rounded-full py-4 font-black text-sm mt-8">✅ إرسال الطلب - بنكلمك واتساب</button>
 
-<div class="text-center text-[11px] text-zinc-400 mt-6">© WhatsBot.sa 2026 - بإدارة ناصر محمد</div>
+<div id="err" class="text-center text-xs mt-3 text-red-500 hidden"></div>
+<div class="text-center text-[11px] text-zinc-400 mt-8">© WhatsBot.sa 2026 - بإدارة ناصر محمد</div>
+</div>
+
+<!-- رسالة النجاح -->
+<div id="successModal" class="fixed inset-0 bg-black/60 success-modal hidden items-center justify-center p-6 z-[100]">
+<div class="bg-white rounded-[2rem] p-8 w-full max-w-[380px] text-center shadow-2xl animate-[bounce_0.5s]">
+<div class="w-16 h-16 bg-[#22c55e] rounded-full mx-auto flex items-center justify-center text-white text-2xl">✓</div>
+<h2 class="font-black text-xl mt-4">تم إرسال طلبك ✅</h2>
+<p class="text-sm text-zinc-600 mt-3 leading-6">سيتم التواصل معك على الواتساب المسجل من قبل فريق خدمة العملاء في أقرب وقت ممكن</p>
+<div class="mt-2 text-xs text-zinc-400">رقمك: <span id="sentPhone" class="font-bold"></span></div>
+<button onclick="closeSuccess()" class="w-full bg-zinc-900 text-white rounded-full py-3 mt-6 text-sm font-bold">تمام 👍</button>
+</div>
 </div>
 
 <script>
 let selectedType = '';
-
 document.querySelectorAll('.type-btn').forEach(btn=>{
-  btn.addEventListener('click', ()=>{
+  btn.addEventListener('click',()=>{
     document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('active'));
     btn.classList.add('active');
     selectedType = btn.dataset.type;
   });
 });
 
+function closeSuccess(){
+  document.getElementById('successModal').classList.add('hidden');
+  document.getElementById('successModal').classList.remove('flex');
+}
+
 async function submitOrder(){
   const name = document.getElementById('c_name').value.trim();
   const phone = document.getElementById('c_phone').value.trim();
   const challenge = document.getElementById('c_challenge').value.trim();
-  const msg = document.getElementById('msg');
+  const err = document.getElementById('err');
   const btn = document.getElementById('submitBtn');
 
-  if(!name){ msg.innerText='❌ اكتب اسمك'; msg.className='text-center text-xs mt-3 text-red-500'; return; }
-  if(!phone || phone.length < 8){ msg.innerText='❌ اكتب رقم واتساب صحيح'; msg.className='text-center text-xs mt-3 text-red-500'; return; }
-  if(!selectedType){ msg.innerText='❌ اختر نوع نشاطك'; msg.className='text-center text-xs mt-3 text-red-500'; return; }
+  err.classList.add('hidden');
+  if(!name){ err.innerText='❌ اكتب اسمك الكريم'; err.classList.remove('hidden'); return; }
+  if(!phone || phone.length < 8){ err.innerText='❌ اكتب رقم واتساب صحيح'; err.classList.remove('hidden'); return; }
+  if(!selectedType){ err.innerText='❌ اختر نوع نشاطك'; err.classList.remove('hidden'); return; }
 
   btn.innerText='⏳ جاري الإرسال...'; btn.disabled=true;
-  msg.innerText='';
 
   try{
     const res = await fetch('/api/orders',{
@@ -77,19 +96,24 @@ async function submitOrder(){
     });
     const data = await res.json();
     if(data.success){
-      msg.innerText='✅ تم الإرسال! بنكلمك واتساب خلال ساعتين';
-      msg.className='text-center text-xs mt-3 text-green-600';
+      // إظهار رسالة النجاح المطلوبة
+      document.getElementById('sentPhone').innerText = '966'+phone;
+      document.getElementById('successModal').classList.remove('hidden');
+      document.getElementById('successModal').classList.add('flex');
       btn.innerText='✅ تم الإرسال';
-      // تحويل واتساب تلقائي بعد ثانيتين
-      setTimeout(()=>{
-        window.location.href = `https://wa.me/966510015157?text=${encodeURIComponent('مرحبا، طلبت باقة WhatsBot - اسمي: '+name+' - نشاطي: '+selectedType)}`;
-      }, 1500);
+      // تصفير الحقول
+      document.getElementById('c_name').value='';
+      document.getElementById('c_phone').value='';
+      document.getElementById('c_challenge').value='';
+      document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('active'));
+      selectedType='';
     }else{
-      msg.innerText='❌ حدث خطأ حاول مرة ثانية'; msg.className='text-center text-xs mt-3 text-red-500';
+      err.innerText='❌ حدث خطأ حاول مرة ثانية'; err.classList.remove('hidden');
       btn.innerText='إرسال الطلب - بنكلمك واتساب'; btn.disabled=false;
     }
   }catch(e){
-    msg.innerText='❌ مشكلة في الاتصال'; btn.innerText='إرسال الطلب'; btn.disabled=false;
+    err.innerText='❌ مشكلة في الاتصال'; err.classList.remove('hidden');
+    btn.innerText='إرسال الطلب'; btn.disabled=false;
   }
 }
 </script>
