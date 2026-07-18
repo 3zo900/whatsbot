@@ -2,10 +2,23 @@ const express = require('express');
 const cors = require('cors');
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 10000;
 const OFFICIAL_WA_NUMBER = '966511515727';
+
+const STORAGE_PATH = path.join(__dirname, 'uploads');
+if(!fs.existsSync(STORAGE_PATH)) fs.mkdirSync(STORAGE_PATH, {recursive:true});
+
+const storage = multer.diskStorage({
+ destination: (req,file,cb)=> cb(null, STORAGE_PATH),
+ filename: (req,file,cb)=> {
+  const ext = path.extname(file.originalname);
+  cb(null, Date.now() + '-' + Math.round(Math.random()*1E9) + ext);
+ }
+});
+const upload = multer({storage: storage});
 
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY || 'sk_test_51YourSecretKeyHere';
 let stripe = null;
@@ -19,7 +32,7 @@ try{
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
-const upload = multer({dest:'uploads/'});
+app.use('/uploads', express.static(STORAGE_PATH));
 
 let proofs = [];
 let users = [];
@@ -37,23 +50,8 @@ const PLANS = {
  enterprise:{name:'شركات', price:39900, priceSAR:399}
 };
 
-app.post('/api/create-checkout-session', async (req,res)=>{
- const {plan, customerName, customerEmail, customerPhone} = req.body;
- const selected = PLANS[plan]||PLANS.pro;
- if(!stripe) return res.json({demo:true});
- try{
-  const session = await stripe.checkout.sessions.create({
-   payment_method_types: ['card'],
-   line_items:[{price_data:{currency:'sar',product_data:{name:`WhatsBot.sa - ${selected.name}`},unit_amount:selected.price},quantity:1}],
-   mode:'payment', customer_email: customerEmail, metadata:{plan, customerName, customerPhone},
-   success_url: `${req.headers.origin}/success.html?session_id={CHECKOUT_SESSION_ID}`,
-   cancel_url: `${req.headers.origin}/cancel.html`,
-  });
-  res.json({id: session.id, url: session.url});
- }catch(e){ res.status(500).json({error:e.message}); }
-});
-
 app.post('/api/payment-proof', upload.single('receipt'), (req,res)=>{
+ const fileUrl = req.file? `/uploads/${req.file.filename}` : '';
  const data = {
   id: Date.now().toString(),
   fullName: req.body.companyName,
@@ -65,15 +63,19 @@ app.post('/api/payment-proof', upload.single('receipt'), (req,res)=>{
   company: req.body.company,
   plan: req.body.plan||'pro',
   file: req.file?.originalname||'',
+  fileUrl: fileUrl,
+  filePath: req.file?.filename||'',
   status:'pending',
   createdAt: new Date().toISOString()
  };
  proofs.push(data);
- console.log('📥 New proof:', data.email, '-> will notify', OFFICIAL_WA_NUMBER);
- res.json({success:true, id:data.id});
+ console.log('📥 New proof with receipt:', data.email, fileUrl, '-> notify', OFFICIAL_WA_NUMBER);
+ res.json({success:true, id:data.id, fileUrl:fileUrl});
 });
 
-app.get('/api/payment-proofs', (req,res)=> res.json(proofs.reverse()));
+app.get('/api/payment-proofs', (req,res)=>{
+ res.json(proofs.slice().reverse());
+});
 
 app.post('/api/admin/approve', (req,res)=>{
  const {id}=req.body;
@@ -82,24 +84,19 @@ app.post('/api/admin/approve', (req,res)=>{
   const password = generatePassword(10);
   p.password = password;
   p.status='approved';
-  p.approvedAt = new Date().toISOString();
   const user = {
    id: p.id, fullName: p.fullName||p.companyName, email: p.customerEmail||p.email,
    phone: p.customerPhone||p.phone, plan: p.plan, password: password,
-   status:'approved', createdAt: new Date().toISOString(), paid: true
+   status:'approved', fileUrl: p.fileUrl, createdAt: new Date().toISOString(), paid: true
   };
   users.push(user);
   const cleanPhone = (p.customerPhone||p.phone||'').replace(/[^0-9]/g,'');
   const waMsg = `✅ تم تفعيل حسابك في WhatsBot.sa!
-
 🔐 بيانات الدخول:
 📧 الإيميل: ${user.email}
 🔑 الرقم السري: ${password}
-
-🌐 رابط الدخول:
-https://whatsbot.sa/client-dashboard.html
-
-رقم الدعم الرسمي: ${OFFICIAL_WA_NUMBER}`;
+🌐 https://whatsbot.sa/client-dashboard.html
+📞 الدعم: ${OFFICIAL_WA_NUMBER}`;
   const waUrl = `https://wa.me/${cleanPhone}?text=${encodeURIComponent(waMsg)}`;
   return res.json({success:true, password, email:user.email, waUrl});
  }
@@ -112,4 +109,4 @@ app.post('/api/admin/reject', (req,res)=>{
 });
 
 app.get('*', (req,res)=> res.sendFile(path.join(__dirname, 'public', 'index.html')));
-app.listen(PORT, ()=> console.log(`🚀 Server on ${PORT} - WA ${OFFICIAL_WA_NUMBER}`));
+app.listen(PORT, ()=> console.log(`🚀 Server on ${PORT} - Receipts at /uploads - WA ${OFFICIAL_WA_NUMBER}`));
