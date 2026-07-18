@@ -10,27 +10,25 @@
 <body class="bg-[#faf8ff] min-h-screen flex items-center justify-center p-6">
 <div class="w-full max-w-[420px]">
 <div class="text-center mb-8">
-<img src="logo.png" alt="WB" class="w-20 h-20 mx-auto object-contain">
+<img src="logo.png" class="w-16 h-16 rounded-2xl mx-auto object-contain bg-white border">
 <h1 class="font-black text-2xl mt-4">مرحباً بعودتك</h1>
-<p class="text- text-zinc-500 mt-1">سجل دخولك للوحة تحكم WhatsBot</p>
+<p class="text-[13px] text-zinc-500 mt-1">سجل دخولك للوحة تحكم WhatsBot</p>
 </div>
 
-<div class="bg-white border border-zinc-200 rounded- p-8 shadow-sm">
+<div class="bg-white border border-zinc-200 rounded-[2rem] p-8 shadow-sm">
 <div class="space-y-4">
-<input id="email" type="email" placeholder="البريد الإلكتروني" class="w-full border border-zinc-200 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-zinc-900">
+<input id="email" type="text" placeholder="اسم المستخدم أو الجوال" class="w-full border border-zinc-200 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-zinc-900">
 <input id="pass" type="password" placeholder="كلمة المرور" class="w-full border border-zinc-200 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-zinc-900">
 <button onclick="login()" class="w-full bg-zinc-900 text-white rounded-full py-3.5 font-black text-sm mt-2">تسجيل الدخول</button>
-<div class="relative my-4"><div class="border-t"></div><span class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white px-3 text- text-zinc-400">أو</span></div>
-<button onclick="location.href='pay.html?plan=pro'" class="w-full bg-white border border-zinc-200 rounded-full py-3.5 font-bold text-sm">ليس لديك حساب؟ اشترك الآن</button>
-<div id="msg" class="text- text-center mt-3"></div>
+<div id="msg" class="text-[12px] text-center mt-3"></div>
 </div>
 </div>
 
 <div class="text-center mt-6">
-<a href="index.html" class="text- text-zinc-500 hover:text-zinc-900">← العودة للرئيسية</a>
+<a href="index.html" class="text-[12px] text-zinc-500 hover:text-zinc-900">← العودة للرئيسية</a>
 </div>
 
-<div class="text-center mt-6 text- text-zinc-500 font-bold">WhatsBot AI © 2026</div>
+<div class="text-center mt-4 text-[10px] text-zinc-400">© 2026 WhatsBot.sa</div>
 </div>
 
 <script>
@@ -38,9 +36,13 @@ function login(){
  const e = document.getElementById('email').value;
  const p = document.getElementById('pass').value;
  const msg = document.getElementById('msg');
- if(!e ||!p){ msg.innerText='❌ ادخل البريد وكلمة المرور'; msg.className='text- text-center mt-3 text-red-500'; return; }
+ if(!e ||!p){ msg.innerText='❌ ادخل اسم المستخدم وكلمة المرور'; msg.className='text-[12px] text-center mt-3 text-red-500'; return; }
  msg.innerText='⏳ جاري تسجيل الدخول...';
- setTimeout(()=>{ localStorage.setItem('wb_current_email', e); location.href='dashboard.html'; }, 800);
+ msg.className='text-[12px] text-center mt-3 text-zinc-500';
+ setTimeout(()=>{
+   localStorage.setItem('wb_user', e);
+   location.href='dashboard.html';
+ }, 800);
 }
 </script>
 </body>
