@@ -1,6 +1,5 @@
 const express = require('express');
 const cors = require('cors');
-const multer = require('multer');
 const path = require('path');
 
 const app = express();
@@ -9,54 +8,51 @@ const PORT = process.env.PORT || 10000;
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
-const upload = multer({dest:'uploads/'});
 
 let orders = [];
 let users = [];
-let proofs = [];
 
 const PLANS = {
-  individual:{name:'أفراد / متاجر', limit:600, price:89},
-  pro:{name:'احترافي', limit:3000, price:189},
-  enterprise:{name:'شركات / مؤسسات', limit:999999, price:399}
+ individual:{name:'أفراد / متاجر', limit:600, price:89},
+ pro:{name:'احترافي', limit:3000, price:189},
+ enterprise:{name:'شركات / مؤسسات', limit:999999, price:399}
 };
 
 function genPass(){ return Math.random().toString(36).slice(-8).toUpperCase(); }
 
-// الطلبات
 app.post('/api/orders',(req,res)=>{
-  const o={ 
-    id: Date.now().toString(), 
-    name:req.body.name, 
-    phone:req.body.phone, 
-    type:req.body.type, 
-    challenge:req.body.challenge||'', 
-    plan:req.body.plan||'pro', 
-    status:'new', 
-    createdAt:new Date().toISOString() 
-  };
+  const o={ id: Date.now().toString(), name:req.body.name, phone:req.body.phone, type:req.body.type, challenge:req.body.challenge||'', plan:req.body.plan||'pro', status:'new', createdAt:new Date().toISOString() };
   orders.push(o);
   res.json({success:true});
 });
 app.get('/api/orders',(req,res)=> res.json(orders.slice().reverse()));
 
-// تفعيل مباشر بدون ايميل - يولد يوزر وباسوورد
 app.post('/api/orders/activate',(req,res)=>{
-  const {id}=req.body;
-  const o=orders.find(x=>x.id===id);
+  const o=orders.find(x=>x.id===req.body.id);
   if(!o) return res.json({success:false});
-  
-  const limit = PLANS[o.plan]?.limit||600;
-  const user={
-    id: Date.now().toString(),
-    name: o.name,
-    phone: o.phone,
-    username: o.phone.replace(/\D/g,'').slice(-9),
-    password: genPass(),
-    plan: o.plan,
-    planName: PLANS[o.plan]?.name,
-    conversations_limit: limit,
-    conversations_used: 0,
-    ai_enabled: true,
-    is_important: false,
-    is
+  const user={ id: Date.now().toString(), name:o.name, phone:o.phone, username:o.phone.replace(/\D/g,'').slice(-9), password:genPass(), plan:o.plan, planName:PLANS[o.plan]?.name, conversations_limit:PLANS[o.plan]?.limit||600, conversations_used:0, ai_enabled:true, is_important:false, is_active:true, createdAt:new Date().toISOString() };
+  users.push(user);
+  o.status='activated'; o.generatedUser=user;
+  res.json({success:true,user});
+});
+
+app.get('/api/users',(req,res)=> res.json(users.slice().reverse()));
+app.get('/api/stats',(req,res)=>{
+  const totalRevenue = users.reduce((s,u)=>s+(PLANS[u.plan]?.price||0),0);
+  res.json({ totalOrders:orders.length, pendingOrders:orders.filter(o=>o.status==='new').length, totalClients:users.length, activeClients:users.filter(u=>u.is_active).length, importantClients:users.filter(u=>u.is_important).length, totalRevenue });
+});
+
+app.post('/api/users/update',(req,res)=>{
+  const u=users.find(x=>x.id===req.body.id);
+  if(!u) return res.json({success:false});
+  const {field,value}=req.body;
+  if(field==='plan'){ u.plan=value; u.planName=PLANS[value]?.name; u.conversations_limit=PLANS[value]?.limit; }
+  else { u[field]=value; }
+  res.json({success:true});
+});
+
+app.post('/api/users/delete',(req,res)=>{ users=users.filter(x=>x.id!==req.body.id); res.json({success:true}); });
+app.post('/api/users/resetPass',(req,res)=>{ const u=users.find(x=>x.id===req.body.id); if(!u) return res.json({success:false}); u.password=genPass(); res.json({success:true,password:u.password}); });
+
+app.get('*',(req,res)=> res.sendFile(path.join(__dirname, 'public', 'index.html')));
+app.listen(PORT, ()=> console.log(`🚀 Server running on ${PORT}`));
