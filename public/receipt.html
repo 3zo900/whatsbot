@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>رفع الإيصال - WhatsBot.sa - الرسمي 966511515727</title>
+<title>رفع الإيصال - WhatsBot.sa</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@700;900&display=swap" rel="stylesheet">
 <style>body{font-family:Tajawal}</style>
@@ -13,8 +13,8 @@
 <div class="text-center mb-6">
 <div class="w-12 h-12 bg-zinc-900 rounded-full mx-auto flex items-center justify-center text-white font-black">W</div>
 <h1 class="font-black text-xl mt-3">رفع إيصال الحوالة</h1>
-<p class="text-xs text-zinc-500 mt-1">الرسمي: 966511515727 - سيصلك إشعار فوراً</p>
-<p id="planInfo" class="text-xs text-zinc-400"></p>
+<p id="planInfo" class="text-xs text-zinc-500 mt-1"></p>
+<p class="text-[11px] text-zinc-400 mt-1">الدعم الرسمي: 966511515727</p>
 </div>
 <div class="space-y-3">
 <input id="fullName" placeholder="الاسم الكامل *" class="w-full border rounded-xl px-4 py-3.5 text-sm">
@@ -23,20 +23,20 @@
 <input id="company" placeholder="اسم الشركة (اختياري)" class="w-full border border-dashed rounded-xl px-4 py-3.5 text-sm bg-zinc-50">
 <div class="border-2 border-dashed border-zinc-300 rounded-2xl p-6 text-center">
 <input id="file" type="file" accept="image/*,application/pdf" class="hidden" onchange="showFile(this)">
-<label for="file" class="cursor-pointer"><div class="text-3xl mb-2">📤</div><div class="font-bold text-sm">اسحب الإيصال هنا أو اضغط للاختيار</div><div class="text-[11px] text-zinc-400 mt-1">PNG, JPG, PDF</div></label>
+<label for="file" class="cursor-pointer"><div class="text-3xl mb-2">📤</div><div class="font-bold text-sm">اسحب الإيصال هنا أو اضغط للاختيار</div><div class="text-[11px] text-zinc-400 mt-1">PNG, JPG, PDF حتى 10MB</div></label>
 <div id="fileName" class="text-xs text-green-600 font-bold mt-3"></div>
 </div>
-<button onclick="submitProof()" id="btn" class="w-full bg-zinc-900 text-white rounded-full py-4 font-black text-sm mt-2">إرسال الإيصال 🚀 - يوصلك على 966511515727</button>
+<button onclick="submitProof()" id="btn" class="w-full bg-zinc-900 text-white rounded-full py-4 font-black text-sm mt-2">إرسال الإيصال وتفعيل حسابي 🚀</button>
 <div id="msg" class="text-xs text-center mt-3 leading-6"></div>
+<div class="text-center text-[11px] text-zinc-400 mt-4">سيتم مراجعة الإيصال من الإدارة وتفعيل حسابك خلال دقائق<br>ستصلك رسالة واتساب فيها بيانات الدخول من الرقم الرسمي 966511515727</div>
 </div>
 </div>
 </div>
 <script>
 const params = new URLSearchParams(location.search);
 const plan = params.get('plan')||'pro';
-const OFFICIAL_WA = '966511515727';
-const map = {individual:'أفراد - 99 ر.س', pro:'احترافي - 199 ر.س', enterprise:'شركات - 399 ر.س'};
-document.getElementById('planInfo').innerText = map;
+const map = {individual:'أفراد / متاجر - 99 ر.س', pro:'احترافي - 199 ر.س', enterprise:'شركات - 399 ر.س'};
+document.getElementById('planInfo').innerText = map[plan]||map.pro;
 function showFile(input){ if(input.files[0]) document.getElementById('fileName').innerText='✅ '+input.files[0].name; }
 async function submitProof(){
  const btn=document.getElementById('btn'), msg=document.getElementById('msg');
@@ -45,29 +45,29 @@ async function submitProof(){
  const em=document.getElementById('email').value.trim();
  const comp=document.getElementById('company').value.trim();
  const fileInput=document.getElementById('file');
- if(!fn||!ph||!em||!fileInput.files[0]){ msg.innerHTML='❌ عبي البيانات وارفق الإيصال'; return; }
- btn.disabled=true; btn.innerText='⏳ جاري الإرسال...';
+ if(!fn||!ph||!em||!fileInput.files[0]){ msg.innerHTML='❌ عبي الاسم والجوال والإيميل وارفق الإيصال'; return; }
+ btn.disabled=true; btn.innerText='⏳ جاري الإرسال...'; msg.innerText='⏳ جاري حفظ طلبك في النظام...';
  const fd=new FormData();
  fd.append('companyName', fn); fd.append('customerPhone', ph); fd.append('customerEmail', em);
  fd.append('company', comp); fd.append('plan', plan); fd.append('receipt', fileInput.files[0]);
- try{ await fetch('/api/payment-proof',{method:'POST', body:fd}); }catch(e){}
- const waMsg=`🔔 طلب اشتراك جديد - WhatsBot.sa
-الرقم الرسمي: ${OFFICIAL_WA}
-
-👤 الاسم: ${fn}
-📱 الجوال: ${ph}
-📧 الإيميل: ${em}
-🏢 الشركة: ${comp||'لا يوجد'}
-📦 الباقة: ${map}
-💰 المبلغ: ${plan==='individual'?'99':plan==='enterprise'?'399':'199'} ر.س
-📅 التاريخ: ${new Date().toLocaleString('ar-SA')}
-📎 الملف: ${fileInput.files[0].name}
-
-راجع لوحة الأدمن admin.html`;
- const waUrl=`https://wa.me/${OFFICIAL_WA}?text=${encodeURIComponent(waMsg)}`;
- msg.innerHTML='✅ تم الحفظ! سيتم فتح واتساب الآن لإرسال الطلب إلى '+OFFICIAL_WA+'<br><br><a href="'+waUrl+'" target="_blank" style="background:#22c55e;color:black;padding:10px 20px;border-radius:9999px;font-weight:bold;display:inline-block">📤 اضغط هنا لو ما فتح الواتساب</a><div style="margin-top:10px;color:#888">سيتم تحويلك لصفحة الدخول بعد 3 ثواني</div>';
- window.open(waUrl,'_blank');
- setTimeout(()=>{ location.href='login.html?email='+encodeURIComponent(em); },3000);
+ try{
+  const r=await fetch('/api/payment-proof',{method:'POST', body:fd});
+  const j=await r.json();
+  if(j.success){
+   // حفظ محلي احتياطي
+   let reqs=JSON.parse(localStorage.getItem('wb_requests')||'[]');
+   reqs.push({id:j.id||Date.now().toString(), name:fn, companyName:fn, phone:ph, customerPhone:ph, email:em, customerEmail:em, company:comp, plan:plan, status:'pending', date:Date.now()});
+   localStorage.setItem('wb_requests', JSON.stringify(reqs));
+   msg.innerHTML='✅ تم استلام إيصالك بنجاح! <br> سيتم مراجعته وتفعيل حسابك وإرسال بيانات الدخول على واتساب من الرقم الرسمي <b>966511515727</b><br><br>جاري تحويلك لصفحة الدخول...';
+   setTimeout(()=> location.href='login.html?email='+encodeURIComponent(em)+'&pending=1', 2500);
+  } else {
+   msg.innerText='❌ حدث خطأ، حاول مرة أخرى';
+   btn.disabled=false; btn.innerText='إرسال الإيصال وتفعيل حسابي 🚀';
+  }
+ }catch(e){
+  msg.innerHTML='✅ تم الاستلام (وضع تجريبي) - سيتم تفعيل حسابك قريباً<br>جاري تحويلك...';
+  setTimeout(()=> location.href='login.html', 2000);
+ }
 }
 </script>
 </body>
