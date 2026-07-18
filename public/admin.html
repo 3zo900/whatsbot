@@ -2,25 +2,24 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>لوحة الأدمن - WhatsBot.sa - الرسمي 966511515727</title>
+<title>لوحة الأدمن - مع عرض الإيصال - 966511515727</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800;900&display=swap" rel="stylesheet">
-<style>body{font-family:'Tajawal',sans-serif} @keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}.pulse{animation:pulse 1s infinite}</style>
+<style>body{font-family:'Tajawal',sans-serif}</style>
 </head>
 <body class="bg-[#0a0a0f] text-white min-h-screen">
 <div id="loginScreen" class="min-h-screen flex items-center justify-center p-6">
 <div class="w-full max-w-[400px]">
 <div class="text-center mb-8">
 <div class="w-20 h-20 bg-[#22c55e] rounded-[1.5rem] mx-auto flex items-center justify-center text-white font-black text-2xl">WB</div>
-<h1 class="font-black text-2xl mt-5">لوحة تحكم الأدمن</h1>
-<p class="text-[12px] text-white/50 mt-1">الرقم الرسمي: 966511515727 🔒</p>
+<h1 class="font-black text-2xl mt-5">لوحة الأدمن - عرض الإيصالات</h1>
+<p class="text- text-white/50 mt-1">الرسمي: 966511515727</p>
 </div>
-<div class="bg-white/[0.06] border border-white/10 rounded-[2rem] p-8">
+<div class="bg-white/[0.06] border border-white/10 rounded- p-8">
 <div class="space-y-4">
-<input id="adminEmail" type="email" value="az.behlal@gmail.com" class="w-full bg-white/[0.06] border border-white/10 rounded-xl px-4 py-3.5 text-sm text-white outline-none" placeholder="البريد">
-<input id="adminPass" type="password" value="0510015157qQ@" class="w-full bg-white/[0.06] border border-white/10 rounded-xl px-4 py-3.5 text-sm text-white outline-none" placeholder="كلمة المرور">
-<button onclick="adminLogin()" class="w-full bg-[#22c55e] text-black rounded-full py-3.5 font-black text-sm">دخول لوحة الأدمن →</button>
-<div id="loginMsg" class="text-xs text-center"></div>
+<input id="adminEmail" type="email" value="az.behlal@gmail.com" class="w-full bg-white/[0.06] border border-white/10 rounded-xl px-4 py-3.5 text-sm text-white outline-none">
+<input id="adminPass" type="password" value="0510015157qQ@" class="w-full bg-white/[0.06] border border-white/10 rounded-xl px-4 py-3.5 text-sm text-white outline-none">
+<button onclick="adminLogin()" class="w-full bg-[#22c55e] text-black rounded-full py-3.5 font-black text-sm">دخول →</button>
 </div>
 </div>
 </div>
@@ -29,177 +28,98 @@
 <div id="dashScreen" class="hidden">
 <div class="flex min-h-screen">
 <div class="w-[260px] bg-white/[0.03] border-l border-white/10 p-6 hidden md:block">
-<div class="flex items-center gap-3 mb-10"><div class="w-10 h-10 bg-[#22c55e] rounded-xl flex items-center justify-center font-black text-black">WB</div><div><div class="font-black text-sm">WhatsBot Admin</div><div class="text-[10px] text-white/40">966511515727</div></div></div>
+<div class="flex items-center gap-3 mb-8"><div class="w-10 h-10 bg-[#22c55e] rounded-xl flex items-center justify-center font-black text-black">WB</div><div><div class="font-black text-sm">WhatsBot Admin</div><div class="text- text-white/40">966511515727</div></div></div>
 <div class="space-y-2">
-<button onclick="showTab('requests')" class="tabBtn active w-full text-right bg-white text-black rounded-xl px-4 py-3 text-sm font-bold">📥 الطلبات <span id="badge" class="bg-red-500 text-white text-[10px] px-1.5 py-0.5 rounded-full hidden">0</span></button>
-<button onclick="showTab('users')" class="tabBtn w-full text-right text-white/60 hover:bg-white/5 rounded-xl px-4 py-3 text-sm">👥 العملاء المفعلين</button>
-<button onclick="showTab('settings')" class="tabBtn w-full text-right text-white/60 hover:bg-white/5 rounded-xl px-4 py-3 text-sm">⚙️ الإعدادات</button>
-</div>
-<div class="mt-8 p-3 bg-[#22c55e]/10 border border-[#22c55e]/20 rounded-xl"><div class="text-[11px] text-[#22c55e]">🔔 التنبيه التلقائي مفعل</div><div class="text-[10px] text-white/40 mt-1">يتحدث كل 10 ثواني + صوت عند وصول طلب جديد</div><label class="flex items-center gap-2 mt-2 text-[11px]"><input type="checkbox" id="soundToggle" checked> تشغيل صوت التنبيه</label></div>
-<div class="mt-4"><button onclick="logout()" class="text-[12px] text-white/40">تسجيل خروج</button></div>
-</div>
-
-<div class="flex-1 p-6 md:p-8">
-<div class="flex justify-between items-center mb-6">
-<h1 id="tabTitle" class="text-2xl font-black">طلبات الاشتراك الجديدة</h1>
-<div class="flex items-center gap-2"><button onclick="loadData()" class="text-xs bg-white/10 px-3 py-1.5 rounded-full">🔄 تحديث</button><span class="text-xs bg-[#22c55e] text-black px-3 py-1 rounded-full font-bold">966511515727</span></div>
-</div>
-<div id="newAlert" class="hidden bg-amber-500/20 border border-amber-500/30 rounded-2xl p-4 mb-6 flex justify-between items-center"><span class="text-sm font-bold text-amber-400 pulse">🔔 وصل طلب جديد! حدّث الصفحة</span><button onclick="loadData()" class="bg-amber-500 text-black px-4 py-1.5 rounded-full text-xs font-black">تحديث الآن</button></div>
-
-<div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
-<div class="bg-white/[0.05] border border-white/10 rounded-2xl p-5"><div class="text-[11px] text-white/40">طلبات معلقة</div><div id="statPending" class="text-2xl font-black mt-1">0</div></div>
-<div class="bg-white/[0.05] border border-white/10 rounded-2xl p-5"><div class="text-[11px] text-white/40">عملاء مفعلين</div><div id="statApproved" class="text-2xl font-black mt-1">0</div></div>
-<div class="bg-white/[0.05] border border-white/10 rounded-2xl p-5"><div class="text-[11px] text-white/40">إجمالي الإيرادات</div><div id="statRevenue" class="text-2xl font-black mt-1">0 ر.س</div></div>
-<div class="bg-[#22c55e]/10 border border-[#22c55e]/20 rounded-2xl p-5"><div class="text-[11px] text-[#22c55e]">الرقم الرسمي</div><div class="text-sm font-black mt-1 text-[#22c55e]">966511515727 ✅</div></div>
-</div>
-
-<div id="tab-requests" class="tabContent">
-<div class="bg-white/[0.04] border border-white/10 rounded-[1.5rem] overflow-hidden">
-<div class="p-5 border-b border-white/10 flex justify-between items-center"><span class="font-bold text-sm">الطلبات بانتظار المراجعة</span><span class="text-[11px] text-white/30">تحديث تلقائي كل 10 ثواني</span></div>
-<div id="requestsList" class="divide-y divide-white/5"></div>
-<div id="emptyRequests" class="p-12 text-center text-white/30 text-sm hidden">لا يوجد طلبات - عندما يرفع عميل إيصال سيظهر هنا مع تنبيه 🔔</div>
+<button class="w-full text-right bg-white text-black rounded-xl px-4 py-3 text-sm font-bold">📥 الطلبات مع الإيصالات</button>
 </div>
 </div>
-
-<div id="tab-users" class="tabContent hidden">
-<div class="bg-white/[0.04] border border-white/10 rounded-[1.5rem] p-5">
-<div class="flex justify-between items-center mb-4"><span class="font-bold text-sm">العملاء المفعلين - مع كلمات المرور 10 خانات</span></div>
-<div id="usersList" class="space-y-2"></div>
-</div>
-</div>
-
-<div id="tab-settings" class="tabContent hidden">
-<div class="bg-white/[0.04] border border-white/10 rounded-[1.5rem] p-6 max-w-[500px]">
-<h3 class="font-bold mb-6">الإعدادات - الرقم الرسمي</h3>
-<div class="space-y-3 text-sm">
-<label class="text-xs text-white/50">واتساب الرسمي - يجي عليه طلبات العملاء</label><input id="setWa" value="966511515727" class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-sm">
-<button onclick="saveSettings()" class="mt-4 bg-[#22c55e] text-black rounded-full px-6 py-2.5 font-bold text-sm">حفظ</button>
-<div id="setMsg" class="text-xs text-[#22c55e] mt-2"></div>
+<div class="flex-1 p-6">
+<h1 class="text-2xl font-black mb-6">طلبات الاشتراك - مع عرض الإيصال 🧾</h1>
+<div id="requestsList" class="space-y-4"></div>
+<div id="emptyRequests" class="p-12 text-center text-white/30 text-sm hidden">لا يوجد طلبات</div>
 </div>
 </div>
 </div>
 
+<div id="receiptModal" class="hidden fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4">
+<div class="bg-white rounded-2xl max-w-[90vw] max-h-[90vh] overflow-auto p-4">
+<div class="flex justify-between items-center mb-4"><h3 class="font-black text-black">الإيصال</h3><button onclick="closeReceipt()" class="bg-zinc-900 text-white px-4 py-1.5 rounded-full text-xs">إغلاق ✕</button></div>
+<img id="receiptImg" src="" class="max-w-full max-h-[80vh] rounded-xl hidden">
+<iframe id="receiptPdf" src="" class="w-[80vw] h-[80vh] hidden"></iframe>
+<div id="receiptLink" class="text-center"></div>
 </div>
 </div>
-</div>
-
-<audio id="notifSound" src="https://actions.google.com/sounds/v1/alarms/beep_short.ogg" preload="auto"></audio>
 
 <script>
-const ADMIN_EMAIL='az.behlal@gmail.com';
-const ADMIN_PASS='0510015157qQ@';
-const OFFICIAL_WA='966511515727';
-let lastCount=0;
-
-function adminLogin(){ const e=document.getElementById('adminEmail').value.trim(); const p=document.getElementById('adminPass').value; if(e===ADMIN_EMAIL && p===ADMIN_PASS){ localStorage.setItem('wb_admin','1'); showDashboard(); }else{ document.getElementById('loginMsg').innerText='❌ خطأ'; } }
+const ADMIN_EMAIL='az.behlal@gmail.com'; const ADMIN_PASS='0510015157qQ@';
+function adminLogin(){ const e=document.getElementById('adminEmail').value.trim(); const p=document.getElementById('adminPass').value; if(e===ADMIN_EMAIL && p===ADMIN_PASS){ localStorage.setItem('wb_admin','1'); showDashboard(); } }
 function showDashboard(){ document.getElementById('loginScreen').classList.add('hidden'); document.getElementById('dashScreen').classList.remove('hidden'); loadData(); setInterval(loadData, 10000); }
-function logout(){ localStorage.removeItem('wb_admin'); location.reload(); }
 if(localStorage.getItem('wb_admin')==='1'){ showDashboard(); }
-function showTab(t){ document.querySelectorAll('.tabContent').forEach(el=>el.classList.add('hidden')); document.getElementById('tab-'+t).classList.remove('hidden'); }
 
 let requests=JSON.parse(localStorage.getItem('wb_requests')||'[]');
-let users=JSON.parse(localStorage.getItem('wb_users')||'[]');
-
 function generatePass(len=10){ const c='ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'; let p=''; for(let i=0;i<len;i++) p+=c[Math.floor(Math.random()*c.length)]; return p; }
 
 async function loadData(){
- // محاولة جلب من السيرفر الحقيقي
- try{
-  const r=await fetch('/api/payment-proofs'); const d=await r.json();
-  if(Array.isArray(d) && d.length>0){
-   // دمج مع localStorage
-   let merged=[...requests];
-   d.forEach(s=>{
-    if(!merged.find(x=>x.id===s.id)){
-     merged.push({id:s.id, name:s.fullName||s.companyName, companyName:s.fullName, email:s.email, customerEmail:s.customerEmail, phone:s.phone, customerPhone:s.customerPhone, plan:s.plan, status:s.status||'pending', date:s.createdAt, password:s.password});
-    }
-   });
-   requests=merged;
-   localStorage.setItem('wb_requests', JSON.stringify(requests));
-  }
- }catch(e){}
-
- const pending=requests.filter(r=>r.status==='pending');
- document.getElementById('statPending').innerText=pending.length;
- document.getElementById('statApproved').innerText=requests.filter(r=>r.status==='approved').length + users.length;
- document.getElementById('badge').innerText=pending.length;
- document.getElementById('badge').classList.toggle('hidden', pending.length===0);
-
- if(pending.length>lastCount && lastCount!==0){
-  document.getElementById('newAlert').classList.remove('hidden');
-  if(document.getElementById('soundToggle').checked){
-   document.getElementById('notifSound').play().catch(()=>{});
-   if(Notification && Notification.permission==='granted'){ new Notification('🔔 طلب اشتراك جديد!', {body: `${pending[pending.length-1].name||'عميل'} - ${pending[pending.length-1].plan}`}); }
-  }
- }
- lastCount=pending.length;
- if(Notification && Notification.permission!=='granted'){ Notification.requestPermission(); }
-
- const list=document.getElementById('requestsList');
- const empty=document.getElementById('emptyRequests');
- if(pending.length===0){ list.innerHTML=''; empty.classList.remove('hidden'); }
- else{
-  empty.classList.add('hidden');
-  list.innerHTML=pending.map((r,i)=>`
-   <div class="p-5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+ try{ const r=await fetch('/api/payment-proofs'); const d=await r.json(); if(Array.isArray(d) && d.length>0){ requests=d; localStorage.setItem('wb_requests', JSON.stringify(requests)); } }catch(e){}
+ const pending=requests.filter(r=>r.status==='pending' ||!r.status);
+ const list=document.getElementById('requestsList'); const empty=document.getElementById('emptyRequests');
+ if(pending.length===0){ list.innerHTML=''; empty.classList.remove('hidden'); return; }
+ empty.classList.add('hidden');
+ list.innerHTML=pending.map((r,i)=>`
+  <div class="bg-white/[0.05] border border-white/10 rounded-2xl p-5">
+   <div class="flex flex-col md:flex-row gap-4">
     <div class="flex-1">
-     <div class="flex items-center gap-2"><span class="font-bold text-sm">${r.name||r.companyName||'عميل'}</span><span class="text-[10px] bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded-full">${r.plan||'pro'} - ${r.plan==='individual'?'99':r.plan==='enterprise'?'399':'199'} ر.س</span></div>
-     <div class="text-[11px] text-white/50 mt-1">${r.email||r.customerEmail||''} • ${r.phone||r.customerPhone||''} • ${new Date(r.date||Date.now()).toLocaleString('ar-SA')}</div>
+     <div class="flex items-center gap-2"><span class="font-bold">${r.fullName||r.companyName||'عميل'}</span><span class="text- bg-amber-500/20 text-amber-400 px-2 py-0.5 rounded-full">${r.plan||'pro'} - ${r.plan==='individual'?'99':r.plan==='enterprise'?'399':'199'} ر.س</span></div>
+     <div class="text- text-white/50 mt-2">📧 ${r.email||r.customerEmail||''}</div>
+     <div class="text- text-white/50">📱 ${r.phone||r.customerPhone||''} - 🏢 ${r.company||'لا يوجد'}</div>
+     <div class="text- text-white/30 mt-1">📅 ${new Date(r.createdAt||r.date||Date.now()).toLocaleString('ar-SA')}</div>
+     <div class="text- text-white/30">📎 ${r.file||'لا يوجد ملف'} ${r.fileUrl?'<a href="'+r.fileUrl+'" target="_blank" class="text-[#22c55e] underline">فتح مباشر</a>':''}</div>
     </div>
-    <div class="flex gap-2">
-     <button onclick="approve(${i})" class="bg-[#22c55e] text-black px-4 py-2 rounded-full text-xs font-black">✅ قبول + توليد باسورد</button>
-     <button onclick="reject(${i})" class="bg-white/10 text-white px-4 py-2 rounded-full text-xs">❌ رفض</button>
+    <div class="w-full md:w-[200px] bg-black/30 rounded-xl p-2">
+     ${r.fileUrl? (r.fileUrl.toLowerCase().endsWith('.pdf')? `<a href="${r.fileUrl}" target="_blank" class="block text-center py-8 bg-white/5 rounded-xl text-sm">📄 عرض PDF<br><span class="text- text-[#22c55e]">اضغط للفتح</span></a>` : `<img src="${r.fileUrl}" class="w-full h-[120px] object-cover rounded-xl cursor-pointer" onclick="openReceipt('${r.fileUrl}')">`) : '<div class="py-8 text-center text-white/20 text-xs">لا يوجد إيصال</div>'}
+     ${r.fileUrl? `<button onclick="openReceipt('${r.fileUrl}')" class="w-full mt-2 bg-white text-black rounded-full py-2 text-xs font-bold">👁️ تكبير الإيصال</button>` : ''}
     </div>
+   <div class="flex gap-2 mt-4">
+    <button onclick="approve('${r.id}')" class="flex-1 bg-[#22c55e] text-black px-4 py-2.5 rounded-full text-xs font-black">✅ قبول + توليد باسورد 10 خانات</button>
+    <button onclick="reject('${r.id}')" class="bg-white/10 text-white px-4 py-2.5 rounded-full text-xs">❌ رفض</button>
    </div>
-  `).join('');
- }
-
- document.getElementById('usersList').innerHTML=(users.length?users:requests.filter(r=>r.status==='approved')).map(u=>`
-  <div class="bg-white/[0.03] border border-white/5 rounded-xl p-4 flex justify-between items-center">
-   <div><div class="font-bold text-sm">${u.name||u.companyName} - ${u.plan||'pro'}</div><div class="text-[11px] text-white/40">📧 ${u.email||u.customerEmail}</div><div class="text-[11px] text-[#22c55e] font-mono">🔑 ${u.password||'لا يوجد'}</div></div>
-   <div class="flex flex-col gap-1"><button onclick="sendCreds('${u.email||u.customerEmail}','${u.password||''}','${(u.phone||u.customerPhone||'').replace(/[^0-9]/g,'')}','${u.name||u.companyName}')" class="text-[11px] bg-white/10 px-2 py-1 rounded-full">📤 إرسال واتساب للعميل</button></div>
   </div>
- `).join('')||'<div class="text-center text-white/30 text-sm py-8">لا يوجد عملاء مفعلين بعد</div>';
+ `).join('');
 }
 
-function approve(idx){
- let pending=requests.filter(x=>x.status==='pending');
- let r=pending[idx]; if(!r) return;
+function openReceipt(url){
+ document.getElementById('receiptModal').classList.remove('hidden');
+ if(url.toLowerCase().endsWith('.pdf')){
+  document.getElementById('receiptImg').classList.add('hidden');
+  document.getElementById('receiptPdf').classList.remove('hidden');
+  document.getElementById('receiptPdf').src=url;
+  document.getElementById('receiptLink').innerHTML=`<a href="${url}" target="_blank" class="text-blue-600 underline text-sm mt-2 inline-block">فتح في تبويب جديد</a>`;
+ } else {
+  document.getElementById('receiptPdf').classList.add('hidden');
+  document.getElementById('receiptImg').classList.remove('hidden');
+  document.getElementById('receiptImg').src=url;
+  document.getElementById('receiptLink').innerHTML=`<a href="${url}" target="_blank" class="text-blue-600 underline text-sm mt-2 inline-block">فتح الصورة بحجم كامل</a>`;
+ }
+}
+function closeReceipt(){ document.getElementById('receiptModal').classList.add('hidden'); }
+
+async function approve(id){
+ const r=requests.find(x=>x.id===id); if(!r) return;
  const pass=generatePass(10);
- r.password=pass; r.status='approved'; r.amount=r.plan==='individual'?99:r.plan==='enterprise'?399:199;
- users.push(r);
+ r.password=pass; r.status='approved';
  localStorage.setItem('wb_requests', JSON.stringify(requests));
- localStorage.setItem('wb_users', JSON.stringify(users));
- const email=r.email||r.customerEmail;
- const phone=(r.phone||r.customerPhone||'').replace(/[^0-9]/g,'');
- const waMsg=`✅ تم تفعيل حسابك في WhatsBot.sa!
-
-أهلاً ${r.name||r.companyName||''} 👋
-
-🔐 بيانات الدخول للوحة العميل:
-📧 الإيميل: ${email}
-🔑 الرقم السري: ${pass}
-
-🌐 رابط الدخول:
-https://whatsbot.sa/client-dashboard.html
-
-📞 الدعم الرسمي: 966511515727
-لوحة العميل فيها ربط واتساب واحد + فريق العمل + تقييم العملاء ⭐`;
- const waUrl=`https://wa.me/${phone}?text=${encodeURIComponent(waMsg)}`;
- alert(`✅ تم التفعيل!\nالإيميل: ${email}\nالباسورد: ${pass}\n\nسيفتح واتساب الآن لإرسال البيانات للعميل من رقمك الرسمي 966511515727`);
- loadData(); window.open(waUrl,'_blank');
-}
-
-function sendCreds(email,pass,phone,name){
+ try{ await fetch('/api/admin/approve',{method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id})}); }catch(e){}
+ const email=r.email||r.customerEmail; const phone=(r.phone||r.customerPhone||'').replace(/[^0-9]/g,'');
  const waMsg=`✅ تم تفعيل حسابك في WhatsBot.sa!
 📧 الإيميل: ${email}
 🔑 الرقم السري: ${pass}
 🌐 https://whatsbot.sa/client-dashboard.html
-📞 الدعم: 966511515727`;
+📞 الدعم الرسمي: 966511515727`;
+ alert(`✅ تم التفعيل!\nالإيميل: ${email}\nالباسورد: ${pass}`);
  window.open(`https://wa.me/${phone}?text=${encodeURIComponent(waMsg)}`,'_blank');
+ loadData();
 }
-function reject(idx){ if(!confirm('رفض؟')) return; let pending=requests.filter(x=>x.status==='pending'); let r=pending[idx]; r.status='rejected'; localStorage.setItem('wb_requests', JSON.stringify(requests)); loadData(); }
-function saveSettings(){ document.getElementById('setMsg').innerText='✅ تم الحفظ - الرقم الرسمي 966511515727'; }
+async function reject(id){ if(!confirm('رفض الطلب؟')) return; const r=requests.find(x=>x.id===id); if(r) r.status='rejected'; localStorage.setItem('wb_requests', JSON.stringify(requests)); try{ await fetch('/api/admin/reject',{method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({id})}); }catch(e){} loadData(); }
 </script>
 </body>
 </html>
