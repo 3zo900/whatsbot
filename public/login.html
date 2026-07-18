@@ -1,49 +1,26 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>تسجيل الدخول - WhatsBot.sa</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800;900&display=swap" rel="stylesheet">
-<style>body{font-family:'Tajawal',sans-serif}</style>
-</head>
-<body class="bg-[#faf8ff] min-h-screen flex items-center justify-center p-6">
+<html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>دخول العملاء - WatsBot</title><script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@700;900&display=swap" rel="stylesheet"><style>body{font-family:Tajawal}</style>
+</head><body class="bg-[#faf8ff] min-h-screen flex items-center justify-center p-6">
 <div class="w-full max-w-[420px]">
-<div class="text-center mb-8">
-<img src="logo.png" class="w-16 h-16 rounded-2xl mx-auto object-contain bg-white border">
-<h1 class="font-black text-2xl mt-4">مرحباً بعودتك</h1>
-<p class="text-[13px] text-zinc-500 mt-1">سجل دخولك للوحة تحكم WhatsBot</p>
-</div>
-
-<div class="bg-white border border-zinc-200 rounded-[2rem] p-8 shadow-sm">
-<div class="space-y-4">
-<input id="email" type="text" placeholder="اسم المستخدم أو الجوال" class="w-full border border-zinc-200 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-zinc-900">
-<input id="pass" type="password" placeholder="كلمة المرور" class="w-full border border-zinc-200 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:border-zinc-900">
-<button onclick="login()" class="w-full bg-zinc-900 text-white rounded-full py-3.5 font-black text-sm mt-2">تسجيل الدخول</button>
-<div id="msg" class="text-[12px] text-center mt-3"></div>
-</div>
-</div>
-
-<div class="text-center mt-6">
-<a href="index.html" class="text-[12px] text-zinc-500 hover:text-zinc-900">← العودة للرئيسية</a>
-</div>
-
-<div class="text-center mt-4 text-[10px] text-zinc-400">© 2026 WhatsBot.sa</div>
-</div>
-
+<div class="text-center mb-6"><img src="logo.png" class="w-16 h-16 mx-auto"><h1 class="font-black text-2xl mt-3">دخول العملاء</h1><p class="text-xs text-zinc-500">ادخل اليوزر والباسورد اللي أرسلها لك الأدمن</p></div>
+<div class="bg-white border rounded-[2rem] p-8">
+<input id="username" placeholder="اليوزر (رقم جوالك بدون 966)" class="w-full border rounded-xl px-4 py-3 text-sm mb-3">
+<input id="password" placeholder="كلمة المرور" type="password" class="w-full border rounded-xl px-4 py-3 text-sm mb-3">
+<button onclick="doLogin()" id="btn" class="w-full bg-zinc-900 text-white rounded-full py-3 font-black text-sm">دخول لوحتي →</button>
+<div id="msg" class="text-xs text-center mt-3 hidden"></div>
+</div></div>
 <script>
-function login(){
- const e = document.getElementById('email').value;
- const p = document.getElementById('pass').value;
- const msg = document.getElementById('msg');
- if(!e ||!p){ msg.innerText='❌ ادخل اسم المستخدم وكلمة المرور'; msg.className='text-[12px] text-center mt-3 text-red-500'; return; }
- msg.innerText='⏳ جاري تسجيل الدخول...';
- msg.className='text-[12px] text-center mt-3 text-zinc-500';
- setTimeout(()=>{
-   localStorage.setItem('wb_user', e);
-   location.href='dashboard.html';
- }, 800);
+async function doLogin(){
+  const u=document.getElementById('username').value.trim();
+  const p=document.getElementById('password').value.trim();
+  const msg=document.getElementById('msg'); const btn=document.getElementById('btn');
+  if(!u||!p){msg.innerText='❌ عبي اليوزر والباس';msg.className='text-xs text-center mt-3 text-red-500';msg.classList.remove('hidden');return;}
+  btn.innerText='⏳ جاري التحقق...';
+  const res=await fetch('/api/client/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:u,password:p})});
+  const data=await res.json();
+  if(data.success){localStorage.setItem('wb_client',JSON.stringify(data.user));localStorage.setItem('wb_token',data.token);location.href='dashboard.html';}
+  else{msg.innerText='❌ اليوزر أو الباسورد خطأ - تأكد من البيانات اللي أرسلها لك الأدمن';msg.className='text-xs text-center mt-3 text-red-500 bg-red-50 border border-red-200 rounded-xl p-2';msg.classList.remove('hidden');btn.innerText='دخول لوحتي →';}
 }
-</script>
-</body>
-</html>
+</script></body></html>
