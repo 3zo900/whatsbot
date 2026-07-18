@@ -4,96 +4,200 @@
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>لوحة التحكم - WhatsBot.sa</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800;900&display=swap" rel="stylesheet">
-<style>body{font-family:Tajawal;background:#f6f5ff}</style>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800;900&display=swap" rel="stylesheet">
+<style>body{font-family:Tajawal;background:#f8fafc}.tab-active{background:#111827;color:#fff}.emp-card:hover{transform:translateY(-2px)}</style>
 </head>
-<body class="min-h-screen">
+<body>
 
-<div class="max-w-[1300px] mx-auto grid md:grid-cols-[1fr_280px] gap-0 md:gap-6 p-0 md:p-6">
-
-<!-- MAIN -->
-<div class="order-2 md:order-1 p-4 md:p-0">
+<div class="max-w-[1400px] mx-auto p-4 md:p-6">
 <!-- Header -->
-<div class="flex justify-between items-center bg-white md:rounded-2xl p-4 border-b md:border mb-4">
+<div class="bg-white border rounded-[1.5rem] p-5 flex flex-wrap justify-between items-center gap-3">
 <div class="flex items-center gap-3">
-<div class="w-10 h-10 bg-[#e8f5e9] rounded-full flex items-center justify-center text-[#22c55e] font-black">WB</div>
-<div><div class="font-black text-sm">لوحة التحكم</div><div class="text-xs text-zinc-500">مرحبا بك 👋</div></div>
+<div class="w-12 h-12 bg-[#22c55e] rounded-2xl flex items-center justify-center font-black text-black">WB</div>
+<div><div class="font-black">لوحة تحكم العميل</div><div class="text-xs text-zinc-500">WatsBot يساعدك بكل وقت</div></div>
 </div>
 <div class="flex items-center gap-2">
-<span class="text-xs">الدعم الفني</span><span class="text-xs font-bold">966511515727</span>
-<span class="bg-[#dcfce7] text-[#166534] text-xs px-3 py-1 rounded-full font-bold">مفعل ✅</span>
+<span class="text-xs bg-zinc-900 text-white px-3 py-1.5 rounded-full">باقة احترافي - 189 ر.س/شهر</span>
+<span class="text-xs bg-[#dcfce7] text-[#166534] px-3 py-1.5 rounded-full font-bold">مفعل ✅</span>
+<button onclick="localStorage.clear();location.reload()" class="text-xs bg-zinc-100 px-3 py-1.5 rounded-full">خروج</button>
 </div>
 </div>
 
-<!-- Stats - فاضية -->
-<div class="grid grid-cols-2 gap-3 mb-4">
-<div class="bg-white border rounded-[1.2rem] p-5">
-<div class="text-xs text-zinc-500">محادثات اليوم</div>
-<div class="text-2xl font-black mt-2">0</div>
-<div class="text-[10px] text-zinc-400 mt-1">لم تبدأ بعد</div>
-</div>
-<div class="bg-white border rounded-[1.2rem] p-5">
-<div class="text-xs text-zinc-500">رد البوت</div>
-<div class="text-2xl font-black mt-2">0%</div>
-<div class="text-[10px] text-zinc-400 mt-1">سيتم احتسابه تلقائيا</div>
-</div>
-<div class="bg-white border rounded-[1.2rem] p-5">
-<div class="text-xs text-zinc-500">⭐ تقييم العملاء</div>
-<div class="text-2xl font-black mt-2">--</div>
-<div class="text-[10px] text-zinc-400 mt-1">لا يوجد تقييمات بعد</div>
-</div>
-<div class="bg-white border rounded-[1.2rem] p-5">
-<div class="text-xs text-zinc-500">الموظفين</div>
-<div class="text-2xl font-black mt-2">0</div>
-<div class="text-[10px] text-zinc-400 mt-1">لم تتم إضافة موظفين</div>
-</div>
+<!-- Stats - تبدأ فاضية -->
+<div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-6">
+<div class="bg-white border rounded-2xl p-5"><div class="text-xs text-zinc-500">إجمالي المحادثات</div><div id="s_total" class="text-2xl font-black mt-1">0</div><div class="text-[11px] text-zinc-400">تبدأ بعد الربط</div></div>
+<div class="bg-white border rounded-2xl p-5"><div class="text-xs text-zinc-500">رد البوت التلقائي</div><div id="s_bot" class="text-2xl font-black mt-1">0%</div><div class="w-full h-1.5 bg-zinc-100 rounded-full mt-2"><div id="s_bot_bar" class="h-1.5 bg-[#22c55e] rounded-full" style="width:0%"></div></div></div>
+<div class="bg-white border rounded-2xl p-5"><div class="text-xs text-zinc-500">تقييم رضا العملاء</div><div id="s_rate" class="text-2xl font-black mt-1">--</div><div class="text-[11px] text-zinc-400">⭐ لا يوجد تقييمات بعد</div></div>
+<div class="bg-white border rounded-2xl p-5"><div class="text-xs text-zinc-500">الموظفين النشطين</div><div id="s_emp" class="text-2xl font-black mt-1">0 / 3</div><div class="text-[11px] text-zinc-400">حسب باقتك الاحترافية</div></div>
 </div>
 
+<div class="grid lg:grid-cols-[360px_1fr] gap-6 mt-6">
+<!-- Sidebar -->
+<div class="space-y-4">
 <!-- ربط واتساب -->
-<div class="bg-white border rounded-[1.5rem] p-6 mb-4">
-<h3 class="font-black">🔗 ربط واتساب مؤسستك (واحد)</h3>
-<p class="text-xs text-zinc-500 mt-1">اربط رقم شركتك عشان البوت يشتغل عليه</p>
-<input placeholder="9665XXXXXXXX" class="w-full border rounded-xl px-4 py-3 mt-4 text-sm bg-zinc-50">
-<button class="w-full bg-zinc-900 text-white rounded-full py-3 mt-3 text-sm font-bold">ربط - عرض QR</button>
-<div class="text-[11px] text-zinc-400 mt-3 text-center">سيظهر QR Code بعد الضغط</div>
+<div class="bg-white border rounded-[1.5rem] p-5">
+<h3 class="font-black text-sm">🔗 ربط واتساب مؤسستك</h3>
+<p class="text-xs text-zinc-500 mt-1">اربط رقم شركتك عشان البوت يشتغل</p>
+<input id="wa_number" placeholder="9665XXXXXXXX" class="w-full border rounded-xl px-4 py-3 mt-4 text-sm bg-zinc-50">
+<button onclick="linkWA()" class="w-full bg-zinc-900 text-white rounded-full py-3 mt-3 text-sm font-bold">ربط - عرض QR</button>
+<div id="qrBox" class="hidden mt-4 bg-zinc-50 border border-dashed rounded-xl p-6 text-center">
+<div class="w-32 h-32 bg-white border mx-auto flex items-center justify-center text-3xl">📱</div>
+<div class="text-xs text-zinc-500 mt-2">امسح QR من واتساب الأعمال</div>
+<div class="text-[11px] text-[#22c55e] mt-1">بانتظار المسح...</div>
+</div>
 </div>
 
-<!-- آخر التقييمات - فاضي -->
-<div class="bg-white border rounded-[1.5rem] p-6">
-<h3 class="font-black">⭐ آخر التقييمات</h3>
-<div class="mt-4 bg-zinc-50 border border-dashed rounded-xl p-8 text-center">
-<div class="text-2xl">⭐</div>
+<!-- إضافة موظف -->
+<div class="bg-white border rounded-[1.5rem] p-5">
+<h3 class="font-black text-sm">👨‍💼 فريق العمل (التحويل البشري)</h3>
+<p class="text-xs text-zinc-500 mt-1">لما البوت ما يعرف، يحول للموظف حسب القسم</p>
+<div class="space-y-2 mt-4">
+<input id="emp_name" placeholder="اسم الموظف - مثال: ناصر محمد" class="w-full border rounded-xl px-3 py-2.5 text-sm">
+<input id="emp_phone" placeholder="رقم واتساب الموظف 9665..." class="w-full border rounded-xl px-3 py-2.5 text-sm">
+<select id="emp_dept" class="w-full border rounded-xl px-3 py-2.5 text-sm"><option value="المبيعات">المبيعات</option><option value="الدعم الفني">الدعم الفني</option><option value="عام">عام</option></select>
+<button onclick="addEmp()" class="w-full bg-[#22c55e] text-black rounded-full py-3 text-sm font-bold mt-2">+ إضافة موظف</button>
+<div id="emp_err" class="text-[11px] text-red-500 hidden"></div>
+</div>
+<div id="empList" class="mt-5 space-y-2"></div>
+</div>
+
+<!-- تقييم العملاء -->
+<div class="bg-white border rounded-[1.5rem] p-5">
+<h3 class="font-black text-sm">⭐ تقييم رضا العملاء</h3>
+<div id="ratingBox" class="mt-4">
+<div class="text-center py-8 bg-zinc-50 border border-dashed rounded-xl">
+<div class="text-3xl">⭐</div>
 <div class="text-xs text-zinc-500 mt-2">لا يوجد تقييمات بعد</div>
-<div class="text-[11px] text-zinc-400 mt-1">ستظهر تقييمات عملاءك هنا بعد أول محادثة</div>
+<div class="text-[11px] text-zinc-400">ستظهر بعد أول محادثة</div>
+</div>
+</div>
 </div>
 </div>
 
+<!-- Main Conversations -->
+<div class="bg-white border rounded-[1.5rem] overflow-hidden flex flex-col h-[800px]">
+<div class="p-4 border-b flex gap-2">
+<button onclick="setTab('all')" id="t_all" class="tab-active px-4 py-2 rounded-full text-xs font-bold">الكل</button>
+<button onclick="setTab('bot')" id="t_bot" class="bg-zinc-100 px-4 py-2 rounded-full text-xs font-bold">🤖 محادثات البوت</button>
+<button onclick="setTab('human')" id="t_human" class="bg-zinc-100 px-4 py-2 rounded-full text-xs font-bold">👨‍💼 محادثات الموظفين</button>
+</div>
+<div id="convList" class="flex-1 overflow-y-auto p-3 space-y-2 bg-[#fafafa]">
+<div class="text-center py-20 text-zinc-400">
+<div class="text-4xl">💬</div>
+<div class="text-sm mt-3">لا يوجد محادثات بعد</div>
+<div class="text-xs mt-1">المحادثات ستظهر هنا بعد ربط الواتساب</div>
+</div>
+</div>
+<!-- Chat preview -->
+<div class="border-t p-3 bg-white">
+<div class="flex gap-2">
+<input id="chatInput" placeholder="اكتب رسالة تجريبية للبوت..." class="flex-1 border rounded-full px-4 py-2.5 text-sm">
+<button onclick="sendTest()" class="bg-zinc-900 text-white rounded-full px-5 py-2.5 text-xs font-bold">إرسال تجريبي</button>
+</div>
+</div>
+</div>
 </div>
 
-<!-- SIDEBAR -->
-<div class="order-1 md:order-2 bg-white md:rounded-[1.5rem] border-b md:border p-4 md:p-5">
-<div class="flex justify-between items-center md:block">
-<div class="font-black text-sm">WhatsBot.sa</div>
-<div class="text-xs text-zinc-500">منصة إدارة واتساب</div>
+<div class="text-center text-[11px] text-zinc-400 mt-6">© WhatsBot.sa 2026 - WatsBot يساعدك بكل وقت</div>
 </div>
 
-<div class="mt-6 space-y-2">
-<div class="bg-zinc-900 text-white rounded-xl p-3 text-sm font-bold flex items-center gap-2">📊 نظرة عامة</div>
-<div class="text-sm p-3 text-zinc-500">👨‍💼 فريق العمل</div>
-<div class="text-sm p-3 text-zinc-500">🤖 الأتمتة</div>
-<div class="text-sm p-3 text-zinc-500">📈 التقييم ⭐</div>
-</div>
+<script>
+let emps = JSON.parse(localStorage.getItem('wb_emps')||'[]');
+let convs = JSON.parse(localStorage.getItem('wb_convs')||'[]');
+let waLinked = localStorage.getItem('wb_wa_linked')==='1';
+let currentTab='all';
 
-<div class="mt-6 bg-zinc-900 text-white rounded-[1.5rem] p-4 text-center">
-<div class="text-sm font-mono">510015157</div>
-<div class="mt-3 bg-[#22c55e] text-black text-xs px-4 py-2 rounded-full font-bold inline-block">مفعل ✅</div>
-<div class="mt-3"><button class="bg-white/10 text-xs px-4 py-2 rounded-full">خروج</button></div>
-</div>
+function save(){ localStorage.setItem('wb_emps',JSON.stringify(emps)); localStorage.setItem('wb_convs',JSON.stringify(convs)); updateStats(); render(); }
 
-<div class="text-center text-[11px] text-zinc-400 mt-6">© WhatsBot AI 2026</div>
-</div>
+function linkWA(){
+  const n=document.getElementById('wa_number').value.trim();
+  if(!n||n.length<9){alert('اكتب رقم صحيح');return;}
+  document.getElementById('qrBox').classList.remove('hidden');
+  setTimeout(()=>{ localStorage.setItem('wb_wa_linked','1'); waLinked=true; document.getElementById('qrBox').innerHTML='<div class="text-[#22c55e] font-bold text-sm">✅ تم الربط بنجاح</div><div class="text-xs mt-1">'+n+'</div>'; updateStats(); }, 2500);
+}
 
-</div>
+function addEmp(){
+  const name=document.getElementById('emp_name').value.trim();
+  const phone=document.getElementById('emp_phone').value.trim();
+  const dept=document.getElementById('emp_dept').value;
+  const err=document.getElementById('emp_err');
+  err.classList.add('hidden');
+  if(!name||!phone){err.innerText='❌ اكتب الاسم والرقم';err.classList.remove('hidden');return;}
+  if(emps.length>=3){err.innerText='❌ باقتك الاحترافية تسمح بـ 3 موظفين فقط';err.classList.remove('hidden');return;}
+  emps.push({id:Date.now().toString(), name, phone, dept, active:true});
+  document.getElementById('emp_name').value=''; document.getElementById('emp_phone').value='';
+  save();
+}
 
+function toggleEmp(id){ const e=emps.find(x=>x.id===id); if(e){e.active=!e.active; save();} }
+function delEmp(id){ if(!confirm('حذف الموظف؟')) return; emps=emps.filter(x=>x.id!==id); save(); }
+
+function updateStats(){
+  document.getElementById('s_total').innerText=convs.length;
+  document.getElementById('s_emp').innerText=emps.filter(e=>e.active).length+' / 3';
+  const botConvs=convs.filter(c=>c.type==='bot').length;
+  const rate=convs.length? Math.round((botConvs/convs.length)*100):0;
+  document.getElementById('s_bot').innerText=rate+'%';
+  document.getElementById('s_bot_bar').style.width=rate+'%';
+  const rated=convs.filter(c=>c.rating);
+  if(rated.length){ const avg=(rated.reduce((s,c)=>s+c.rating,0)/rated.length).toFixed(1); document.getElementById('s_rate').innerText=avg+' / 5'; }
+}
+
+function setTab(t){ currentTab=t; document.querySelectorAll('[id^=t_]').forEach(b=>b.className='bg-zinc-100 px-4 py-2 rounded-full text-xs font-bold'); document.getElementById('t_'+t).className='tab-active px-4 py-2 rounded-full text-xs font-bold'; render(); }
+
+function render(){
+  // employees
+  document.getElementById('empList').innerHTML=emps.map(e=>`
+  <div class="emp-card bg-zinc-50 border rounded-xl p-3 flex justify-between items-center transition">
+  <div><div class="font-bold text-xs">${e.name} ${e.active?'✅':''}</div><div class="text-[11px] text-zinc-500">${e.phone} - ${e.dept}</div></div>
+  <div class="flex gap-1"><button onclick="toggleEmp('${e.id}')" class="text-[11px] bg-white border rounded-full px-2 py-1">${e.active?'إيقاف':'تفعيل'}</button><button onclick="delEmp('${e.id}')" class="text-[11px] text-red-500">حذف</button></div>
+  </div>`).join('') || '<div class="text-[11px] text-zinc-400 text-center py-3">لم تتم إضافة موظفين - سيبدأ العدد من 0</div>';
+
+  // conversations
+  let list = convs;
+  if(currentTab==='bot') list=list.filter(c=>c.type==='bot');
+  if(currentTab==='human') list=list.filter(c=>c.type==='human');
+  if(!list.length){
+    document.getElementById('convList').innerHTML=`<div class="text-center py-20 text-zinc-400"><div class="text-4xl">💬</div><div class="text-sm mt-3">لا يوجد محادثات بعد</div><div class="text-xs mt-1">${currentTab==='bot'?'محادثات البوت والعميل ستظهر هنا':'محادثات الموظف والعميل ستظهر هنا'}</div></div>`;
+    document.getElementById('ratingBox').innerHTML=`<div class="text-center py-8 bg-zinc-50 border border-dashed rounded-xl"><div class="text-3xl">⭐</div><div class="text-xs text-zinc-500 mt-2">لا يوجد تقييمات بعد</div></div>`;
+    return;
+  }
+  document.getElementById('convList').innerHTML=list.map(c=>`
+  <div class="bg-white border rounded-xl p-3">
+  <div class="flex justify-between"><span class="font-bold text-xs">${c.customer}</span><span class="text-[10px] ${c.type==='bot'?'bg-[#dcfce7] text-green-700':'bg-blue-50 text-blue-600'} px-2 py-1 rounded-full">${c.type==='bot'?'🤖 البوت':'👨‍💼 '+c.employee}</span></div>
+  <div class="text-xs mt-2 text-zinc-600">${c.msg}</div>
+  <div class="flex justify-between mt-2 text-[10px] text-zinc-400"><span>${c.time}</span><span>${c.rating?'⭐'.repeat(c.rating):''}</span></div>
+  </div>`).join('');
+
+  // rating
+  const rated=convs.filter(c=>c.rating);
+  if(rated.length){
+    const avg=(rated.reduce((s,c)=>s+c.rating,0)/rated.length).toFixed(1);
+    document.getElementById('ratingBox').innerHTML=`
+    <div class="flex items-center gap-3"><div class="text-3xl font-black">${avg}</div><div><div class="text-yellow-400 text-sm">${'⭐'.repeat(Math.round(avg))}</div><div class="text-[11px] text-zinc-500">${rated.length} تقييم</div></div></div>
+    <div class="mt-4 space-y-2">${rated.slice(-3).reverse().map(r=>`<div class="bg-zinc-50 rounded-xl p-3 text-xs"><b>${r.customer}</b> - ${'⭐'.repeat(r.rating)}<div class="text-[11px] text-zinc-500 mt-1">${r.msg}</div></div>`).join('')}</div>`;
+  }
+}
+
+function sendTest(){
+  const txt=document.getElementById('chatInput').value.trim();
+  if(!txt) return;
+  if(!waLinked){ alert('اربط واتساب أولاً'); return; }
+  const isBot = emps.length===0 || Math.random()>0.4;
+  const emp = emps[0];
+  convs.push({
+    id:Date.now(), customer:'عميل تجريبي', msg:txt,
+    type: isBot?'bot':'human',
+    employee: isBot?null:(emp?emp.name:'موظف'),
+    time: new Date().toLocaleTimeString('ar-SA'),
+    rating: Math.random()>0.5? Math.floor(Math.random()*2)+4 : null
+  });
+  document.getElementById('chatInput').value='';
+  save();
+}
+
+updateStats(); render();
+if(waLinked) document.getElementById('qrBox').classList.remove('hidden');
+</script>
 </body>
 </html>
