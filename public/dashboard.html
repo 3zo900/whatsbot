@@ -1,37 +1,89 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>لوحة التحكم - WhatsBot.sa</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;800;900&display=swap" rel="stylesheet">
 <style>body{font-family:'Tajawal',sans-serif;background:#faf8ff}.sidebar-active{background:#0a0a0a;color:white!important}</style>
 </head>
 <body class="min-h-screen flex">
+
 <div class="w-[290px] bg-white border-l min-h-screen p-5 sticky top-0 h-screen flex flex-col">
 <div class="flex items-center gap-3 mb-8">
-<img src="logo.png" alt="WB" class="w-11 h-11 rounded-xl object-contain">
+<!-- الشعار الأخضر مدمج بدون رفع -->
+<svg width="44" height="44" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="rounded-xl">
+<rect width="100" height="100" rx="14" fill="#22c55e"/>
+<path d="M20 28 L20 18 Q20 12 26 12 L38 12 L42 22 Q44 28 38 32 L34 36 L20 36 Z" fill="white" opacity="0.95"/>
+<text x="50%" y="58%" dominant-baseline="middle" text-anchor="middle" font-family="Tajawal" font-weight="900" font-size="38" fill="white">WB</text>
+</svg>
 <div><div class="font-black">WhatsBot.sa</div><div class="text- text-zinc-500">منصة إدارة واتساب</div></div>
 </div>
+
 <div class="space-y-1.5 flex-1">
 <button onclick="showSec('overview')" id="btn-overview" class="sidebar-active w-full text-right px-4 py-3 rounded-xl text- font-bold">📊 نظرة عامة</button>
 <button onclick="showSec('team')" id="btn-team" class="w-full text-right px-4 py-3 rounded-xl text- text-zinc-600">👨‍💼 فريق العمل</button>
 <button onclick="showSec('auto')" id="btn-auto" class="w-full text-right px-4 py-3 rounded-xl text- text-zinc-600">🤖 الأتمتة</button>
 <button onclick="showSec('stats')" id="btn-stats" class="w-full text-right px-4 py-3 rounded-xl text- text-zinc-600">📈 التقييم ⭐</button>
 </div>
-<div class="mt-auto"><div class="bg-[#0a0a0a] rounded-[1.2rem] p-4 text-white"><div class="text- font-bold truncate" id="uEmail">...</div><div class="flex items-center gap-2 mt-2"><span class="bg-[#22c55e] text-black text- px-2 py-0.5 rounded-full font-bold">مفعل ✅</span></div><button onclick="logout()" class="mt-3 text- bg-white/10 px-3 py-1.5 rounded-full">خروج</button></div></div>
+
+<div class="mt-auto">
+<div class="bg-[#0a0a0a] rounded-[1.2rem] p-4 text-white">
+<div class="text- font-bold truncate" id="uEmail">...</div>
+<div class="flex items-center gap-2 mt-2"><span class="bg-[#22c55e] text-black text- px-2 py-0.5 rounded-full font-bold">مفعل ✅</span></div>
+<button onclick="logout()" class="mt-3 text- bg-white/10 px-3 py-1.5 rounded-full">خروج</button>
 </div>
+</div>
+</div>
+
 <div class="flex-1">
 <div class="bg-white border-b px-8 py-4 flex justify-between items-center">
-<div class="flex items-center gap-3"><img src="logo.png" alt="WB" class="w-10 h-10 rounded-xl object-contain hidden md:block"><h1 class="font-black text-lg">لوحة التحكم</h1><span class="bg-[#e8f5e9] text-[#22c55e] text- px-3 py-1 rounded-full font-bold">مفعل ✅</span></div>
-<div class="flex items-center gap-3"><div class="text-left"><div class="text- text-zinc-500">الدعم الفني</div><div class="font-black text- ltr" dir="ltr">966511515727</div></div><img src="logo.png" alt="W" class="w-9 h-9 rounded-full object-contain bg-[#f0fdf4]"></div>
+<div class="flex items-center gap-3">
+<svg width="40" height="40" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="rounded-xl hidden md:block"><rect width="100" height="100" rx="14" fill="#22c55e"/><text x="50%" y="58%" dominant-baseline="middle" text-anchor="middle" font-family="Tajawal" font-weight="900" font-size="38" fill="white">WB</text></svg>
+<h1 class="font-black text-lg">لوحة التحكم</h1>
+<span class="bg-[#e8f5e9] text-[#22c55e] text- px-3 py-1 rounded-full font-bold">مفعل ✅</span>
 </div>
+<div class="flex items-center gap-3">
+<div class="text-left"><div class="text- text-zinc-500">الدعم الفني</div><div class="font-black text- ltr" dir="ltr">966511515727</div></div>
+<svg width="36" height="36" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" class="rounded-full"><rect width="100" height="100" rx="50" fill="#22c55e"/><text x="50%" y="58%" dominant-baseline="middle" text-anchor="middle" font-weight="900" font-size="32" fill="white">W</text></svg>
+</div>
+</div>
+
 <div class="p-6 max-w-[1100px]">
-<div id="sec-overview"><div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6"><div class="bg-white border rounded-2xl p-5"><div class="text- text-zinc-500">محادثات اليوم</div><div class="text-2xl font-black mt-1">12</div></div><div class="bg-white border rounded-2xl p-5"><div class="text- text-zinc-500">رد البوت</div><div class="text-2xl font-black mt-1">89%</div></div><div class="bg-white border rounded-2xl p-5"><div class="text- text-zinc-500">تقييم العملاء ⭐</div><div class="text-2xl font-black mt-1">4.8/5</div></div><div class="bg-white border rounded-2xl p-5"><div class="text- text-zinc-500">الموظفين</div><div class="text-2xl font-black mt-1" id="sEmp">0</div></div></div><div class="grid lg:grid-cols-3 gap-5"><div class="bg-white border rounded-[1.6rem] p-6"><h3 class="font-black text- mb-1">🔗 ربط واتساب مؤسستك (واحد)</h3><p class="text- text-zinc-500 mb-4">اربط رقم شركتك</p><div id="waOff"><input id="waNum" placeholder="9665XXXXXXXX" class="w-full border rounded-xl px-4 py-3 text-sm ltr text-left" dir="ltr"><button onclick="connectWA()" class="w-full bg-zinc-900 text-white rounded-full py-3 text-xs font-bold mt-3">ربط - عرض QR</button></div><div id="waOn" class="hidden"><div class="bg-[#f0fdf4] border rounded-2xl p-4"><div class="font-bold text-sm" id="waConNum"></div><div class="text- text-green-700 mt-1">متصل ✅</div><button onclick="disWA()" class="mt-3 bg-white border rounded-full px-4 py-1.5 text-xs">فصل</button></div></div></div><div class="lg:col-span-2 bg-white border rounded-[1.6rem] p-6"><h3 class="font-bold text- mb-4">⭐ آخر التقييمات</h3><div class="space-y-3"><div class="border rounded-xl p-3 flex justify-between"><div><div class="font-bold text-xs">عبدالله - ⭐⭐⭐⭐⭐</div><div class="text- text-zinc-500">ممتاز - 5/5</div></div><div class="text- text-zinc-400">اليوم</div></div><div class="border rounded-xl p-3 flex justify-between"><div><div class="font-bold text-xs">نورة - ⭐⭐⭐⭐</div><div class="text- text-zinc-500">جيد - 4/5</div></div><div class="text- text-zinc-400">أمس</div></div></div></div></div></div>
+<div id="sec-overview">
+<div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+<div class="bg-white border rounded-2xl p-5"><div class="text- text-zinc-500">محادثات اليوم</div><div class="text-2xl font-black mt-1">12</div></div>
+<div class="bg-white border rounded-2xl p-5"><div class="text- text-zinc-500">رد البوت</div><div class="text-2xl font-black mt-1">89%</div></div>
+<div class="bg-white border rounded-2xl p-5"><div class="text- text-zinc-500">تقييم العملاء ⭐</div><div class="text-2xl font-black mt-1">4.8/5</div></div>
+<div class="bg-white border rounded-2xl p-5"><div class="text- text-zinc-500">الموظفين</div><div class="text-2xl font-black mt-1" id="sEmp">0</div></div>
+</div>
+
+<div class="grid lg:grid-cols-3 gap-5">
+<div class="bg-white border rounded-[1.6rem] p-6">
+<h3 class="font-black text- mb-1">🔗 ربط واتساب مؤسستك (واحد)</h3>
+<p class="text- text-zinc-500 mb-4">اربط رقم شركتك عشان البوت يشتغل عليه</p>
+<div id="waOff"><input id="waNum" placeholder="9665XXXXXXXX" class="w-full border rounded-xl px-4 py-3 text-sm ltr text-left" dir="ltr"><button onclick="connectWA()" class="w-full bg-zinc-900 text-white rounded-full py-3 text-xs font-bold mt-3">ربط - عرض QR</button></div>
+<div id="waOn" class="hidden"><div class="bg-[#f0fdf4] border rounded-2xl p-4"><div class="font-bold text-sm" id="waConNum"></div><div class="text- text-green-700 mt-1">متصل ✅</div><button onclick="disWA()" class="mt-3 bg-white border rounded-full px-4 py-1.5 text-xs">فصل</button></div></div>
+</div>
+
+<div class="lg:col-span-2 bg-white border rounded-[1.6rem] p-6">
+<h3 class="font-bold text- mb-4">⭐ آخر التقييمات</h3>
+<div class="space-y-3">
+<div class="border rounded-xl p-3 flex justify-between"><div><div class="font-bold text-xs">عبدالله - ⭐⭐⭐⭐⭐</div><div class="text- text-zinc-500">ممتاز - 5/5</div></div><div class="text- text-zinc-400">اليوم</div></div>
+<div class="border rounded-xl p-3 flex justify-between"><div><div class="font-bold text-xs">نورة - ⭐⭐⭐⭐</div><div class="text- text-zinc-500">جيد - 4/5</div></div><div class="text- text-zinc-400">أمس</div></div>
+</div>
+</div>
+</div>
+</div>
+
 <div id="sec-team" class="hidden"><h2 class="text-xl font-black mb-6">فريق العمل 👨‍💼</h2><div class="bg-white border rounded-[1.6rem] p-6"><div class="grid md:grid-cols-2 gap-3"><input id="eName" placeholder="اسم الموظف" class="border rounded-xl px-3 py-3 text-xs"><input id="ePhone" placeholder="رقم واتساب 9665..." class="border rounded-xl px-3 py-3 text-xs ltr text-left" dir="ltr"><select id="eRole" class="border rounded-xl px-3 py-3 text-xs"><option>👑 مدير</option><option>💼 مبيعات</option></select><select id="eDept" class="border rounded-xl px-3 py-3 text-xs"><option>المبيعات</option><option>الدعم الفني</option></select></div><button onclick="addE()" class="w-full mt-4 bg-zinc-900 text-white rounded-full py-3 text-xs font-bold">+ إضافة موظف</button><div id="eList" class="mt-6 space-y-2"></div></div></div>
-<div id="sec-auto" class="hidden"><h2 class="text-xl font-black mb-6">الأتمتة 🤖</h2><div class="bg-white border rounded-[1.6rem] p-6 space-y-5"><div><label class="text-xs font-bold">رسالة الترحيب</label><textarea rows="2" class="w-full border rounded-xl p-3 text-xs mt-2">أهلاً! أنا مساعدك الذكي في WhatsBot.sa 👋</textarea></div><button onclick="alert('✅ تم الحفظ')" class="bg-[#22c55e] text-black rounded-full px-8 py-3 text-xs font-black">حفظ</button></div></div>
+
+<div id="sec-auto" class="hidden"><h2 class="text-xl font-black mb-6">الأتمتة 🤖</h2><div class="bg-white border rounded-[1.6rem] p-6 space-y-5"><div><label class="text-xs font-bold">رسالة الترحيب</label><textarea rows="2" class="w-full border rounded-xl p-3 text-xs mt-2">أهلاً! أنا مساعدك الذكي في WhatsBot.sa 👋</textarea></div><button onclick="alert('✅ تم الحفظ')" class="bg-[#22c55e] text-black rounded-full px-8 py-3 text-xs font-black">حفظ الإعدادات</button></div></div>
+
 <div id="sec-stats" class="hidden"><h2 class="text-xl font-black mb-6">📈 الإحصائيات</h2><div class="bg-white border rounded-[1.6rem] p-8 text-center"><div class="text-5xl font-black">4.8 / 5 ⭐</div><div class="text-sm text-zinc-500 mt-2">متوسط تقييم العملاء</div></div></div>
 </div>
 </div>
+
 <script>
 function showSec(s){ ['overview','team','auto','stats'].forEach(x=>{ document.getElementById('sec-'+x).classList.add('hidden'); document.getElementById('btn-'+x).classList.remove('sidebar-active'); }); document.getElementById('sec-'+s).classList.remove('hidden'); document.getElementById('btn-'+s).classList.add('sidebar-active'); }
 function logout(){ localStorage.removeItem('wb_current_email'); location.href='login.html'; }
