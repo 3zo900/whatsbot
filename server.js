@@ -448,4 +448,18 @@ app.delete('/api/users/delete/:id', (req,res)=>{ if(!isAuth(req)) return res.sta
 app.get('/admin.html', (req,res)=> res.redirect('/az-admin-secure-2026'));
 app.get('/admin/', (req,res)=> res.redirect('/az-admin-secure-2026'));
 app.get('/health', (req,res)=> res.json({status:'ok'}));
+
+// موظف يرد - يرسل من رقم الشركة
+app.post('/api/employee-reply', (req,res)=>{
+  const {clientPhone, message, emp, store} = req.body;
+  console.log(`[EMP REPLY] ${emp} رد على ${clientPhone}: ${message} (يظهر من رقم ${store})`);
+  // هنا تربط مع واتساب API الفعلي لإرسال الرسالة من رقم الشركة
+  // مثال: whatsappClient.sendMessage(clientPhone, message)
+  res.json({ok:true, sentVia:'store_number', msg:message});
+});
+
+app.get('/employee-reply.html', (req,res)=>{
+  res.sendFile(__dirname+'/public/employee-reply.html');
+});
+
 app.listen(PORT, ()=> console.log('wsbot.me v12 lite running on '+PORT));
