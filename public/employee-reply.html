@@ -1,1 +1,105 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>رد على العميل - WhatsBot</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'IBM Plex Sans Arabic',sans-serif}
+body{background:#f5f0e6;min-height:100vh;display:flex;flex-direction:column}
+.header{background:#111;color:#fff;padding:14px 16px;display:flex;align-items:center;gap:10px;position:sticky;top:0}
+.logo{width:38px;height:38px;background:#25D366;border-radius:11px;display:flex;align-items:center;justify-content:center}
+.chat-area{flex:1;padding:16px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;max-width:600px;margin:0 auto;width:100%}
+.msg{max-width:78%;padding:12px 14px;border-radius:18px;font-size:13px;line-height:1.5}
+.msg-client{background:#fff;border:1px solid #f0ebe0;border-bottom-right-radius:6px;align-self:flex-start}
+.msg-emp{background:#25D366;color:#fff;border-bottom-left-radius:6px;align-self:flex-end}
+.msg-bot{background:#fff8e1;border:1px dashed #ffecb3;align-self:center;font-size:11px;color:#7a5a00;text-align:center;border-radius:12px}
+.client-card{background:#fff;border-radius:16px;padding:14px;margin-bottom:12px;border:1px solid #f0ebe0}
+.input-area{background:#fff;border-top:1px solid #f0ebe0;padding:12px 16px;position:sticky;bottom:0;display:flex;gap:10px;align-items:end;max-width:600px;margin:0 auto;width:100%}
+.input-area textarea{flex:1;background:#faf6ef;border:1.5px solid #f0ebe0;border-radius:20px;padding:12px 14px;font-size:13px;resize:none;max-height:100px;outline:none}
+.input-area textarea:focus{border-color:#25D366;background:#fff}
+.btn-send{width:44px;height:44px;background:#25D366;border:none;border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.info{font-size:11px;color:#888;text-align:center;padding:8px}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="logo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"><path d="M7 11C7 7.5 9.5 5 13 5H16C19.5 5 22 7.5 22 11C22 14.5 19.5 17 16 17H11L8.5 19.5V17C5.5 17 3.5 14.5 3.5 11" stroke="white" stroke-width="1.8" stroke-linecap="round"/><path d="M17.5 2.5L18.7 5L21.2 6.2L18.7 7.4L17.5 9.9L16.3 7.4L13.8 6.2L16.3 5L17.5 2.5Z" fill="#FFEB3B" stroke="white" stroke-width="1"/></svg></div>
+  <div><div style="font-weight:800;font-size:13px" id="empName">مرحباً ناصر</div><div style="font-size:11px;opacity:.7" id="clientInfo">عميل جديد ينتظر ردك</div></div>
+  <div style="margin-right:auto;background:#25D366;padding:4px 10px;border-radius:20px;font-size:10px">رقم الشركة يظهر للعميل ✅</div>
+</div>
+
+<div class="chat-area" id="chatArea">
+  <div class="client-card" id="clientCard">
+    <div style="font-weight:800;font-size:13px;margin-bottom:6px">👤 معلومات العميل</div>
+    <div style="font-size:12px;color:#555;line-height:1.8">
+      <div>الاسم: <b id="cName">أحمد</b></div>
+      <div>الرقم: <b id="cPhone" dir="ltr">9665xxxxxxx</b></div>
+      <div>الموضوع: <b id="cTopic">استفسار صيانة</b></div>
+      <div>وقت التحويل: <b id="cTime">الآن</b></div>
+    </div>
+  </div>
+  <div class="msg msg-client" id="firstMsg">السلام عليكم، عندي مشكلة في المنتج اللي اشتريته، ما يشتغل</div>
+  <div class="msg msg-bot">🤖 البوت حول المحادثة لك لأن العميل طلب موظف صيانة</div>
+  <div class="info">اكتب ردك بالأسفل - سيظهر للعميل من رقم الشركة <span id="storeNum" style="font-weight:800">رقم المتجر</span></div>
+</div>
+
+<div class="input-area">
+  <textarea id="replyInput" rows="1" placeholder="اكتب ردك للعميل هنا..." oninput="autoGrow(this)"></textarea>
+  <button class="btn-send" onclick="sendReply()"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2L15 22L11 13L2 9L22 2Z"/></svg></button>
+</div>
+
+<script>
+const params = new URLSearchParams(location.search);
+const clientName = params.get('client') || 'أحمد';
+const clientPhone = params.get('phone') || '9665xxxxxxx';
+const topic = params.get('topic') || 'استفسار عام';
+const msg = params.get('msg') || 'السلام عليكم، عندي مشكلة';
+const emp = params.get('emp') || 'ناصر';
+const store = params.get('store') || 'متجر ناصر محمد';
+
+document.getElementById('cName').innerText = clientName;
+document.getElementById('cPhone').innerText = clientPhone;
+document.getElementById('cTopic').innerText = topic;
+document.getElementById('firstMsg').innerText = msg;
+document.getElementById('empName').innerText = 'مرحباً '+emp;
+document.getElementById('storeNum').innerText = store;
+document.getElementById('clientInfo').innerText = 'عميل: '+clientName+' - '+topic;
+document.getElementById('cTime').innerText = new Date().toLocaleString('ar-SA');
+
+function autoGrow(el){ el.style.height='auto'; el.style.height=el.scrollHeight+'px'; }
+
+function sendReply(){
+  const text = document.getElementById('replyInput').value.trim();
+  if(!text) return;
+  const area = document.getElementById('chatArea');
+  const div = document.createElement('div');
+  div.className='msg msg-emp';
+  div.innerText=text;
+  area.appendChild(div);
+  document.getElementById('replyInput').value='';
+  area.scrollTop=area.scrollHeight;
+  
+  // هنا يتم الإرسال الفعلي عبر رقم الشركة
+  fetch('/api/employee-reply',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({clientPhone, message:text, emp, store})
+  }).then(()=>{}).catch(()=>{});
+
+  // رد وهمي من العميل للتجربة
+  setTimeout(()=>{
+    const d=document.createElement('div');
+    d.className='msg msg-client';
+    d.innerText='شكراً لك '+emp+'، واضح الحين';
+    area.appendChild(d);
+    area.scrollTop=area.scrollHeight;
+  },2000);
+}
+
+// تحميل رسائل سابقة
+window.onload=()=>{document.getElementById('chatArea').scrollTop=document.getElementById('chatArea').scrollHeight}
+</script>
+</body>
+</html>
 
