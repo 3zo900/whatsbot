@@ -10,7 +10,6 @@ let users = [
   {id:1, phone:'966510015157', password:'123456', name:'ابو فهد - مالك', plan:'companies', ai_credits:7000, used_credits:1240, expiry:'2026-12-31', status:'active', whatsapp:'966510015157', employees:[{id:1,name:'احمد الدعم',phone:'966500000001',rating:4.8,chats:120}], conversations:[{id:1,customer:'0555123456',last:'ابي استفسر',assigned:'bot',status:'open',rating:5}]},
   {id:2, phone:'966500000001', password:'112233', name:'متجر تجريبي', plan:'individual', ai_credits:1000, used_credits:340, expiry:'2026-08-19', status:'active', whatsapp:'', employees:[], conversations:[]}
 ];
-let orders = [];
 function isAuth(req){ const c = req.headers.cookie || ''; return c.includes('admin_token='+ADMIN_TOKEN); }
 
 app.get('/', (req,res)=>{
@@ -45,7 +44,7 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:14px 5
 .plan{border-radius:20px;padding:24px;position:relative;border:1px solid #e9e9e9;display:flex;flex-direction:column} .plan-label{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:#25D366;color:#000;font-size:11px;font-weight:700;padding:4px 12px;border-radius:12px}
 .plan h3{font-size:14px;color:#888;font-weight:500;margin-bottom:8px} .plan .price{font-size:28px;font-weight:800;margin-bottom:16px} .plan .price span{font-size:14px;font-weight:400;color:#888}
 .plan ul{list-style:none;margin:16px 0 24px;flex:1} .plan li{font-size:13px;padding:7px 0;display:flex;gap:6px;color:#333} .plan li::before{content:"✓";color:#25D366;font-weight:800}
-.plan .btn-plan{padding:12px;border-radius:30px;border:1px solid #111;text-align:center;font-weight:700;font-size:13px;text-decoration:none;display:block;cursor:pointer}
+.plan .btn-plan{padding:12px;border-radius:30px;border:1px solid #111;text-align:center;font-weight:700;font-size:13px;text-decoration:none;display:block}
 .plan-afrad{background:#ffffff} .plan-afrad .btn-plan{background:#fff;color:#111} .plan-pro{background:#111;color:#fff;border-color:#111} .plan-pro h3{color:#aaa} .plan-pro .price{color:#fff} .plan-pro li{color:#ddd} .plan-pro .btn-plan{background:#25D366;color:#000;border-color:#25D366}
 .plan-companies{background:#e8f5e9;border-color:#c8e6c9} .plan-companies .btn-plan{background:#111;color:#fff} footer{text-align:center;padding:30px;color:#aaa;font-size:12px}
 </style></head><body>
@@ -87,7 +86,6 @@ setInterval(restartChat, 8000);
 </body></html>
   `);
 });
-
 app.get('/order', (req,res)=>{
   const plan = req.query.plan || 'pro';
   let planName='احترافي - الأكثر طلباً';
@@ -105,7 +103,7 @@ body{background:#0f281e;min-height:100vh;padding:20px;color:#fff}
 .header h1 span.orange{color:#ff8c42}
 .header h1 span.yellow{color:#ffcc4d}
 .header p{color:#8aa89a;font-size:14px;margin-top:12px;line-height:1.7;max-width:400px;margin:0 auto}
-.form-card{background:#fff;border-radius:24px;padding:24px;max-width:500px;margin:0 auto;box-shadow:0 20px 60px rgba(0,0,0,0.3)}
+.form-card{background:#fff;border-radius:24px;padding:24px;max-width:500px;margin:0 auto}
 .plan-badge{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
 .plan-badge .right{font-weight:800;color:#111;font-size:15px}
 .plan-badge .left{background:#e8f5e9;color:#1a8a4a;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700}
@@ -118,7 +116,9 @@ body{background:#0f281e;min-height:100vh;padding:20px;color:#fff}
 .type-btn{padding:14px;background:#f9f5ec;border:1px solid #e5e0d5;border-radius:14px;text-align:center;font-size:13px;font-weight:600;color:#333;cursor:pointer}
 .type-btn.active{background:#111;color:#fff;border-color:#111}
 .btn-submit{width:100%;background:#111;color:#fff;padding:16px;border-radius:30px;border:none;font-weight:800;font-size:15px;cursor:pointer;margin-top:20px}
-.err{color:#c62828;font-size:11px;margin-top:6px;display:none} .footer{text-align:center;color:#5a7a6a;font-size:11px;margin-top:20px} .required{color:#e53935}
+.err{color:#c62828;font-size:11px;margin-top:6px;display:none}
+.footer{text-align:center;color:#5a7a6a;font-size:11px;margin-top:20px}
+.required{color:#e53935}
 </style></head><body>
 <div class="header">
 <h1><span class="orange">جاهز</span> تخلي عملاءك <span class="orange">يلاقوا رد</span><br><span class="yellow">فوري؟</span></h1>
@@ -140,7 +140,7 @@ body{background:#0f281e;min-height:100vh;padding:20px;color:#fff}
 <div class="type-btn" style="grid-column:1 / -1" data-type="خدمات أخرى" onclick="selectType(this)">خدمات أخرى</div>
 </div>
 <div class="err" id="err-type">اختر نوع النشاط</div></div>
-<div class="field"><label>وش أكثر شي متعبك في الرد على العملاء؟ (اختياري)</label><textarea id="issue" placeholder="مثال: ما ألحق أرد على كل العملاء وتروح علي مبيعات كثيرة..."></textarea></div>
+<div class="field"><label>وش أكثر شي متعبك في الرد على العملاء؟ (اختياري)</label><textarea id="issue" placeholder="مثال: ما ألحق أرد على كل العملاء..."></textarea></div>
 <button class="btn-submit" onclick="submitOrder()">✅ إرسال الطلب - بنكلمك واتساب</button>
 <div class="footer">WhatsBot.sa 2026 ©</div>
 </div>
@@ -154,7 +154,7 @@ async function submitOrder(){
   const issue=document.getElementById('issue').value.trim();
   let valid=true;
   if(!name){document.getElementById('err-name').style.display='block';valid=false;} else document.getElementById('err-name').style.display='none';
-  if(!email || !/^[^@]+@[^@]+\\.[^@]+$/.test(email)){document.getElementById('err-email').style.display='block';valid=false;} else document.getElementById('err-email').style.display='none';
+  if(!email || !/^[^@]+@[^@]+\.[^@]+$/.test(email)){document.getElementById('err-email').style.display='block';valid=false;} else document.getElementById('err-email').style.display='none';
   if(!whatsapp){document.getElementById('err-whatsapp').style.display='block';valid=false;} else document.getElementById('err-whatsapp').style.display='none';
   if(!selectedType){document.getElementById('err-type').style.display='block';valid=false;} else document.getElementById('err-type').style.display='none';
   if(!valid) return;
@@ -162,14 +162,13 @@ async function submitOrder(){
   try{
     const res=await fetch('/api/order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,email,whatsapp:'966'+whatsapp,type:selectedType,issue,plan:planQuery,planName:document.getElementById('planName').innerText})});
     const data=await res.json();
-    if(data.success){ alert('تم ارسال طلبك بنجاح! بنكلمك على الواتساب خلال ساعتين ✅'); window.location.href='https://wa.me/966510015157?text=طلبت باقة '+encodeURIComponent(document.getElementById('planName').innerText)+' - اسمي: '+encodeURIComponent(name)+' - ايميلي: '+encodeURIComponent(email); }
-  }catch(e){ alert('تم حفظ الطلب، بنكلمك واتساب قريباً'); window.location.href='https://wa.me/966510015157'; }
+    if(data.success){ alert('تم ارسال طلبك بنجاح!'); window.location.href='https://wa.me/966510015157?text=طلبت باقة '+encodeURIComponent(document.getElementById('planName').innerText); }
+  }catch(e){ alert('تم حفظ الطلب'); window.location.href='https://wa.me/966510015157'; }
 }
 </script>
 </body></html>
   `);
 });
-
 app.post('/api/order', (req,res)=>{
   const {name,email,whatsapp,type,issue,plan,planName} = req.body;
   if(!name || !email || !whatsapp || !type) return res.status(400).json({success:false});
@@ -208,27 +207,18 @@ async function login(){
 }
 </script></body></html>`);
 });
-
-app.get('/client-dashboard', (req,res)=>{
-  res.send(`<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>لوحة العميل</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<style>
-:root{--green:#25D366;--bg:#f8f8f6;--card:#fff;--border:#eee}
-*{margin:0;padding:0;box-sizing:border-box;font-family:'IBM Plex Sans Arabic',sans-serif} body{background:var(--bg);color:#111;display:flex;min-height:100vh}
-.sidebar{width:280px;background:#111;color:#fff;padding:20px;position:fixed;height:100vh;overflow:auto;display:flex;flex-direction:column}
-.brand{display:flex;align-items:center;gap:10px;margin-bottom:28px} .brand .logo-box{width:40px;height:40px;background:var(--green);color:#000;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:900}
-.menu{flex:1} .menu a{display:flex;align-items:center;gap:10px;padding:11px 12px;border-radius:10px;color:#888;text-decoration:none;margin-bottom:4px;font-size:13px;cursor:pointer} .menu a.active,.menu a:hover{background:#1e1e1e;color:#fff}
-.main{flex:1;margin-right:280px;padding:24px} .kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:18px} .kpi{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:16px}
-.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:18px;margin-bottom:16px}
-.btn{padding:7px 14px;border-radius:20px;border:none;cursor:pointer;font-weight:700;font-size:11px} .btn-g{background:var(--green);color:#000} .btn-d{background:#111;color:#fff} .btn-w{background:#fff;border:1px solid #ddd;color:#111} .btn-r{background:#ffebee;color:#c62828}
-.field{margin-bottom:12px} .field input{width:100%;padding:10px;border-radius:10px;border:1px solid #ddd;background:#fff;font-size:12px}
-.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:99;align-items:center;justify-content:center;padding:20px} .modal.show{display:flex} .modal-box{background:#fff;border-radius:16px;padding:20px;width:100%;max-width:420px}
-@media(max-width:900px){.sidebar{display:none} .main{margin-right:0}}
-</style></head><body>
-<div class="sidebar"><div class="brand"><div class="logo-box">WB</div><b>WhatsBot AI</b></div>
-<div class="menu"><a class="active" onclick="showTab('dash')">📊 لوحة التحكم</a><a onclick="showTab('convs')">💬 المحادثات</a><a onclick="showTab('employees')">👥 الموظفين</a><a onclick="showTab('ratings')">⭐ تقييم رضا العملاء</a><a onclick="showTab('settings')">⚙️ الاعدادات</a><a href="/login.html" style="color:#ff6b6b;margin-top:20px">🚪 خروج</a></div></div>
-<div class="main"><h1>لوحة العميل</h1><p>مرحبا بك</p></div>
-</body></html>`);
+tyle.display='block'; }
+function openEmpModal(){ const limit = getPlanLimit(currentUser.plan); if((currentUser.employees||[]).length >= limit){ alert('وصلت للحد المسموح ('+limit+' موظفين)'); return; } document.getElementById('empModal').classList.add('show'); }
+function closeEmpModal(){ document.getElementById('empModal').classList.remove('show'); }
+function addEmployee(){ const name = document.getElementById('empName').value.trim(); const phone = document.getElementById('empPhone').value.trim(); if(!name ||!phone){ alert('ادخل الاسم ورقم الجوال'); return; } const limit = getPlanLimit(currentUser.plan); if((currentUser.employees||[]).length >= limit){ alert('الحد '+limit); return; } currentUser.employees = currentUser.employees || []; currentUser.employees.push({id:Date.now(), name, phone, rating:4.5, chats:0}); saveClient(); closeEmpModal(); document.getElementById('empName').value=''; document.getElementById('empPhone').value=''; }
+function removeEmp(id){ if(!confirm('حذف الموظف؟')) return; currentUser.employees = currentUser.employees.filter(e=>e.id!==id); saveClient(); }
+function saveSettings(){ currentUser.whatsapp = document.getElementById('setWhatsapp').value.trim(); currentUser.name = document.getElementById('setStoreName').value.trim() || currentUser.name; saveClient(); alert('تم الحفظ - سيتم تفعيل البوت على رقم: ' + currentUser.whatsapp); }
+function saveClient(){ localStorage.setItem('ws_client', JSON.stringify(currentUser)); let all = JSON.parse(localStorage.getItem('wsbot_v11')||'[]'); let idx = all.findIndex(u=>u.phone===currentUser.phone); if(idx>=0) all[idx]=currentUser; else all.push(currentUser); localStorage.setItem('wsbot_v11', JSON.stringify(all)); refreshData(); }
+function transferChat(){ const chatId = document.getElementById('transChat').value; const to = document.getElementById('transTo').value; if(!chatId) return; let conv = currentUser.conversations.find(c=>c.id==chatId); if(conv){ conv.assigned = to; saveClient(); alert('تم تحويل المحادثة الى: ' + to); } }
+function downloadPDF(){ const {jsPDF} = window.jspdf; const doc = new jsPDF(); doc.text('WhatsBot AI - Weekly Report', 10, 10); doc.text('Store: ' + currentUser.name, 10, 20); doc.text('Phone: ' + currentUser.phone, 10, 30); doc.text('Whatsapp: ' + (currentUser.whatsapp||'-'), 10, 40); doc.text('Used: ' + (currentUser.used_credits||0) + ' / ' + getPlanConversations(currentUser.plan), 10, 50); doc.save('report-' + currentUser.phone + '.pdf'); }
+refreshData();
+</script></body></html>
+  `);
 });
 
 app.post('/api/client/login', (req,res)=>{
@@ -240,7 +230,7 @@ app.post('/api/client/login', (req,res)=>{
 });
 
 app.get('/az-admin-secure-2026', (req,res)=>{
- res.send(`<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin</title>
+ res.send(`<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin Secure</title>
 <style>*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI}body{background:#0a0a0a;color:#fff;display:flex;align-items:center;justify-content:center;min-height:100vh;padding:20px}.box{background:#141414;border:1px solid #222;border-radius:20px;padding:28px;width:100%;max-width:380px;text-align:center}.logo-box{width:60px;height:60px;background:#25D366;color:#000;border-radius:12px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:22px;margin:0 auto 12px}h2{font-size:16px;margin-bottom:4px}p{color:#666;font-size:11px;margin-bottom:16px}.field{margin-bottom:10px;text-align:right}.field label{color:#888;font-size:11px;display:block;margin-bottom:4px}.field input{width:100%;padding:10px;border-radius:10px;border:1px solid #333;background:#111;color:#fff;font-size:12px}.btn{width:100%;padding:11px;border-radius:10px;border:none;background:#25D366;color:#000;font-weight:800;cursor:pointer;margin-top:8px}.err{background:rgba(255,68,68,0.1);border:1px solid rgba(255,68,68,0.2);color:#ff6b6b;padding:8px;border-radius:8px;font-size:11px;margin-bottom:8px;display:none}</style></head><body>
 <div class="box"><div class="logo-box">WB</div><h2>Admin Secure</h2><p>رابط سري للمالك فقط</p><div class="err" id="err"></div>
 <div class="field"><label>البريد</label><input type="email" id="email" value="az.behlal@gmail.com"></div>
@@ -271,6 +261,7 @@ app.post('/api/admin/login', (req,res)=>{
 });
 
 app.get('/admin/logout', (req,res)=>{ res.setHeader('Set-Cookie','admin_token=; Path=/; Max-Age=0'); res.redirect('/'); });
+
 app.post('/api/users', (req,res)=>{
   if(!isAuth(req)) return res.status(401).json({message:'غير مصرح'});
   const {phone, password, name, plan, ai_credits, expiry, status} = req.body;
@@ -279,9 +270,77 @@ app.post('/api/users', (req,res)=>{
   else { users.push({id:Date.now(), phone, password, name, plan, ai_credits:+ai_credits, used_credits:0, expiry, status, whatsapp:'', employees:[], conversations:[]}); }
   res.json({success:true, users});
 });
+
 app.get('/admin', (req,res)=>{
   if(!isAuth(req)) return res.redirect('/az-admin-secure-2026');
-  res.send(`<h1>Admin - ${users.length} users - ${orders.length} orders</h1><a href="/admin/logout">خروج</a>`);
+  res.send(`
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin</title>
+<style>
+:root{--green:#25D366;--bg:#0a0a0a;--card:#141414;--border:#222}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Segoe UI}body{background:var(--bg);color:#fff;display:flex;min-height:100vh}
+.sidebar{width:280px;background:#111;border-left:1px solid var(--border);padding:18px;position:fixed;height:100vh;overflow:auto}
+.brand{display:flex;align-items:center;gap:10px;margin-bottom:20px}.brand.logo-box{width:36px;height:36px;background:var(--green);color:#000;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900}
+.menu a{display:block;padding:9px 10px;border-radius:8px;color:#888;text-decoration:none;margin-bottom:3px;font-size:12px}
+.main{flex:1;margin-right:280px;padding:20px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:14px}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px}
+.kpi.label{color:#888;font-size:10px}.kpi.val{font-size:18px;font-weight:800;margin:3px 0}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:12px}
+table{width:100%;border-collapse:collapse} th{color:#666;font-size:10px;text-align:right;padding:8px;border-bottom:1px solid var(--border)} td{padding:10px 8px;border-bottom:1px solid #1a1a1a;font-size:11px}
+.badge{padding:2px 6px;border-radius:8px;font-size:10px;font-weight:700}.b-active{background:rgba(37,211,102,0.15);color:var(--green)}.b-pending{background:rgba(255,193,7,0.15);color:#ffc107}
+.btn{padding:5px 10px;border-radius:14px;border:none;cursor:pointer;font-weight:700;font-size:10px}.btn-g{background:var(--green);color:#000}.btn-d{background:#222;color:#fff}.btn-r{background:#ff4444;color:#fff}
+.modal{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:99;align-items:center;justify-content:center;padding:16px}.modal.show{display:flex}.modal-box{background:#1a1a1a;border:1px solid #333;border-radius:14px;padding:16px;width:100%;max-width:380px}
+.field{margin-bottom:8px}.field label{display:block;color:#888;font-size:10px;margin-bottom:3px}.field input,.field select{width:100%;padding:8px;border-radius:8px;border:1px solid #333;background:#111;color:#fff;font-size:11px}
+@media(max-width:900px){.sidebar{display:none}.main{margin-right:0}}
+</style></head><body>
+<div class="sidebar"><div class="brand"><div class="logo-box">WB</div><div><b>WSbot.me</b><div style="font-size:9px;color:#666">Admin v13 - Orders</div></div></div><div class="menu"><a class="active">📊 لوحة التحكم</a><a href="/admin/logout" style="color:#ff6b6b;margin-top:16px">🚪 خروج</a></div><div class="card" style="margin-top:12px"><div style="font-size:10px;color:#888">رصيد البوت</div><div style="font-size:16px;font-weight:800;margin:3px 0">84,750 / 100k</div></div></div>
+<div class="main"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px"><h1 style="font-size:18px">لوحة تحكم الادمن</h1><div style="display:flex;gap:6px"><button class="btn btn-d" onclick="location.reload()">🔄</button><button class="btn btn-g" onclick="openM()">+ اضافة عميل</button></div></div>
+<div class="kpis"><div class="kpi"><div class="label">السيرفر</div><div class="val">Online</div></div><div class="kpi"><div class="label">البوت</div><div class="val" style="color:var(--green)">Active</div></div><div class="kpi"><div class="label">العملاء</div><div class="val" id="total">0</div></div></div>
+<div class="card"><div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px"><h3 style="font-size:12px">👥 العملاء</h3><div style="width:200px"><input id="q" placeholder="بحث برقم الجوال..." oninput="render()" style="padding:6px 10px;border-radius:8px;border:1px solid #333;background:#111;color:#fff;width:100%;font-size:11px"></div></div><div style="overflow:auto"><table><thead><tr><th>اليوزر</th><th>الباس</th><th>الاسم</th><th>الباقة</th><th>رصيد</th><th>واتساب</th><th>حالة</th><th>اجراء</th></tr></thead><tbody id="tb"></tbody></table></div></div></div>
+<div class="modal" id="modal"><div class="modal-box"><h3 id="mt" style="font-size:13px;margin-bottom:10px">اضافة عميل</h3>
+<div class="field"><label>رقم الجوال (اليوزر) *</label><input id="f_phone" placeholder="9665xxxxxxxx"></div>
+<div class="field"><label>كلمة المرور (الباسورد) *</label><input id="f_pass" placeholder="123456"></div>
+<div class="field"><label>اسم المتجر *</label><input id="f_name"></div>
+<div class="field"><label>الباقة</label><select id="f_plan"><option value="individual">افراد 89 - 1000 محادثة - 1 موظف</option><option value="pro">احترافي 189 - 3000 محادثة - 3 موظفين</option><option value="companies">شركات 399 - 7000 محادثة - 8 موظفين</option></select></div>
+<div class="field"><label>رصيد AI</label><input id="f_cred" type="number" value="1000"></div>
+<div class="field"><label>تاريخ الانتهاء</label><input id="f_exp" type="date"></div>
+<div class="field"><label>الحالة</label><select id="f_st"><option value="active">نشط ✅</option><option value="pending">بانتظار ⏳</option><option value="expired">منتهي ❌</option></select></div>
+<input type="hidden" id="f_id"><div style="display:flex;gap:6px;margin-top:10px"><button class="btn btn-g" style="flex:1" onclick="save()">حفظ ✅</button><button class="btn btn-d" style="flex:1" onclick="closeM()">الغاء</button></div></div></div>
+<script>
+let users = [
+  {id:1, phone:'966510015157', password:'123456', name:'ابو فهد - مالك', plan:'companies', ai_credits:7000, used_credits:1240, expiry:'2026-12-31', status:'active', whatsapp:'966510015157'},
+  {id:2, phone:'966500000001', password:'112233', name:'متجر تجريبي', plan:'individual', ai_credits:1000, used_credits:340, expiry:'2026-08-19', status:'active', whatsapp:''}
+];
+function render(){
+  const q=document.getElementById('q').value.trim();
+  let list=users.filter(u=>!q||u.phone.includes(q)||u.name.includes(q));
+  document.getElementById('total').innerText=users.length;
+  document.getElementById('tb').innerHTML=list.map(u=>\`
+    <tr><td><b style="direction:ltr;display:inline-block">\${u.phone}</b></td><td>\${u.password}</td><td>\${u.name}</td><td>\${u.plan}</td><td>\${u.ai_credits-(u.used_credits||0)} / \${u.ai_credits}</td><td>\${u.whatsapp||'-'}</td><td><span class="badge \${u.status==='active'?'b-active':'b-pending'}">\${u.status}</span></td>
+      <td style="display:flex;gap:3px"><button class="btn btn-d" onclick="edit(\${u.id})">تعديل</button><button class="btn btn-g" onclick="toggle(\${u.id})">\${u.status==='active'?'ايقاف':'تفعيل'}</button><button class="btn btn-r" onclick="del(\${u.id})">حذف</button></td></tr>\`).join('');
+}
+function openM(id){
+  document.getElementById('modal').classList.add('show');
+  if(!id){document.getElementById('f_id').value=''; document.getElementById('f_phone').value=''; document.getElementById('f_pass').value=''; document.getElementById('f_name').value=''; document.getElementById('f_cred').value=1000; document.getElementById('f_exp').value=new Date(Date.now()+30*864e5).toISOString().slice(0,10); document.getElementById('f_st').value='active'; return}
+  const u=users.find(x=>x.id===id); document.getElementById('f_id').value=u.id; document.getElementById('f_phone').value=u.phone; document.getElementById('f_pass').value=u.password; document.getElementById('f_name').value=u.name; document.getElementById('f_plan').value=u.plan; document.getElementById('f_cred').value=u.ai_credits; document.getElementById('f_exp').value=u.expiry; document.getElementById('f_st').value=u.status;
+}
+function closeM(){document.getElementById('modal').classList.remove('show')}
+async function save(){
+  const phone=document.getElementById('f_phone').value.trim(); const password=document.getElementById('f_pass').value.trim(); const name=document.getElementById('f_name').value.trim();
+  if(!phone||!password||!name){alert('ادخل اليوزر والباس والاسم');return}
+  const payload={phone,password,name,plan:document.getElementById('f_plan').value,ai_credits:+document.getElementById('f_cred').value,expiry:document.getElementById('f_exp').value,status:document.getElementById('f_st').value};
+  if(document.getElementById('f_id').value) payload.id=+document.getElementById('f_id').value;
+  try{ const res=await fetch('/api/users',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}); const data=await res.json(); if(data.success){ users=data.users; render(); closeM(); } }catch(e){alert('خطأ');}
+}
+async function del(id){if(!confirm('حذف؟')) return; users=users.filter(x=>x.id!==id); try{ await fetch('/api/users/delete/'+id,{method:'DELETE'}); }catch(e){} render();}
+function edit(id){openM(id)}
+async function toggle(id){ let u=users.find(x=>x.id===id); u.status=u.status==='active'?'pending':'active'; try{ await fetch('/api/users',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(u)}); }catch(e){} render();}
+render();
+</script></body></html>
+  `);
 });
+
+app.get('/api/admin/users', (req,res)=>{ if(!isAuth(req)) return res.status(401).json({message:'غير مصرح'}); res.json({users}); });
+app.delete('/api/users/delete/:id', (req,res)=>{ if(!isAuth(req)) return res.status(401).json({message:'غير مصرح'}); users = users.filter(u=>u.id!=req.params.id); res.json({success:true, users}); });
 app.get('/health', (req,res)=> res.json({status:'ok'}));
-app.listen(PORT, ()=> console.log('V13 running'));
+app.listen(PORT, ()=> console.log('wsbot.me V13 with order and admin fixed running on '+PORT));
