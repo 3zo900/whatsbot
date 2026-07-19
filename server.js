@@ -141,7 +141,7 @@ textarea.input-light{resize:none;height:90px}
   
   <div class="field"><label>اسم الشركة / المؤسسة / المتجر <span style="color:red">*</span></label><input id="storeName" class="input-light" placeholder="مثال: متجر فهد للالكترونيات"><div class="err-msg" id="e-storeName">اسم المتجر مطلوب</div></div>
   
-  <div class="field"><label>اسمك الكريم <span style="color:red">*</span></label><input id="name" class="input-light" placeholder="مثال: عبدالعزيز البهلال"><div class="err-msg" id="e-name">الاسم مطلوب</div></div>
+  <div class="field"><label>اسمك الكريم <span style="color:red">*</span></label><input id="name" class="input-light" placeholder="مثال: ناصر محمد"><div class="err-msg" id="e-name">الاسم مطلوب</div></div>
   
   <div class="field"><label>رقم الواتساب اللي بنتواصل معك عليه <span style="color:red">*</span></label>
     <div class="whats-row">
