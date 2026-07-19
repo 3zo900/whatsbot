@@ -7,80 +7,82 @@
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'IBM Plex Sans Arabic',sans-serif}
-body{background:#f8f8f6;color:#111;padding:0}
+body{background:#f8f8f6;color:#111}
 nav{display:flex;justify-content:space-between;align-items:center;padding:14px 5%;background:#fff;border-bottom:1px solid #eee}
-.nav-logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:20px}
 .logo-box{width:38px;height:38px;background:#25D366;color:#000;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:16px}
 .container{max-width:600px;margin:30px auto;padding:20px}
 .card{background:#fff;border:1px solid #eee;border-radius:24px;padding:28px}
-h1{font-size:24px;margin-bottom:8px} .sub{color:#888;font-size:13px;margin-bottom:20px}
+h1{font-size:22px;margin-bottom:6px} .sub{color:#888;font-size:12px;margin-bottom:20px}
 .plan-select{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:24px}
-.plan-option{border:2px solid #eee;border-radius:16px;padding:14px;text-align:center;cursor:pointer;transition:0.2s}
+.plan-option{border:2px solid #eee;border-radius:16px;padding:14px;text-align:center;cursor:pointer}
 .plan-option.active{border-color:#25D366;background:#f0fdf4}
-.plan-option h3{font-size:14px;margin-bottom:4px} .plan-option .price{font-size:18px;font-weight:800}
-.field{margin-bottom:14px} .field label{font-size:13px;color:#555;display:block;margin-bottom:6px}
-.field input{width:100%;padding:12px 14px;border:1px solid #ddd;border-radius:12px;font-size:14px}
-.btn{width:100%;background:#111;color:#fff;padding:14px;border:none;border-radius:12px;font-weight:700;font-size:15px;cursor:pointer;margin-top:10px}
+.plan-option h3{font-size:12px;margin-bottom:4px} .plan-option .price{font-size:18px;font-weight:800}
+.field{margin-bottom:14px} .field label{font-size:12px;color:#555;display:block;margin-bottom:6px}
+.field input,.field select{width:100%;padding:12px 14px;border:1px solid #ddd;border-radius:12px;font-size:14px}
+.btn{width:100%;background:#111;color:#fff;padding:14px;border:none;border-radius:12px;font-weight:700;font-size:14px;cursor:pointer;margin-top:10px}
 .btn-green{background:#25D366;color:#000}
-.note{font-size:11px;color:#888;text-align:center;margin-top:16px}
+.success{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:16px;padding:20px;text-align:center;display:none}
+.note{font-size:11px;color:#888;text-align:center;margin-top:12px}
 </style>
 </head>
 <body>
 <nav>
-  <div class="nav-logo"><div class="logo-box">WB</div> WhatsBot AI</div>
+  <div style="display:flex;align-items:center;gap:10px;font-weight:800"><div class="logo-box">WB</div> WhatsBot AI</div>
   <a href="/" style="text-decoration:none;color:#111;font-size:13px">← الرئيسية</a>
 </nav>
 <div class="container">
-  <div class="card">
-    <h1>اطلب اشتراكك الآن</h1>
-    <div class="sub">اختر الباقة وعب البيانات وسيتواصل معك فريقنا على واتساب</div>
-    
+  <div class="card" id="formCard">
+    <h1>اطلب اشتراكك</h1>
+    <div class="sub">عب البيانات وسيظهر طلبك مباشرة في لوحة الأدمن</div>
     <div class="plan-select" id="plans">
-      <div class="plan-option" data-plan="individual" onclick="selectPlan('individual')">
-        <h3>أفراد / متاجر</h3>
-        <div class="price">89 <span style="font-size:11px;color:#888">ر.س</span></div>
-      </div>
-      <div class="plan-option" data-plan="professional" onclick="selectPlan('professional')">
-        <h3>احترافي</h3>
-        <div class="price">220 <span style="font-size:11px;color:#888">ر.س</span></div>
-      </div>
-      <div class="plan-option" data-plan="companies" onclick="selectPlan('companies')">
-        <h3>شركات / مؤسسات</h3>
-        <div class="price">480 <span style="font-size:11px;color:#888">ر.س</span></div>
-      </div>
+      <div class="plan-option" data-plan="individual" onclick="selectPlan('individual')"><h3>أفراد / متاجر</h3><div class="price">89 <span style="font-size:10px;color:#888">ر.س</span></div></div>
+      <div class="plan-option" data-plan="professional" onclick="selectPlan('professional')"><h3>احترافي</h3><div class="price">220 <span style="font-size:10px;color:#888">ر.س</span></div></div>
+      <div class="plan-option" data-plan="companies" onclick="selectPlan('companies')"><h3>شركات</h3><div class="price">480 <span style="font-size:10px;color:#888">ر.س</span></div></div>
     </div>
-
-    <div class="field"><label>اسم المتجر / الشركة</label><input id="storeName" placeholder="مثال: متجر الأناقة"></div>
-    <div class="field"><label>رقم واتساب</label><input id="whatsapp" placeholder="9665xxxxxxxx"></div>
-    <div class="field"><label>البريد الإلكتروني (اختياري)</label><input id="email" placeholder="you@example.com"></div>
-    
-    <button class="btn btn-green" onclick="sendOrder()">إرسال الطلب عبر واتساب</button>
-    <div class="note">سيتم تحويلك لواتساب مباشرة لإكمال الاشتراك<br>WhatsBot AI © 2026 - wsbot.me</div>
+    <div class="field"><label>اسم المتجر / الشركة *</label><input id="storeName" placeholder="مثال: متجر الأناقة"></div>
+    <div class="field"><label>اسمك *</label><input id="customerName" placeholder="محمد أحمد"></div>
+    <div class="field"><label>رقم واتساب *</label><input id="whatsapp" placeholder="9665xxxxxxxx"></div>
+    <div class="field"><label>البريد الإلكتروني</label><input id="email" placeholder="you@example.com"></div>
+    <button class="btn btn-green" onclick="submitOrder()">إرسال الطلب للوحة الأدمن</button>
+    <div class="note">الطلب يروح مباشرة للوحة التحكم - ما يروح واتساب<br>WhatsBot AI © 2026 - wsbot.me</div>
+  </div>
+  <div class="success" id="successCard">
+    <div style="font-size:40px">✅</div>
+    <h2 style="margin:10px 0">تم استلام طلبك!</h2>
+    <p style="font-size:13px;color:#555">طلبك ظهر الآن في لوحة الأدمن - سيتم التواصل معك قريباً</p>
+    <p style="font-size:12px;color:#888;margin-top:10px" id="orderId"></p>
+    <a href="/" style="display:inline-block;margin-top:16px;background:#111;color:#fff;padding:10px 20px;border-radius:20px;text-decoration:none;font-size:13px">العودة للرئيسية</a>
   </div>
 </div>
-
 <script>
-const prices = {individual:89, professional:220, companies:480};
 let selectedPlan = new URLSearchParams(window.location.search).get('plan') || 'individual';
+const prices = {individual:89, professional:220, companies:480};
 function selectPlan(plan){
   selectedPlan = plan;
-  document.querySelectorAll('.plan-option').forEach(el=>{
-    el.classList.toggle('active', el.dataset.plan===plan);
-  });
+  document.querySelectorAll('.plan-option').forEach(el=> el.classList.toggle('active', el.dataset.plan===plan));
 }
 selectPlan(selectedPlan);
-function sendOrder(){
-  const store = document.getElementById('storeName').value || 'بدون اسم';
-  const wa = document.getElementById('whatsapp').value || '';
-  const email = document.getElementById('email').value || '';
-  if(!wa){ alert('الرجاء إدخال رقم الواتساب'); return; }
-  const price = prices[selectedPlan];
-  const text = `مرحبا، أريد الاشتراك في WhatsBot AI
-الباقة: ${selectedPlan} - ${price} ر.س / شهر
-المتجر: ${store}
-واتساب: ${wa}
-البريد: ${email}`;
-  window.open(`https://wa.me/966510015157?text=${encodeURIComponent(text)}`, '_blank');
+async function submitOrder(){
+  const store = document.getElementById('storeName').value.trim();
+  const name = document.getElementById('customerName').value.trim();
+  const wa = document.getElementById('whatsapp').value.trim();
+  const email = document.getElementById('email').value.trim();
+  if(!store || !name || !wa){ alert('عب جميع الحقول المطلوبة *'); return; }
+  const btn = document.querySelector('.btn');
+  btn.innerText = 'جاري الإرسال...'; btn.disabled=true;
+  try{
+    const res = await fetch('/api/orders', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({storeName:store, customerName:name, whatsapp:wa, email, plan:selectedPlan, price:prices[selectedPlan]})
+    });
+    const data = await res.json();
+    if(data.ok){
+      document.getElementById('formCard').style.display='none';
+      document.getElementById('successCard').style.display='block';
+      document.getElementById('orderId').innerText = 'رقم الطلب: ' + data.id;
+    } else { alert('حدث خطأ: ' + (data.error||'unknown')); btn.innerText='إرسال الطلب للوحة الأدمن'; btn.disabled=false; }
+  }catch(e){ alert('خطأ في الاتصال'); btn.innerText='إرسال الطلب للوحة الأدمن'; btn.disabled=false; }
 }
 </script>
 </body>
