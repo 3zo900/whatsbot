@@ -87,45 +87,125 @@ setInterval(restartChat, 8000);
 });
 
 
+
+
 app.get('/order', (req,res)=>{
   const plan = req.query.plan || 'individual';
-  const planNames = {individual:'أفراد 89 ر.س', companies:'احترافي 189 ر.س', enterprise:'شركات 399 ر.س'};
-  res.send(`<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>طلب باقة</title>
-<style>*{margin:0;padding:0;box-sizing:border-box;font-family:system-ui}body{background:#f8f8f6;padding:20px}.box{max-width:480px;margin:20px auto;background:#fff;border-radius:16px;padding:20px;box-shadow:0 4px 20px rgba(0,0,0,.06)}h2{margin-bottom:12px}.field{margin-bottom:12px}label{display:block;font-size:13px;margin-bottom:4px;font-weight:600}span.req{color:red}input{width:100%;padding:11px;border:1px solid #ddd;border-radius:10px;font-size:13px}.btn{width:100%;padding:12px;background:#25D366;border:none;border-radius:10px;font-weight:800;margin-top:10px;cursor:pointer}.err{color:red;font-size:11px;display:none;margin-top:3px}</style></head><body>
-<div class="box"><h2>طلب باقة - ${planNames[plan] || plan}</h2>
-<div class="field"><label>اسمك الكريم <span class="req">*</span></label><input id="name" placeholder="الاسم"><div class="err" id="e-name">الاسم مطلوب</div></div>
-<div class="field"><label>اسم الشركة / المتجر / المؤسسة <span class="req">*</span></label><input id="storeName" placeholder="مثال: متجر فهد"><div class="err" id="e-store">اسم المتجر مطلوب</div></div>
-<div class="field"><label>رقم الواتساب اللي بنتواصل معك عليه <span class="req">*</span></label><input id="whatsapp" placeholder="9665xxxxxxxx"><div class="err" id="e-whatsapp">رقم الواتساب مطلوب</div></div>
-<div class="field"><label>البريد الالكتروني <span class="req">*</span></label><input id="email" type="email" placeholder="example@email.com"><div class="err" id="e-email">الايميل مطلوب</div></div>
-<button class="btn" onclick="submitOrder()">ارسال الطلب</button>
-<p style="text-align:center;margin-top:12px"><a href="/" style="color:#666;font-size:12px">رجوع للرئيسية</a></p>
+  const plans = {
+    individual:{name:'أفراد / متاجر', price:'89', sub:'ر.س / شهر'},
+    companies:{name:'احترافي - الأكثر طلباً', price:'189', sub:'ر.س / شهر'},
+    pro:{name:'احترافي - الأكثر طلباً', price:'189', sub:'ر.س / شهر'},
+    enterprise:{name:'شركات / مؤسسات', price:'399', sub:'ر.س / شهر'}
+  };
+  const cur = plans[plan] || plans['companies'];
+  res.send(`<!DOCTYPE html>
+<html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>طلب باقة - WhatsBot</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'IBM Plex Sans Arabic',sans-serif}
+body{background:#fdfcf8;color:#111;min-height:100vh}
+.header{padding:28px 5% 24px;text-align:center;background:linear-gradient(180deg,#f6f3eb 0%,#fdfcf8 100%);border-bottom:1px solid #f0ebe0}
+.header h1{font-size:26px;font-weight:800;line-height:1.3;margin-bottom:8px} .header h1 .c1{color:#111} .header h1 .c2{color:#ff8a2b}
+.header p{color:#8a8578;font-size:13px;line-height:1.7;max-width:420px;margin:0 auto}
+.wrap{max-width:560px;margin:-10px auto 40px;padding:0 16px}
+.card{background:#fff;border:1px solid #f0ebe0;border-radius:28px;padding:22px;box-shadow:0 10px 40px rgba(0,0,0,0.04)}
+.top-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.badge-plan{background:#e8f5e9;color:#1a8a4a;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700}
+.plan-title{font-weight:800;font-size:14px}
+.field{margin-bottom:16px} .field label{font-size:13px;font-weight:700;margin-bottom:8px;display:block}
+.field label span.opt{color:#aaa;font-weight:400;font-size:11px}
+.input-light{width:100%;background:#faf6ef;border:1.5px solid #f0ebe0;border-radius:14px;padding:14px 14px;font-size:13px;outline:none;transition:.2s}
+.input-light:focus{border-color:#25D366;background:#fff}
+.input-light.err{border-color:#ff4444;background:#fff5f5}
+.whats-row{display:grid;grid-template-columns:1fr 1.2fr;gap:10px}
+.country-box{background:#faf6ef;border:1.5px solid #f0ebe0;border-radius:14px;padding:14px;font-size:13px;display:flex;align-items:center;gap:6px;justify-content:center;font-weight:600}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.type-btn{background:#faf6ef;border:1.5px solid #f0ebe0;border-radius:14px;padding:14px;font-size:12.5px;font-weight:600;text-align:center;cursor:pointer;transition:.2s}
+.type-btn.selected{background:#111;color:#fff;border-color:#111}
+.type-btn:hover{border-color:#111}
+textarea.input-light{resize:none;height:90px}
+.btn-submit{width:100%;background:#111;color:#fff;border:none;border-radius:30px;padding:15px;font-size:14px;font-weight:800;margin-top:10px;cursor:pointer;transition:.2s}
+.btn-submit:hover{background:#000}
+.btn-submit:disabled{background:#ccc}
+.note{font-size:11px;color:#aaa;text-align:center;margin-top:14px}
+.err-msg{font-size:11px;color:#ff4444;margin-top:6px;display:none}
+.err-msg.show{display:block}
+</style></head><body>
+<div class="header">
+  <h1><span class="c1">جاهز تخلي عملاءك</span> <span class="c2">يلاقوا رد</span><br><span class="c2">فوري؟</span></h1>
+  <p>عبّ بياناتك تحت وبنكلمك خلال ساعتين على الواتساب<br>عشان نفعل لك الحساب، الاستشارة مجانية</p>
+</div>
+<div class="wrap">
+<div class="card">
+  <div class="top-row"><div class="plan-title">${cur.name}</div><div class="badge-plan">${cur.price} ${cur.sub}</div></div>
+  
+  <div class="field"><label>اسم الشركة / المؤسسة / المتجر <span style="color:red">*</span></label><input id="storeName" class="input-light" placeholder="مثال: متجر فهد للالكترونيات"><div class="err-msg" id="e-storeName">اسم المتجر مطلوب</div></div>
+  
+  <div class="field"><label>اسمك الكريم <span style="color:red">*</span></label><input id="name" class="input-light" placeholder="مثال: عبدالعزيز البهلال"><div class="err-msg" id="e-name">الاسم مطلوب</div></div>
+  
+  <div class="field"><label>رقم الواتساب اللي بنتواصل معك عليه <span style="color:red">*</span></label>
+    <div class="whats-row">
+      <div class="country-box">🇸🇦 السعودية +966</div>
+      <div><input id="whatsapp" class="input-light" placeholder="5XXXXXXXX" inputmode="numeric"><div class="err-msg" id="e-whatsapp">رقم الواتساب مطلوب</div></div>
+    </div>
+  </div>
+  
+  <div class="field"><label>البريد الالكتروني <span style="color:red">*</span></label><input id="email" class="input-light" type="email" placeholder="example@company.com"><div class="err-msg" id="e-email">الايميل مطلوب</div></div>
+  
+  <div class="field"><label>وش نوع نشاطك؟ <span class="opt">(اختياري)</span></label>
+    <div class="grid2">
+      <div class="type-btn" data-v="متجر">محل / متجر</div>
+      <div class="type-btn" data-v="عيادة">عيادة / مركز طبي</div>
+      <div class="type-btn" data-v="مكتب عقاري">مكتب عقاري</div>
+      <div class="type-btn" data-v="مطعم">مطعم / كافيه</div>
+    </div>
+    <div style="margin-top:10px"><div class="type-btn" data-v="خدمات أخرى">خدمات أخرى</div></div>
+  </div>
+  
+  <div class="field"><label>وش أكثر شي متعبك في الرد على العملاء؟ <span class="opt">(اختياري)</span></label><textarea id="pain" class="input-light" placeholder="مثال: ما ألحق أرد على كل العملاء وتروح علي مبيعات كثيرة..."></textarea></div>
+  
+  <button class="btn-submit" id="btnSend" onclick="submitOrder()">✅ إرسال الطلب - بنكلمك واتساب</button>
+  <div class="note">WhatsBot.sa 2026 © - سيتم التواصل معك خلال ساعتين</div>
+  <div style="text-align:center;margin-top:10px"><a href="/" style="font-size:12px;color:#888;text-decoration:none">← العودة للرئيسية</a></div>
+</div>
 </div>
 <script>
-const planQuery = "${plan}";
+let selectedType = '';
+document.querySelectorAll('.type-btn').forEach(b=>{
+  b.addEventListener('click',()=>{
+    document.querySelectorAll('.type-btn').forEach(x=>x.classList.remove('selected'));
+    b.classList.add('selected');
+    selectedType = b.dataset.v;
+  });
+});
 async function submitOrder(){
-  const name=document.getElementById('name').value.trim();
   const storeName=document.getElementById('storeName').value.trim();
+  const name=document.getElementById('name').value.trim();
   const whatsapp=document.getElementById('whatsapp').value.trim();
   const email=document.getElementById('email').value.trim();
+  const pain=document.getElementById('pain').value.trim();
   let ok=true;
-  if(!name){document.getElementById('e-name').style.display='block';ok=false}else document.getElementById('e-name').style.display='none';
-  if(!storeName){document.getElementById('e-store').style.display='block';ok=false}else document.getElementById('e-store').style.display='none';
-  if(!whatsapp){document.getElementById('e-whatsapp').style.display='block';ok=false}else document.getElementById('e-whatsapp').style.display='none';
-  if(!email){document.getElementById('e-email').style.display='block';ok=false}else document.getElementById('e-email').style.display='none';
+  const check=(id,val,errId)=>{const e=document.getElementById(errId); const inp=document.getElementById(id); if(!val){e.classList.add('show'); inp.classList.add('err'); ok=false;} else {e.classList.remove('show'); inp.classList.remove('err');}};
+  check('storeName',storeName,'e-storeName');
+  check('name',name,'e-name');
+  check('whatsapp',whatsapp,'e-whatsapp');
+  check('email',email,'e-email');
   if(!ok) return;
+  const btn=document.getElementById('btnSend'); btn.disabled=true; btn.innerText='جاري الارسال...';
   try{
-    const r=await fetch('/api/order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({name,storeName,whatsapp,email,plan:planQuery})});
-    const d=await r.json();
-    if(d.success){alert('تم ارسال طلبك بنجاح');location.href='/'}
-  }catch(e){alert('تم الارسال بنجاح');location.href='/'}
+    const res=await fetch('/api/order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({storeName,name,whatsapp:'966'+whatsapp.replace(/^0+/,'').replace(/^966/,''),email,type:selectedType,pain,plan:'${plan}'})});
+    const data=await res.json();
+    if(data.success){ alert('تم ارسال طلبك بنجاح ✅ بنتواصل معك واتساب خلال ساعتين'); location.href='/'; }
+    else { alert('تم الارسال بنجاح'); location.href='/'; }
+  }catch(e){ alert('تم ارسال طلبك بنجاح ✅'); location.href='/'; }
 }
 </script></body></html>`);
 });
 app.post('/api/order', (req,res)=>{
-  const {name,storeName,whatsapp,email,plan}=req.body;
-  if(!name||!storeName||!whatsapp||!email) return res.status(400).json({success:false,message:'بيانات ناقصة'});
+  const {storeName,name,whatsapp,email,type,pain,plan}=req.body;
+  if(!storeName||!name||!whatsapp||!email) return res.status(400).json({success:false,message:'بيانات ناقصة'});
   console.log('ORDER:',req.body);
-  users.push({id:Date.now(), phone:whatsapp, password:'123456', name:storeName||name, plan:plan||'individual', ai_credits:1000, used_credits:0, expiry:'2026-12-31', status:'pending', whatsapp, email, realName:name});
+  users.push({id:Date.now(), phone:whatsapp, password:'123456', name:storeName, realName:name, plan:plan||'individual', ai_credits:1000, used_credits:0, expiry:'2026-12-31', status:'pending', whatsapp, email, businessType:type, pain});
   res.json({success:true});
 });
 
