@@ -53,8 +53,8 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:14px 5
 <section class="pricing"><div class="top-btn">👇 شاهد الباقات</div><h2>باقات تناسب كل متجر</h2>
 <div class="plans">
 <div class="plan plan-afrad"><h3>أفراد / متاجر</h3><div class="price">89 <span>ر.س / شهر</span></div><ul><li>1000 محادثة</li><li>موظف واحد</li><li>رد ذكي</li><li>تقييم رضا العملاء ⭐</li></ul><a href="/order?plan=individual" class="btn-plan">اختر الباقة</a></div>
-<div class="plan plan-pro"><div class="plan-label">الأكثر طلباً</div><h3>احترافي</h3><div class="price">189 <span>ر.س / شهر</span></div><ul><li>3000 محادثة</li><li>3 موظفين</li><li>رد ذكي</li><li>تقييم رضا العملاء ⭐</li></ul><a href="/order?plan=companies" class="btn-plan">اختر الباقة</a></div>
-<div class="plan plan-companies"><h3>شركات / مؤسسات</h3><div class="price">399 <span>ر.س / شهر</span></div><ul><li>7000 محادثة</li><li>8 موظفين</li><li>رد ذكي API</li><li>تقييم رضا العميل ⭐</li></ul><a href="/order?plan=enterprise" class="btn-plan">اختر الباقة</a></div>
+<div class="plan plan-pro"><div class="plan-label">الأكثر طلباً</div><h3>احترافي</h3><div class="price">220 <span>ر.س / شهر</span></div><ul><li>3000 محادثة</li><li>3 موظفين</li><li>رد ذكي</li><li>تقييم رضا العملاء ⭐</li></ul><a href="/order?plan=companies" class="btn-plan">اختر الباقة</a></div>
+<div class="plan plan-companies"><h3>شركات / مؤسسات</h3><div class="price">480 <span>ر.س / شهر</span></div><ul><li>7000 محادثة</li><li>8 موظفين</li><li>رد ذكي API</li><li>تقييم رضا العميل ⭐</li></ul><a href="/order?plan=enterprise" class="btn-plan">اختر الباقة</a></div>
 </div></section>
 <footer>WhatsBot AI © 2026 - wsbot.me</footer>
 <script>
@@ -74,13 +74,3 @@ setInterval(restartChat, 8000);
 
 
 
-app.get('/order', (req,res)=>{
-  const plan = req.query.plan || 'individual';
-  const plans = {
-    individual:{name:'أفراد / متاجر', price:'89', sub:'ر.س / شهر'},
-    companies:{name:'احترافي - الأكثر طلباً', price:'189', sub:'ر.س / شهر'},
-    pro:{name:'احترافي - الأكثر طلباً', price:'189', sub:'ر.س / شهر'},
-    enterprise:{name:'شركات / مؤسسات', price:'399', sub:'ر.س / شهر'}
-  };
-  const cur = plans[plan] || plans['companies'];
-  res.send
