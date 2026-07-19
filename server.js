@@ -1,6 +1,27 @@
-const express = require('express');
 const path = require('path');
-const app = express();
+const express = require('express');
+const app = express()
+
+
+app.use(express.static(path.join(__dirname, 'public')));
+app.use('/public', express.static(path.join(__dirname, 'public')));
+
+app.get('/', (req,res)=> {
+  try { res.sendFile(path.join(__dirname, 'public', 'index.html')); } catch(e){ res.send('WhatsBot Running'); }
+});
+app.get('/admin', (req,res)=> res.sendFile(path.join(__dirname, 'public', 'admin.html')));
+app.get('/admin.html', (req,res)=> res.sendFile(path.join(__dirname, 'public', 'admin.html')));
+app.get('/client-dashboard', (req,res)=> res.sendFile(path.join(__dirname, 'public', 'client-dashboard.html')));
+app.get('/client-dashboard.html', (req,res)=> res.sendFile(path.join(__dirname, 'public', 'client-dashboard.html')));
+app.get('/employee-reply', (req,res)=> res.sendFile(path.join(__dirname, 'public', 'employee-reply.html')));
+app.get('/employee-reply.html', (req,res)=> res.sendFile(path.join(__dirname, 'public', 'employee-reply.html')));
+app.get('/dashboard', (req,res)=> res.sendFile(path.join(__dirname, 'public', 'dashboard.html')));
+app.get('/dashboard.html', (req,res)=> res.sendFile(path.join(__dirname, 'public', 'dashboard.html')));
+app.get('/login', (req,res)=> res.sendFile(path.join(__dirname, 'public', 'login.html')));
+app.get('/login.html', (req,res)=> res.sendFile(path.join(__dirname, 'public', 'login.html')));
+app.get('/order', (req,res)=> res.sendFile(path.join(__dirname, 'public', 'order.html')));
+app.get('/order.html', (req,res)=> res.sendFile(path.join(__dirname, 'public', 'order.html')));
+;
 const PORT = process.env.PORT || 10000;
 
 app.use(express.json());
