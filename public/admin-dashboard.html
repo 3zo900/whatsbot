@@ -1,1 +1,14 @@
-
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>لوحة الادمن</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@500;700;800&display=swap" rel="stylesheet">
+<style>*{margin:0;padding:0;box-sizing:border-box;font-family:'IBM Plex Sans Arabic',sans-serif}body{background:#fdfcf8} .header{background:#111;color:#fff;padding:16px;display:flex;justify-content:space-between} .card{background:#fff;border:1px solid #f0ebe0;border-radius:16px;padding:16px;margin:16px}</style>
+</head><body>
+<div class="header"><div>👑 لوحة الادمن - WhatsBot</div><div style="font-size:12px" id="adminEmail"></div></div>
+<div class="card"><h3>العملاء</h3><div id="clients">جاري التحميل...</div></div>
+<div class="card"><h3>الاشتراكات</h3><div>جميع الاشتراكات فعالة - 30 يوم - تجديد تلقائي</div></div>
+<script>
+const admin = JSON.parse(localStorage.getItem('wb_admin')||'null');
+if(!admin){ location.href='/admin.html'; }
+document.getElementById('adminEmail').innerText = admin.email;
+document.getElementById('clients').innerText = 'مرحباً ' + admin.email + ' - نظام إدارة العملاء يعمل';
+</script>
+</body></html>
