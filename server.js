@@ -48,7 +48,7 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:14px 5
 .plan-afrad{background:#ffffff} .plan-afrad .btn-plan{background:#fff;color:#111} .plan-pro{background:#111;color:#fff;border-color:#111} .plan-pro h3{color:#aaa} .plan-pro .price{color:#fff} .plan-pro li{color:#ddd} .plan-pro .btn-plan{background:#25D366;color:#000;border-color:#25D366}
 .plan-companies{background:#e8f5e9;border-color:#c8e6c9} .plan-companies .btn-plan{background:#111;color:#fff} footer{text-align:center;padding:30px;color:#aaa;font-size:12px}
 </style></head><body>
-<nav><div class="nav-logo"><div class="logo-box">WB</div><span>WhatsBot AI</span></div><a href="/login.html" class="nav-btn">لوحة التحكم</a></nav>
+<nav><div class="nav-logo"><div style="width:48px;height:48px;background:#fff;border-radius:14px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 10px rgba(0,0,0,.1)"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path><circle cx="9" cy="16" r="1" fill="#111" stroke="none"></circle><circle cx="15" cy="16" r="1" fill="#111" stroke="none"></circle></svg></div><span>WhatsBot AI</span></div><a href="/login.html" class="nav-btn">لوحة التحكم</a></nav>
 <section class="hero">
 <div class="hero-text"><div class="badge-top">🇸🇦 مساعد واتساب بالذكاء الاصطناعي - لهجة سعودية</div>
 <h1>عميلك يكتب لك الساعة 3 الفجر ؟<br><span>عندك زحمة عملاء يراسلونك على</span><br><span>الواتساب وما تلحق عليهم ؟</span><br><span style="color:#111">لا تشيل هم WhatsBot يفزع لك 24/7</span></h1>
@@ -69,7 +69,7 @@ nav{display:flex;justify-content:space-between;align-items:center;padding:14px 5
 <div class="plans">
 <div class="plan plan-afrad"><h3>أفراد / متاجر</h3><div class="price">89 <span>ر.س / شهر</span></div><ul><li>1000 محادثة</li><li>موظف واحد</li><li>رد ذكي</li><li>تقييم رضا العملاء ⭐</li></ul><a href="/order?plan=individual" class="btn-plan">اختر الباقة</a></div>
 <div class="plan plan-pro"><div class="plan-label">الأكثر طلباً</div><h3>احترافي</h3><div class="price">189 <span>ر.س / شهر</span></div><ul><li>3000 محادثة</li><li>3 موظفين</li><li>رد ذكي</li><li>تقييم رضا العملاء ⭐</li></ul><a href="/order?plan=companies" class="btn-plan">اختر الباقة</a></div>
-<div class="plan plan-companies"><h3>شركات / مؤسسات</h3><div class="price">399 <span>ر.س / شهر</span></div><ul><li>7000 محادثة</li><li>8 موظفين</li><li>رد ذكي API</li><li>تقييم رضا العميل ⭐</li></ul><a href="/order?plan=enterprise" class="btn-plan">اختر الباقة</a></div>
+<div class="plan plan-companies"><h3>شركات / مؤسسات</h3><div class="price">399 <span>ر.س / شهر</span></div><ul><li>7000 محادثة</li><li>8 موظفين</li><li>رد ذكي API (سجل تجاري / وثيقة عمل حر)</li><li>تقييم رضا العميل ⭐</li></ul><a href="/order?plan=enterprise" class="btn-plan">اختر الباقة</a></div>
 </div></section>
 <footer>WhatsBot AI © 2026 - wsbot.me</footer>
 <script>
@@ -93,9 +93,9 @@ app.get('/order', (req,res)=>{
   const plan = req.query.plan || 'individual';
   const plans = {
     individual:{name:'أفراد / متاجر', price:'89', sub:'ر.س / شهر'},
-    companies:{name:'احترافي - الأكثر طلباً', price:'189', sub:'ر.س / شهر'},
-    pro:{name:'احترافي - الأكثر طلباً', price:'189', sub:'ر.س / شهر'},
-    enterprise:{name:'شركات / مؤسسات', price:'399', sub:'ر.س / شهر'}
+    companies:{name:'احترافي - الأكثر طلباً', price:'220', sub:'ر.س / شهر'},
+    pro:{name:'احترافي - الأكثر طلباً', price:'220', sub:'ر.س / شهر'},
+    enterprise:{name:'شركات / مؤسسات', price:'480', sub:'ر.س / شهر'}
   };
   const cur = plans[plan] || plans['companies'];
   res.send(`<!DOCTYPE html>
@@ -284,7 +284,7 @@ function getPlanLimit(plan){ if(plan==='individual') return 1; if(plan==='pro') 
 function getPlanConversations(plan){ if(plan==='individual') return 1000; if(plan==='pro') return 3000; return 7000; }
 function refreshData(){
   if(!currentUser) return;
-  document.getElementById('welcomeMsg').innerText = 'مرحبا ' + currentUser.name + ' - باقتك: ' + (currentUser.plan==='individual'?'افراد 89':currentUser.plan==='pro'?'احترافي 189':'شركات 399');
+  document.getElementById('welcomeMsg').innerText = 'مرحبا ' + currentUser.name + ' - باقتك: ' + (currentUser.plan==='individual'?'افراد 89':currentUser.plan==='pro'?'احترافي 220':'شركات 480');
   document.getElementById('sidePhone').innerText = currentUser.phone;
   document.getElementById('sideWhatsapp').innerText = currentUser.whatsapp || 'لم يتم الاضافة';
   document.getElementById('setWhatsapp').value = currentUser.whatsapp || '';
@@ -404,7 +404,7 @@ table{width:100%;border-collapse:collapse} th{color:#666;font-size:10px;text-ali
 <div class="field"><label>رقم الجوال (اليوزر) *</label><input id="f_phone" placeholder="9665xxxxxxxx"></div>
 <div class="field"><label>كلمة المرور (الباسورد) *</label><input id="f_pass" placeholder="123456"></div>
 <div class="field"><label>اسم المتجر *</label><input id="f_name"></div>
-<div class="field"><label>الباقة</label><select id="f_plan"><option value="individual">افراد 89 - 1000 محادثة - 1 موظف</option><option value="pro">احترافي 189 - 3000 محادثة - 3 موظفين</option><option value="companies">شركات 399 - 7000 محادثة - 8 موظفين</option></select></div>
+<div class="field"><label>الباقة</label><select id="f_plan"><option value="individual">افراد 89 - 1000 محادثة - 1 موظف</option><option value="pro">احترافي 220 - 3000 محادثة - 3 موظفين</option><option value="companies">شركات 480 - 7000 محادثة - 8 موظفين</option></select></div>
 <div class="field"><label>رصيد AI</label><input id="f_cred" type="number" value="1000"></div>
 <div class="field"><label>تاريخ الانتهاء</label><input id="f_exp" type="date"></div>
 <div class="field"><label>الحالة</label><select id="f_st"><option value="active">نشط ✅</option><option value="pending">بانتظار ⏳</option><option value="expired">منتهي ❌</option></select></div>
