@@ -1,14 +1,142 @@
-<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>لوحة الادمن</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@500;700;800&display=swap" rel="stylesheet">
-<style>*{margin:0;padding:0;box-sizing:border-box;font-family:'IBM Plex Sans Arabic',sans-serif}body{background:#fdfcf8} .header{background:#111;color:#fff;padding:16px;display:flex;justify-content:space-between} .card{background:#fff;border:1px solid #f0ebe0;border-radius:16px;padding:16px;margin:16px}</style>
-</head><body>
-<div class="header"><div>👑 لوحة الادمن - WhatsBot</div><div style="font-size:12px" id="adminEmail"></div></div>
-<div class="card"><h3>العملاء</h3><div id="clients">جاري التحميل...</div></div>
-<div class="card"><h3>الاشتراكات</h3><div>جميع الاشتراكات فعالة - 30 يوم - تجديد تلقائي</div></div>
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>لوحة الأدمن الاحترافية - WhatsBot</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'IBM Plex Sans Arabic',sans-serif}
+body{background:#f8f8f6;color:#111}
+.header{background:#111;color:#fff;padding:16px 5%;display:flex;justify-content:space-between;align-items:center}
+.header h1{font-size:18px} .header .user{font-size:12px;color:#aaa}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;padding:20px 5%}
+.stat{background:#fff;border:1px solid #eee;border-radius:16px;padding:16px}
+.stat .num{font-size:24px;font-weight:800} .stat .label{font-size:11px;color:#888;margin-top:4px}
+.tabs{display:flex;gap:8px;padding:0 5%;margin-top:10px}
+.tab{padding:10px 18px;border-radius:20px;font-size:13px;cursor:pointer;background:#fff;border:1px solid #eee}
+.tab.active{background:#111;color:#fff}
+.content{padding:20px 5%}
+.card{background:#fff;border:1px solid #eee;border-radius:16px;padding:0;overflow:hidden;margin-bottom:16px}
+.card-header{padding:14px 18px;border-bottom:1px solid #f0f0f0;display:flex;justify-content:space-between;align-items:center}
+.card-header h3{font-size:14px}
+table{width:100%;border-collapse:collapse}
+th,td{padding:12px 14px;text-align:right;font-size:12px;border-bottom:1px solid #f5f5f5}
+th{background:#fafafa;color:#888;font-weight:600;font-size:11px}
+.badge{padding:4px 10px;border-radius:12px;font-size:10px;font-weight:700}
+.badge-individual{background:#f0f0f0;color:#555}
+.badge-professional{background:#dcfce7;color:#166534}
+.badge-companies{background:#dbeafe;color:#1e40af}
+.badge-new{background:#fef3c7;color:#92400e}
+.btn-small{padding:6px 12px;border-radius:8px;border:none;font-size:11px;cursor:pointer}
+.btn-whatsapp{background:#25D366;color:#000}
+.empty{padding:40px;text-align:center;color:#aaa;font-size:13px}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>👑 لوحة تحكم WhatsBot AI - احترافية</h1>
+  <div class="user" id="adminUser">جاري التحميل...</div>
+</div>
+
+<div class="stats">
+  <div class="stat"><div class="num" id="totalOrders">0</div><div class="label">إجمالي الطلبات</div></div>
+  <div class="stat"><div class="num" id="newOrders">0</div><div class="label">طلبات جديدة</div></div>
+  <div class="stat"><div class="num" id="totalRevenue">0 ر.س</div><div class="label">إجمالي متوقع</div></div>
+  <div class="stat"><div class="num">89 / 220 / 480</div><div class="label">الباقات الحالية</div></div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('orders')">📦 الطلبات الجديدة</div>
+  <div class="tab" onclick="switchTab('clients')">👥 العملاء</div>
+  <div class="tab" onclick="switchTab('settings')">⚙️ الإعدادات</div>
+</div>
+
+<div class="content">
+  <div id="ordersTab">
+    <div class="card">
+      <div class="card-header"><h3>طلبات الاشتراك - تصل مباشرة من صفحة /order</h3><button class="btn-small" style="background:#111;color:#fff" onclick="loadOrders()">تحديث</button></div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead><tr><th>رقم الطلب</th><th>التاريخ</th><th>المتجر</th><th>العميل</th><th>واتساب</th><th>الباقة</th><th>السعر</th><th>الحالة</th><th>إجراء</th></tr></thead>
+          <tbody id="ordersBody"><tr><td colspan="9" class="empty">جاري تحميل الطلبات...</td></tr></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="clientsTab" style="display:none">
+    <div class="card"><div class="card-header"><h3>العملاء الحاليين</h3></div><div class="empty">سيتم ربطه بنظام الاشتراكات قريباً</div></div>
+  </div>
+
+  <div id="settingsTab" style="display:none">
+    <div class="card"><div class="card-header"><h3>إعدادات الباقات</h3></div>
+      <div style="padding:16px;font-size:13px;line-height:2">
+        <div>باقة أفراد / متاجر: <b>89 ر.س / شهر</b> - 1000 محادثة - موظف واحد</div>
+        <div>باقة احترافي: <b>220 ر.س / شهر</b> - 3000 محادثة - 3 موظفين</div>
+        <div>باقة شركات / مؤسسات: <b>480 ر.س / شهر</b> - 7000 محادثة - 8 موظفين</div>
+        <div style="margin-top:12px;color:#888">يمكنك تغيير الأسعار من ملف public/index.html و public/order.html</div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
 const admin = JSON.parse(localStorage.getItem('wb_admin')||'null');
 if(!admin){ location.href='/admin.html'; }
-document.getElementById('adminEmail').innerText = admin.email;
-document.getElementById('clients').innerText = 'مرحباً ' + admin.email + ' - نظام إدارة العملاء يعمل';
+document.getElementById('adminUser').innerText = admin.email || 'Admin';
+
+function switchTab(name){
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('ordersTab').style.display = name==='orders'?'block':'none';
+  document.getElementById('clientsTab').style.display = name==='clients'?'block':'none';
+  document.getElementById('settingsTab').style.display = name==='settings'?'block':'none';
+}
+
+async function loadOrders(){
+  try{
+    const res = await fetch('/api/orders');
+    const data = await res.json();
+    const tbody = document.getElementById('ordersBody');
+    if(!data.orders || data.orders.length===0){
+      tbody.innerHTML = '<tr><td colspan="9" class="empty">لا يوجد طلبات بعد - جرب صفحة /order</td></tr>';
+      document.getElementById('totalOrders').innerText = '0';
+      document.getElementById('newOrders').innerText = '0';
+      document.getElementById('totalRevenue').innerText = '0 ر.س';
+      return;
+    }
+    let total=0;
+    let newCount=0;
+    tbody.innerHTML = data.orders.map(o=>{
+      total+=o.price||0;
+      if(o.status==='new') newCount++;
+      const date = new Date(o.createdAt).toLocaleString('ar-SA');
+      const badgeClass = o.plan==='individual'?'badge-individual':o.plan==='professional'?'badge-professional':'badge-companies';
+      return `<tr>
+        <td style="font-family:monospace;font-size:11px">${o.id.slice(0,8)}</td>
+        <td>${date}</td>
+        <td><b>${o.storeName}</b></td>
+        <td>${o.customerName}</td>
+        <td><a href="https://wa.me/${o.whatsapp.replace(/[^0-9]/g,'')}" target="_blank" style="color:#25D366;text-decoration:none">${o.whatsapp}</a></td>
+        <td><span class="badge ${badgeClass}">${o.plan}</span></td>
+        <td><b>${o.price} ر.س</b></td>
+        <td><span class="badge badge-new">${o.status}</span></td>
+        <td><button class="btn-small btn-whatsapp" onclick="contact('${o.whatsapp}')">تواصل واتساب</button></td>
+      </tr>`;
+    }).join('');
+    document.getElementById('totalOrders').innerText = data.orders.length;
+    document.getElementById('newOrders').innerText = newCount;
+    document.getElementById('totalRevenue').innerText = total + ' ر.س';
+  }catch(e){
+    document.getElementById('ordersBody').innerHTML = '<tr><td colspan="9" class="empty">خطأ في تحميل الطلبات: '+e.message+'</td></tr>';
+  }
+}
+function contact(wa){
+  window.open('https://wa.me/'+wa.replace(/[^0-9]/g,''), '_blank');
+}
+loadOrders();
+setInterval(loadOrders, 10000);
 </script>
-</body></html>
+</body>
+</html>
