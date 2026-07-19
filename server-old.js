@@ -324,4 +324,3 @@ app.get('/api/admin/users', (req,res)=>{ if(!isAuth(req)) return res.status(401)
 app.delete('/api/users/delete/:id', (req,res)=>{ if(!isAuth(req)) return res.status(401).json({message:'غير مصرح'}); users = users.filter(u=>u.id!=req.params.id); res.json({success:true, users}); });
 app.get('/health', (req,res)=> res.json({status:'ok'}));
 app.listen(PORT, ()=> console.log('wsbot.me v12 lite running on '+PORT));
-
