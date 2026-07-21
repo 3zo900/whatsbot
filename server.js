@@ -8,20 +8,20 @@ const P = require('pino');
 
 const app = express();
 const PORT = process.env.PORT || 10000;
-
-// Stripe
+const DOMAIN = 'https://wsbot.me';
 const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY || '';
 let stripe = null;
 try{
  if(STRIPE_SECRET_KEY.startsWith('sk_')){
   stripe = require('stripe')(STRIPE_SECRET_KEY);
-  console.log('✅ Stripe initialized');
+  console.log('✅ Stripe ready');
  }
 }catch(e){}
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static('public'));
 const upload = multer({dest:'uploads/'});
 
 let proofs = [];
@@ -54,13 +54,13 @@ async function createWASession(sessionId, phoneNumber){
   await delay(2000);
   const clean = phoneNumber.replace(/[^0-9]/g,'');
   const code = await sock.requestPairingCode(clean);
+  console.log(`🔑 Code for ${clean}: ${code}`);
   sessions.set(sessionId, {sock, status:'pending_code', pairingCode:code, phone:phoneNumber});
   return code;
  }
  return 'ALREADY_CONNECTED';
 }
 
-// === WhatsApp Pairing - الحل الحقيقي ===
 app.post('/api/pair-whatsapp', async (req,res)=>{
  try{
   const { clientId, waNumber } = req.body;
@@ -80,7 +80,6 @@ app.get('/api/whatsapp-status/:sessionId', (req,res)=>{
  res.json({status:s.status, code:s.pairingCode});
 });
 
-// === Stripe (نفس اللي عندك) ===
 app.post('/api/create-checkout-session', async (req,res)=>{
  const {plan, customerName, customerEmail, customerPhone} = req.body;
  const selected = PLANS[plan]||PLANS.pro;
@@ -92,8 +91,8 @@ app.post('/api/create-checkout-session', async (req,res)=>{
    mode:'payment',
    customer_email: customerEmail,
    metadata:{plan, customerName, customerPhone},
-   success_url: `${req.headers.origin}/success.html?session_id={CHECKOUT_SESSION_ID}`,
-   cancel_url: `${req.headers.origin}/cancel.html`,
+   success_url: `${req.headers.origin||DOMAIN}/success.html?session_id={CHECKOUT_SESSION_ID}`,
+   cancel_url: `${req.headers.origin||DOMAIN}/cancel.html`,
   });
   res.json({id:session.id, url:session.url});
  }catch(e){ res.status(500).json({error:e.message}); }
@@ -108,5 +107,8 @@ app.get('/api/payment-proofs', (req,res)=>res.json(proofs.reverse()));
 app.post('/api/admin/approve', (req,res)=>{ const p=proofs.find(x=>x.id===req.body.id); if(p){p.status='approved'; users.push(p);} res.json({success:true}); });
 app.post('/api/admin/reject', (req,res)=>{ const p=proofs.find(x=>x.id===req.body.id); if(p) p.status='rejected'; res.json({success:true}); });
 
-app.get('*', (req,res)=> res.sendFile(path.join(__dirname, 'public', 'index.html')));
-app.listen(PORT, ()=> console.log(`🚀 Server running on ${PORT}`));
+app.get('/', (req,res)=>{
+ res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+app.listen(PORT, ()=> console.log(`🚀 Running on ${PORT}`));
