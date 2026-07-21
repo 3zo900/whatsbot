@@ -1,113 +1,112 @@
 const express = require('express');
+const cors = require('cors');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+const { default: makeWASocket, useMultiFileAuthState, delay } = require('@whiskeysockets/baileys');
+const P = require('pino');
+
 const app = express();
 const PORT = process.env.PORT || 10000;
 
+// Stripe
+const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY || '';
+let stripe = null;
+try{
+ if(STRIPE_SECRET_KEY.startsWith('sk_')){
+  stripe = require('stripe')(STRIPE_SECRET_KEY);
+  console.log('✅ Stripe initialized');
+ }
+}catch(e){}
+
+app.use(cors());
 app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
+const upload = multer({dest:'uploads/'});
 
-const DOMAIN = 'https://wsbot.me';
-const SUPPORT_NUMBER = process.env.SUPPORT_NUMBER || '966510015157';
+let proofs = [];
+let users = [];
+const PLANS = {
+ individual:{name:'أفراد', price:9900, priceSAR:99},
+ pro:{name:'احترافي', price:19900, priceSAR:199},
+ enterprise:{name:'شركات', price:39900, priceSAR:399}
+};
 
-app.get('/', (req, res) => {
-  res.send(`
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>WhatsBot - wsbot.me | بوت واتساب احترافي</title>
-<meta name="description" content="WhatsBot - نظام واتساب بوت احترافي لخدمة العملاء والرد التلقائي">
-<link rel="icon" href="/logo.png">
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,sans-serif}
-body{background:#0a0a0a;color:#fff;min-height:100vh}
-nav{display:flex;justify-content:space-between;align-items:center;padding:20px 5%;background:rgba(255,255,255,0.05);backdrop-filter:blur(10px);position:sticky;top:0;z-index:10}
-.logo{display:flex;align-items:center;gap:12px;font-weight:900;font-size:24px}
-.logo span{color:#25D366}
-.hero{padding:80px 5%;text-align:center;max-width:900px;margin:auto}
-.hero h1{font-size:52px;line-height:1.2;margin-bottom:20px}
-.hero h1 span{color:#25D366}
-.hero p{font-size:20px;color:#aaa;margin-bottom:40px;line-height:1.6}
-.btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
-.btn{padding:16px 32px;border-radius:50px;font-weight:700;text-decoration:none;display:inline-block;transition:0.3s}
-.btn-green{background:#25D366;color:#000}
-.btn-white{background:#fff;color:#000}
-.btn:hover{transform:translateY(-3px)}
-.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px;padding:40px 5%}
-.card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:20px;padding:30px}
-.card h3{margin-bottom:12px;color:#25D366}
-.card p{color:#aaa;line-height:1.6}
-.pricing{padding:60px 5%;text-align:center}
-.pricing h2{font-size:36px;margin-bottom:40px}
-.plans{display:flex;gap:20px;justify-content:center;flex-wrap:wrap}
-.plan{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:24px;padding:30px;min-width:280px;flex:1;max-width:340px}
-.plan.featured{border-color:#25D366;transform:scale(1.05)}
-.plan h3{font-size:22px;margin-bottom:10px}
-.plan .price{font-size:36px;font-weight:900;margin:16px 0}
-.plan .price span{font-size:16px;color:#aaa}
-.plan ul{list-style:none;text-align:right;margin:20px 0}
-.plan li{padding:8px 0;color:#ccc}
-.plan li::before{content:"✓ ";color:#25D366;font-weight:bold}
-footer{padding:40px 5%;text-align:center;color:#666;border-top:1px solid rgba(255,255,255,0.1);margin-top:40px}
-a{color:#25D366}
-</style>
-</head>
-<body>
-<nav>
-  <div class="logo">💬 <span>W</span>Sbot.me</div>
-  <div>wsbot.me</div>
-</nav>
-<section class="hero">
-  <h1>بوت واتساب يحول عملائك الى <span>مبيعات تلقائية</span></h1>
-  <p>WhatsBot نظام ذكي للرد التلقائي، تحويل المحادثات، ومتابعة العملاء على واتساب - بدون ما تحتاج مبرمج</p>
-  <div class="btns">
-    <a href="" class="btn btn-green">ابدأ الآن - واتساب</a>
-    <a href="#pricing" class="btn btn-white">شاهد الباقات</a>
-  </div>
-  <p style="margin-top:20px;font-size:14px;color:#555">شغال الآن على ${DOMAIN}</p>
-</section>
+const sessions = new Map();
 
-<section class="features">
-  <div class="card"><h3>🤖 رد تلقائي ذكي</h3><p>يرد على العملاء 24/7 حتى وانت نايم، يفهم الأسئلة ويجاوب باحترافية</p></div>
-  <div class="card"><h3>👥 تحويل للموظفين</h3><p>يحول المحادثة تلقائياً للموظف المناسب حسب الطلب</p></div>
-  <div class="card"><h3>📊 لوحة تحكم</h3><p>تابع كل المحادثات والطلبات والتحويلات من مكان واحد</p></div>
-</section>
+async function createWASession(sessionId, phoneNumber){
+ const authFolder = `./auth_${sessionId}`;
+ const { state, saveCreds } = await useMultiFileAuthState(authFolder);
+ const sock = makeWASocket({
+  auth: state,
+  logger: P({level:'silent'}),
+  printQRInTerminal: false,
+  browser: ["WhatsBot.sa","Chrome","1.0"]
+ });
+ sock.ev.on('creds.update', saveCreds);
+ sock.ev.on('connection.update', (u)=>{
+  if(u.connection==='open'){
+   console.log(`✅ ${sessionId} connected`);
+   sessions.set(sessionId, {sock, status:'connected', phone:phoneNumber});
+  }
+ });
+ if(!state.creds.registered){
+  await delay(2000);
+  const clean = phoneNumber.replace(/[^0-9]/g,'');
+  const code = await sock.requestPairingCode(clean);
+  sessions.set(sessionId, {sock, status:'pending_code', pairingCode:code, phone:phoneNumber});
+  return code;
+ }
+ return 'ALREADY_CONNECTED';
+}
 
-<section id="pricing" class="pricing">
-  <h2>باقات WhatsBot</h2>
-  <div class="plans">
-    <div class="plan">
-      <h3>أفراد</h3>
-      <div class="price">109 <span>ريال/شهر</span></div>
-      <ul><li>رقم واتساب واحد</li><li>1000 محادثة شهرية</li><li>رد تلقائي</li><li>دعم فني</li></ul>
-      <a href="" class="btn btn-white" style="width:100%;text-align:center;margin-top:10px">اشترك</a>
-    </div>
-    <div class="plan featured">
-      <h3>احترافي 🔥</h3>
-      <div class="price">199 <span>ريال/شهر</span></div>
-      <ul><li>3 أرقام واتساب</li><li>5000 محادثة</li><li>تحويل تلقائي</li><li>تقارير متقدمة</li></ul>
-      <a href="" class="btn btn-green" style="width:100%;text-align:center;margin-top:10px">الأكثر طلباً</a>
-    </div>
-    <div class="plan">
-      <h3>شركات</h3>
-      <div class="price">399 <span>ريال/شهر</span></div>
-      <ul><li>أرقام غير محدودة</li><li>محادثات غير محدودة</li><li>API كامل</li><li>مدير حساب خاص</li></ul>
-      <a href="" class="btn btn-white" style="width:100%;text-align:center;margin-top:10px">للشركات</a>
-    </div>
-  </div>
-</section>
-
-<footer>
-  <p>© 2026 WhatsBot - wsbot.me</p>
-  <p>تواصل: <a href="">${SUPPORT_NUMBER}</a> | ${DOMAIN}</p>
-  <p style="margin-top:8px;font-size:12px">نحن لا نطلب تحويل بنكي، الاشتراك يتم عبر واتساب فقط</p>
-</footer>
-</body>
-</html>
-  `);
+// === WhatsApp Pairing - الحل الحقيقي ===
+app.post('/api/pair-whatsapp', async (req,res)=>{
+ try{
+  const { clientId, waNumber } = req.body;
+  if(!waNumber) return res.status(400).json({success:false, error:'رقم الواتساب مطلوب'});
+  const sessionId = `client_${clientId||Date.now()}`;
+  const code = await createWASession(sessionId, waNumber);
+  res.json({success:true, code, sessionId});
+ }catch(e){
+  console.error('Pair error', e.message);
+  res.status(500).json({success:false, error:e.message});
+ }
 });
 
-app.get('/health', (req,res)=> res.json({status:'ok', domain:'wsbot.me'}));
+app.get('/api/whatsapp-status/:sessionId', (req,res)=>{
+ const s = sessions.get(req.params.sessionId);
+ if(!s) return res.json({status:'not_found'});
+ res.json({status:s.status, code:s.pairingCode});
+});
 
-app.listen(PORT, ()=> console.log('WhatsBot running on', PORT, 'domain wsbot.me'));
+// === Stripe (نفس اللي عندك) ===
+app.post('/api/create-checkout-session', async (req,res)=>{
+ const {plan, customerName, customerEmail, customerPhone} = req.body;
+ const selected = PLANS[plan]||PLANS.pro;
+ if(!stripe) return res.json({demo:true});
+ try{
+  const session = await stripe.checkout.sessions.create({
+   payment_method_types: ['card'],
+   line_items:[{price_data:{currency:'sar', product_data:{name:`WhatsBot.sa - ${selected.name}`}, unit_amount:selected.price}, quantity:1}],
+   mode:'payment',
+   customer_email: customerEmail,
+   metadata:{plan, customerName, customerPhone},
+   success_url: `${req.headers.origin}/success.html?session_id={CHECKOUT_SESSION_ID}`,
+   cancel_url: `${req.headers.origin}/cancel.html`,
+  });
+  res.json({id:session.id, url:session.url});
+ }catch(e){ res.status(500).json({error:e.message}); }
+});
+
+app.post('/api/payment-proof', upload.single('receipt'), (req,res)=>{
+ const data = {id:Date.now().toString(), fullName:req.body.companyName, phone:req.body.customerPhone, email:req.body.customerEmail, plan:req.body.plan||'pro', file:req.file?.originalname||'', status:'pending', createdAt:new Date().toISOString()};
+ proofs.push(data);
+ res.json({success:true, id:data.id});
+});
+app.get('/api/payment-proofs', (req,res)=>res.json(proofs.reverse()));
+app.post('/api/admin/approve', (req,res)=>{ const p=proofs.find(x=>x.id===req.body.id); if(p){p.status='approved'; users.push(p);} res.json({success:true}); });
+app.post('/api/admin/reject', (req,res)=>{ const p=proofs.find(x=>x.id===req.body.id); if(p) p.status='rejected'; res.json({success:true}); });
+
+app.get('*', (req,res)=> res.sendFile(path.join(__dirname, 'public', 'index.html')));
+app.listen(PORT, ()=> console.log(`🚀 Server running on ${PORT}`));
