@@ -1,223 +1,214 @@
 const express = require('express');
 const cors = require('cors');
-const fs = require('fs');
+const multer = require('multer');
 const path = require('path');
-const QRCode = require('qrcode');
-const axios = require('axios');
-const { default: makeWASocket, useMultiFileAuthState, DisconnectReason, makeCacheableSignalKeyStore } = require('@whiskeysockets/baileys');
-const Pino = require('pino');
+const fs = require('fs');
 
 const app = express();
 const PORT = process.env.PORT || 10000;
-const OPENAI_KEY = process.env.OPENAI_KEY || '';
 
-app.use(cors({origin:'*'}));
+// ===== WhatsApp Permanent Config - إعداداتك الدائمة =====
+const PHONE_NUMBER_ID = "1237839659414830"; // رقمك +966557967875
+const WHATSAPP_TOKEN = "EAAZANPLTRVtcBSMJY9UBibAVcNiwWn7VszabKxsiC7UtyiYUIDvmOCdNmP2TdVNmhcksnS6Eq4tmilL3mVex8Pi2DohxD1MSyaZAIaf0ZAoUGPVeD2tZAJIwzTEzZBsHBlt8ZBDs7RbVKWtZBXhXZCBWLwYDtMRsKCdyFzEt9XMiQzJTDGhsp3mPsiwA7AB6iwZDZD";
+const VERIFY_TOKEN = "wsbot_verify_2024";
+const WHATSAPP_BUSINESS_ID = "1480871240462371";
+
+// ===== Stripe Setup =====
+const STRIPE_SECRET_KEY = process.env.STRIPE_SECRET_KEY || 'sk_test_51YourSecretKeyHere';
+let stripe = null;
+try{
+ if(STRIPE_SECRET_KEY && STRIPE_SECRET_KEY.startsWith('sk_')){
+  stripe = require('stripe')(STRIPE_SECRET_KEY);
+  console.log('✅ Stripe initialized');
+ }else{
+  console.log('⚠️ Stripe key not set - payment will be in demo mode');
+ }
+}catch(e){ console.log('Stripe init error', e.message); }
+
+app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
+const upload = multer({dest:'uploads/'});
 
-const sessions = {};
-const clientsFile = path.join(__dirname, 'clients.json');
-let clientsCache = [];
+let proofs = [];
+let users = [];
 
-// تحميل العملاء - سريع وما يوقف QR
-async function loadClients(){
-  try{
-    if(fs.existsSync(clientsFile)) {
-      clientsCache = JSON.parse(fs.readFileSync(clientsFile));
-      return;
-    }
-    const res = await axios.get('https://wsbot.me/admin/data/clients.json', {timeout:3000}).catch(()=>null);
-    if(res?.data && Array.isArray(res.data)) clientsCache = res.data;
-  }catch(e){ }
-}
-loadClients();
-setInterval(loadClients, 30000); // كل 30 ثانية مو 10 - يسرع السيرفر
+const PLANS = {
+ individual:{name:'أفراد', price:9900, priceSAR:99},
+ pro:{name:'احترافي', price:19900, priceSAR:199},
+ enterprise:{name:'شركات', price:39900, priceSAR:399}
+};
 
-function genCode(){ return Math.floor(10000000 + Math.random()*90000000).toString(); }
+// ===== WhatsApp Webhook Verification =====
+app.get('/webhook', (req, res) => {
+  const mode = req.query['hub.mode'];
+  const token = req.query['hub.verify_token'];
+  const challenge = req.query['hub.challenge'];
 
-async function startTajerSession(phone){
-  const folder = path.join(__dirname, 'auth', phone);
-  if(!fs.existsSync(folder)) fs.mkdirSync(folder,{recursive:true});
-  const { state, saveCreds } = await useMultiFileAuthState(folder);
+  if (mode === 'subscribe' && token === VERIFY_TOKEN) {
+    console.log('✅ Webhook Verified!');
+    res.status(200).send(challenge);
+  } else {
+    res.sendStatus(403);
+  }
+});
 
-  const sock = makeWASocket({
-    auth: { creds: state.creds, keys: makeCacheableSignalKeyStore(state.keys, Pino({level:'silent'})) },
-    logger: Pino({level:'silent'}),
-    browser: ['WsBot.me','Chrome','1.0'],
-    printQRInTerminal: false,
-    // مهم: يخلي QR يتجدد كل 5 ثواني تلقائي - يحل تعذر ربط الجهاز
-    qrTimeout: 5000,
-  });
+// ===== WhatsApp Receive Messages =====
+app.post('/webhook', async (req, res) => {
+  try {
+    const body = req.body;
+    if (body.object === 'whatsapp_business_account') {
+      for (const entry of body.entry) {
+        for (const change of entry.changes) {
+          if (change.value.messages) {
+            for (const message of change.value.messages) {
+              const from = message.from;
+              const text = message.text?.body || '';
+              console.log(`📩 رسالة من ${from}: ${text}`);
 
-  if(!sessions[phone]) sessions[phone] = {};
-  sessions[phone].sock = sock;
-  if(!sessions[phone].pairingCode) sessions[phone].pairingCode = genCode();
-  sessions[phone].connected = false;
-  sessions[phone].lastQR = Date.now();
+              // رد البوت الذكي
+              let reply = `مرحبا! انا WhatsBot AI 🤖\n\nوصلتني رسالتك: "${text}"\n\nكيف أقدر أساعدك؟`;
 
-  sock.ev.on('creds.update', saveCreds);
+              if (text.toLowerCase().includes('سلام') || text.toLowerCase().includes('هلا')) {
+                reply = `هلا والله! 👋 انا WhatsBot AI 🤖\nبوت ذكي يرد على عملاءك تلقائياً 24/7`;
+              }
 
-  sock.ev.on('connection.update', async (update)=>{
-    const { connection, lastDisconnect, qr } = update;
-    if(qr){
-      try{
-        const qrImage = await QRCode.toDataURL(qr, { width: 300, margin: 2 });
-        sessions[phone].qr = qrImage;
-        sessions[phone].qrRaw = qr;
-        sessions[phone].lastQR = Date.now();
-        sessions[phone].connected = false;
-        console.log(`📱 QR جديد ${phone} - كود ${sessions[phone].pairingCode}`);
-      }catch(e){ console.log('QR error', e.message); }
-    }
-    if(connection === 'open'){
-      sessions[phone].connected = true;
-      sessions[phone].qr = null;
-      sessions[phone].connectedAt = new Date().toISOString();
-      console.log(`✅ ${phone} متصل - البوت يعمل`);
-    }
-    if(connection === 'close'){
-      const reason = lastDisconnect?.error?.output?.statusCode;
-      console.log(`❌ ${phone} انقطع ${reason}`);
-      sessions[phone].connected = false;
-      sessions[phone].qr = null;
-      if(reason!== DisconnectReason.loggedOut){
-        // حاول إعادة الاتصال بعد 3 ثواني - يحل مشكلة QR لا يعمل
-        setTimeout(()=>{
-          try{ delete sessions[phone]; }catch(e){}
-          startTajerSession(phone);
-        }, 3000);
+              // إرسال الرد
+              await sendWhatsAppMessage(from, reply);
+            }
+          }
+        }
       }
     }
-  });
+    res.sendStatus(200);
+  } catch (e) {
+    console.error('Webhook Error', e.message);
+    res.sendStatus(200);
+  }
+});
 
-  sock.ev.on('messages.upsert', async ({messages})=>{
-    for(const m of messages){
-      if(m.key.fromMe) continue;
-      const from = m.key.remoteJid;
-      if(!from || from.includes('@g.us') || from.includes('@broadcast')) continue;
-      const text = m.message?.conversation || m.message?.extendedTextMessage?.text || m.message?.imageMessage?.caption || '';
-      if(!text) continue;
-
-      const tajer = clientsCache.find(c=> (c.phone||'').replace(/[^0-9]/g,'') == phone);
-      if(!tajer) continue;
-
-      // فحص الرصيد - بدون ذكر admin_balance.json للتاجر (يحل مشكلة رقم 4)
-      if((tajer.aiBalance||0) <= 0){
-        await sock.sendMessage(from, {text: '⏸️ انتهت باقة البوت - يرجى التواصل مع متجر '+ (tajer.storeName||'')});
-        continue;
-      }
-      if(tajer.expiry && new Date(tajer.expiry) < new Date()){
-        await sock.sendMessage(from, {text: '⏸️ اشتراك المتجر انتهى'});
-        continue;
-      }
-
-      let storeInfo = '';
-      try{
-        const page = await axios.get(tajer.storeLink, {timeout:4000, headers:{'User-Agent':'WsBot'}});
-        // خذ النص فقط مو HTML كامل - يسرع
-        storeInfo = page.data.replace(/<[^>]*>/g,' ').slice(0,2000);
-      }catch(e){ storeInfo = 'متجر '+ (tajer.storeName||''); }
-
-      let reply = '';
-      if(OPENAI_KEY){
-        try{
-          const ai = await axios.post('https://api.openai.com/v1/chat/completions',{
-            model:'gpt-4o-mini',
-            messages:[
-              {role:'system', content:`أنت بوت واتساب لمتجر ${tajer.storeName} - رابط ${tajer.storeLink} - معلومات: ${storeInfo} - رد عربي مختصر مفيد`},
-              {role:'user', content:text}
-            ],
-            max_tokens:250
-          },{headers:{Authorization:`Bearer ${OPENAI_KEY}`}, timeout:8000});
-          reply = ai.data.choices[0].message.content;
-        }catch(e){ reply = `أهلاً بك في ${tajer.storeName} 🛒 ${tajer.storeLink} - كيف أساعدك؟`; }
-      }else{
-        reply = `أهلاً بك في ${tajer.storeName} 🛒 ${tajer.storeLink}`;
-      }
-
-      await sock.sendMessage(from, {text: reply});
-
-      try{
-        await axios.post('https://wsbot.me/admin/api_deduct.php', {phone, amount:1}, {timeout:3000}).catch(()=>{});
-      }catch(e){}
-    }
-  });
-
-  return sessions[phone];
+async function sendWhatsAppMessage(to, message) {
+  const url = `https://graph.facebook.com/v19.0/${PHONE_NUMBER_ID}/messages`;
+  try {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${WHATSAPP_TOKEN}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        messaging_product: 'whatsapp',
+        to: to,
+        type: 'text',
+        text: { body: message }
+      })
+    });
+    const data = await response.json();
+    console.log('✅ تم الإرسال:', data);
+    return data;
+  } catch (e) {
+    console.error('Send Error', e.message);
+  }
 }
 
-// API: QR - مصلح 100% - يرجع QR خلال ثانية
-app.get('/api/qr', async (req,res)=>{
-  let phone = (req.query.phone||'').replace(/[^0-9]/g,'');
-  if(!phone) return res.status(400).json({error:'phone required', qr:null, connected:false});
-
-  if(!sessions[phone]){
-    await startTajerSession(phone);
-  }
-
-  // انتظر QR كحد أقصى 2 ثانية
-  let tries = 0;
-  while(!sessions[phone]?.qr &&!sessions[phone]?.connected && tries < 20){
-    await new Promise(r=>setTimeout(r,150));
-    tries++;
-  }
-
-  // إذا لسه ما فيه QR ومو متصل - جدد
-  if(!sessions[phone]?.qr &&!sessions[phone]?.connected){
-    try{ await sessions[phone]?.sock?.ws?.close(); }catch(e){}
-    delete sessions[phone];
-    await startTajerSession(phone);
-    await new Promise(r=>setTimeout(r, 800));
-  }
-
-  res.json({
-    qr: sessions[phone]?.qr || null,
-    connected:!!sessions[phone]?.connected,
-    pairingCode: sessions[phone]?.pairingCode || genCode(),
-    phone,
-    botStatus: sessions[phone]?.connected? 'يعمل ✅' : 'بانتظار الربط ⏳', // أيقونة البوت يعمل
-    lastUpdate: sessions[phone]?.lastQR || Date.now()
+// ===== Stripe Routes (نفس القديم) =====
+app.post('/api/create-checkout-session', async (req,res)=>{
+ const {plan, customerName, customerEmail, customerPhone} = req.body;
+ const selected = PLANS[plan]||PLANS.pro;
+ if(!stripe){
+  return res.json({demo:true, message:'Stripe not configured - use WhatsApp fallback'});
+ }
+ try{
+  const session = await stripe.checkout.sessions.create({
+   payment_method_types: ['card'],
+   line_items:[{
+    price_data:{
+     currency:'sar',
+     product_data:{name:`WhatsBot.sa - باقة ${selected.name}`, description:'اشتراك شهري - تفعيل فوري'},
+     unit_amount: selected.price,
+    },
+    quantity:1
+   }],
+   mode:'payment',
+   customer_email: customerEmail,
+   metadata:{plan, customerName, customerPhone},
+   success_url: `${req.headers.origin||'https://whatsbot-4vkk.onrender.com'}/success.html?session_id={CHECKOUT_SESSION_ID}`,
+   cancel_url: `${req.headers.origin||'https://whatsbot-4vkk.onrender.com'}/cancel.html`,
   });
+  res.json({id: session.id, url: session.url});
+ }catch(e){
+  console.error('Stripe error', e.message);
+  res.status(500).json({error:e.message});
+ }
 });
 
-// حالة البوت - للوحة التاجر
-app.get('/api/status', (req,res)=>{
-  const out={};
-  for(const p in sessions) out[p]={connected:!!sessions[p].connected, hasQR:!!sessions[p].qr, code:sessions[p].pairingCode, botWorking:!!sessions[p].connected};
-  res.json(out);
+app.get('/api/verify-payment', async (req,res)=>{
+ const {session_id} = req.query;
+ if(!stripe ||!session_id) return res.json({success:false});
+ try{
+  const session = await stripe.checkout.sessions.retrieve(session_id);
+  if(session.payment_status==='paid'){
+   const {plan, customerName, customerPhone} = session.metadata;
+   const email = session.customer_email;
+   const user = {
+    id: session.id,
+    fullName: customerName,
+    email: email,
+    phone: customerPhone,
+    plan: plan,
+    amount: PLANS[plan]?.priceSAR,
+    status:'approved',
+    paymentId: session.payment_intent,
+    createdAt: new Date().toISOString(),
+    paid: true
+   };
+   users.push(user);
+   proofs.push(user);
+   return res.json({success:true, user});
+  }
+  res.json({success:false, status: session.payment_status});
+ }catch(e){
+  res.status(500).json({error:e.message});
+ }
 });
 
-app.get('/api/tajer/status', (req,res)=>{
-  const phone = (req.query.phone||'').replace(/[^0-9]/g,'');
-  const s = sessions[phone];
-  if(!s) return res.json({connected:false, botWorking:false});
-  res.json({connected: s.connected, botWorking: s.connected, botStatus: s.connected? 'البوت يعمل الآن ✅' : 'غير متصل'});
+app.post('/api/payment-proof', upload.single('receipt'), (req,res)=>{
+ const data = {
+  id: Date.now().toString(),
+  fullName: req.body.companyName,
+  companyName: req.body.companyName,
+  phone: req.body.customerPhone,
+  customerPhone: req.body.customerPhone,
+  email: req.body.customerEmail,
+  customerEmail: req.body.customerEmail,
+  company: req.body.company,
+  plan: req.body.plan||'pro',
+  file: req.file?.originalname||'',
+  status:'pending',
+  createdAt: new Date().toISOString()
+ };
+ proofs.push(data);
+ res.json({success:true, id:data.id});
 });
 
-// تغيير باسورد التاجر - يحل مشكلة 3
-app.post('/api/tajer/change-password', (req,res)=>{
-  const {phone, oldPass, newPass} = req.body;
-  // هنا تربطه مع ملف العملاء PHP
-  res.json({success:true, message:'تم تغيير الباسورد'});
+app.get('/api/payment-proofs', (req,res)=>{ res.json(proofs.reverse()); });
+app.post('/api/admin/approve', (req,res)=>{
+ const {id}=req.body;
+ const p = proofs.find(x=>x.id===id);
+ if(p){ p.status='approved'; users.push(p); }
+ res.json({success:true});
+});
+app.post('/api/admin/reject', (req,res)=>{
+ const {id}=req.body;
+ const p = proofs.find(x=>x.id===id);
+ if(p) p.status='rejected';
+ res.json({success:true});
 });
 
-// آخر 5 محادثات + رضا العملاء - يحل مشكلة 5 و 6
-app.get('/api/tajer/stats', (req,res)=>{
-  const phone = (req.query.phone||'').replace(/[^0-9]/g,'');
-  res.json({
-    satisfaction: 4.8,
-    stars: [5,4,5,4],
-    lastChats: [
-      {name:'عميل 1', msg:'وين طلبي؟', time:'منذ 5 دقائق', rating:5},
-      {name:'عميل 2', msg:'شكراً', time:'منذ 12 دقيقة', rating:5},
-      {name:'عميل 3', msg:'كم السعر؟', time:'منذ 20 دقيقة', rating:4},
-      {name:'عميل 4', msg:'ممتاز', time:'منذ ساعة', rating:5},
-      {name:'عميل 5', msg:'تأخر الشحن', time:'منذ ساعتين', rating:4},
-    ],
-    botWorking: sessions[phone]?.connected || false
-  });
+app.get('/.well-known/apple-developer-merchantid-domain-association', (req,res)=>{
+ res.sendFile(path.join(__dirname, 'public', 'apple-developer-merchantid-domain-association'));
 });
 
-app.get('/', (req,res)=> res.send('WsBot.me Baileys Server - QR Auto 5s - Ready ✅ - No admin_balance.json leak'));
+app.get('*', (req,res)=> res.sendFile(path.join(__dirname, 'public', 'index.html')));
 
-app.listen(PORT, ()=> console.log(`🚀 WsBot.me Tajer Server on ${PORT}`));
+app.listen(PORT, ()=> console.log(`🚀 Server running on ${PORT} - WhatsApp Bot Ready ✅`));
