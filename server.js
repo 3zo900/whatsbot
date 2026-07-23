@@ -1,99 +1,76 @@
 const express = require('express');
 const cors = require('cors');
-const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const crypto = require('crypto');
 
 const app = express();
 const PORT = process.env.PORT || 10000;
 
-// واتساب دائم
-const PHONE_NUMBER_ID = "1237839659414830";
-const WHATSAPP_TOKEN = "EAAZANPLTRVtcBSMJY9UBibAVcNiwWn7VszabKxsiC7UtyiYUIDvmOCdNmP2TdVNmhcksnS6Eq4tmilL3mVex8Pi2DohxD1MSyaZAIaf0ZAoUGPVeD2tZAJIwzTEzZBsHBlt8ZBDs7RbVKWtZBXhXZCBWLwYDtMRsKCdyFzEt9XMiQzJTDGhsp3mPsiwA7AB6iwZDZD";
-const VERIFY_TOKEN = "wsbot_verify_2024";
+// المفتاح الحقيقي من Render - ما ينحذف
+const MASTER_OPENAI_KEY = process.env.MASTER_OPENAI_KEY || process.env.OPENAI_API_KEY || '';
 
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// تأكد مجلد الرفع موجود
-if (!fs.existsSync('uploads')) fs.mkdirSync('uploads');
-const upload = multer({dest:'uploads/'});
+function getJsonFile(p){try{if(!fs.existsSync(p))return[];return JSON.parse(fs.readFileSync(p,'utf8'))||[]}catch{return[]}}
+function saveJsonFile(p,d){try{fs.mkdirSync(path.dirname(p),{recursive:true});fs.writeFileSync(p,JSON.stringify(d,null,2),'utf8')}catch(e){}}
 
-let proofs = [];
-let users = [];
-
-// 1. Webhook Verify
-app.get('/webhook', (req, res) => {
-  if (req.query['hub.mode'] === 'subscribe' && req.query['hub.verify_token'] === VERIFY_TOKEN) {
-    console.log('✅ Webhook Verified');
-    return res.status(200).send(req.query['hub.challenge']);
+// عداد الرصيد الحقيقي - يقرأ من مفتاح الأدمن
+app.get('/api/openai-balance', async (req,res)=>{
+  const balPath = path.join(__dirname,'public','storage','openai_balance.json');
+  if(!MASTER_OPENAI_KEY){
+    const c=getJsonFile(balPath);
+    return res.json(c.balance? c : {balance:"0.00", real:false, lastUpdated:new Date().toISOString()});
   }
-  return res.sendStatus(403);
-});
-
-// 2. استقبال الرسائل
-app.post('/webhook', async (req, res) => {
-  try {
-    if (req.body.object === 'whatsapp_business_account') {
-      for (const entry of req.body.entry) {
-        for (const change of entry.changes) {
-          if (change.value.messages) {
-            for (const m of change.value.messages) {
-              const from = m.from;
-              const text = m.text?.body || '';
-              console.log('📩 من ' + from + ': ' + text);
-              let reply = 'هلا والله حياك! انا WhatsBot.sa جاهز 24/7';
-              if (text) reply = 'هلا! وصلتني: "' + text + '" - انا بوت WhatsBot.sa ارد تلقائيا';
-              await fetch('https://graph.facebook.com/v19.0/' + PHONE_NUMBER_ID + '/messages', {
-                method: 'POST',
-                headers: { 'Authorization': 'Bearer ' + WHATSAPP_TOKEN, 'Content-Type': 'application/json' },
-                body: JSON.stringify({ messaging_product: 'whatsapp', to: from, type: 'text', text: { body: reply } })
-              });
-            }
-          }
-        }
-      }
+  try{
+    const r = await fetch('https://api.openai.com/v1/dashboard/billing/credit_grants',{headers:{'Authorization':`Bearer ${MASTER_OPENAI_KEY}`}});
+    if(r.ok){
+      const d=await r.json();
+      const b={balance:(d.total_granted-d.total_used).toFixed(2), total_granted:d.total_granted, total_used:d.total_used, lastUpdated:new Date().toISOString(), real:true};
+      saveJsonFile(balPath,b);
+      saveJsonFile(path.join(__dirname,'storage','openai_balance.json'),b);
+      return res.json(b);
     }
-    res.sendStatus(200);
-  } catch(e){ res.sendStatus(200); }
+  }catch(e){ console.log(e.message); }
+  const c=getJsonFile(balPath);
+  res.json(c.balance? {...c, lastChecked:new Date().toISOString()} : {balance:"0.00", real:false});
 });
 
-// 3. رفع الايصال
-app.post('/api/payment-proof', upload.single('receipt'), (req,res)=>{
- const data = {
-  id: Date.now().toString(),
-  fullName: req.body.companyName,
-  phone: req.body.customerPhone,
-  email: req.body.customerEmail,
-  company: req.body.company,
-  file: req.file?.originalname||'',
-  status:'pending',
-  createdAt: new Date().toISOString()
- };
- proofs.push(data);
- res.json({success:true, id:data.id});
+// توليد مفتاح للتاجر من مفتاح الأدمن - كل تاجر له مفتاح خاص
+app.post('/api/merchant/generate-key',(req,res)=>{
+  const {phone, storeUrl, storeName}=req.body;
+  if(!phone||!storeUrl) return res.status(400).json({error:'phone and storeUrl required'});
+  const hash=crypto.createHash('sha256').update(`${phone}|${storeUrl}|${MASTER_OPENAI_KEY}`).digest('hex');
+  const key=`wsbot-m-${hash.substring(0,8)}-${hash.substring(8,16)}-${hash.substring(16,24)}`;
+  const p=path.join(__dirname,'storage','merchant_keys.json');
+  let keys=getJsonFile(p); if(Array.isArray(keys)){let o={};keys.forEach(k=>{if(k.phone)o[k.phone]=k});keys=o;}
+  keys[phone]={phone, store_url:storeUrl, store_name:storeName||storeUrl, ai_key:key, created_at:new Date().toISOString(), status:'active', master_derived:true};
+  saveJsonFile(p,keys);
+  saveJsonFile(path.join(__dirname,'public','storage','merchant_keys.json'), Object.values(keys));
+  res.json({success:true,...keys[phone]});
 });
 
-app.get('/api/payment-proofs', (req,res)=>{ res.json(proofs.slice().reverse()); });
-app.post('/api/admin/approve', (req,res)=>{
- const p = proofs.find(x=>x.id===req.body.id);
- if(p){ p.status='approved'; users.push(p); }
- res.json({success:true});
-});
-app.post('/api/admin/reject', (req,res)=>{
- const p = proofs.find(x=>x.id===req.body.id);
- if(p) p.status='rejected';
- res.json({success:true});
+app.get('/api/merchant/get-key',(req,res)=>{
+  const {phone}=req.query;
+  const p=path.join(__dirname,'storage','merchant_keys.json');
+  const keys=getJsonFile(p);
+  const k=keys[phone];
+  if(k) return res.json({success:true,...k});
+  res.json({success:false});
 });
 
-// 4. Apple Pay
-app.get('/.well-known/apple-developer-merchantid-domain-association', (req,res)=>{
- const p = path.join(__dirname, 'public', 'apple-developer-merchantid-domain-association');
- if (fs.existsSync(p)) res.sendFile(p); else res.sendStatus(404);
+app.get('/api/merchants',(req,res)=>{
+  const mp=path.join(__dirname,'public','storage','merchants.json');
+  res.json(getJsonFile(mp));
 });
 
-// 5. اخر سطر - مصحح للـ Express 5 (بدل '*')
-app.use((req,res)=> res.sendFile(path.join(__dirname, 'public', 'index.html')));
+// الصفحة الرئيسية الحين تودي للواتساب مباشرة - مافيه موقع
+app.get('/',(req,res)=>{
+  res.send(`<!DOCTYPE html><html dir="rtl"><head><meta charset="utf-8"><meta http-equiv="refresh" content="0;url=https://wa.me/966510015157"><title>تواصل واتساب</title></head><body style="font-family:tajawal;text-align:center;padding:50px"><h2>جاري تحويلك للواتساب...</h2><a href="https://wa.me/966510015157">اضغط هنا اذا لم يتم تحويلك</a></body></html>`);
+});
 
-app.listen(PORT, ()=> console.log('🚀 WhatsBot Running on ' + PORT));
+app.get('*',(req,res)=> res.sendFile(path.join(__dirname, 'public', 'dashboard.html')));
+
+app.listen(PORT,()=> console.log(`🚀 Server ${PORT} - NO PAYMENT - Master ${MASTER_OPENAI_KEY?'SET ✅':'NOT SET ❌'}`));
